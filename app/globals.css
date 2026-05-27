@@ -31,7 +31,7 @@ html, body { background: var(--bg); color: var(--text); font-family: 'Inter', -a
 .glow-btn { box-shadow: 0 0 40px rgba(200,184,248,0.2), 0 4px 20px rgba(0,0,0,0.4); }
 .glow-btn:hover { box-shadow: 0 0 60px rgba(200,184,248,0.35), 0 4px 24px rgba(0,0,0,0.5); }
 
-scrollbar-width: thin;
+* { scrollbar-width: thin; }
 ::-webkit-scrollbar { width:4px; }
 ::-webkit-scrollbar-track { background:transparent; }
 ::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.15); border-radius:2px; }

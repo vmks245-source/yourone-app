@@ -163,15 +163,29 @@ function mapAnswersToArchetype(answers: QuizAnswer[]): string {
   return 'cloud_sea'
 }
 
+const CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+const ARCHETYPE_MAP: Record<string, number> = {
+  meadow: 0, neon_alley: 1, ocean: 2, tokyo_rooftop: 3,
+  desert_canyon: 4, storm_forest: 5, arctic: 6, autumn_forest: 7, factory: 8, cloud_sea: 9
+}
+
+// 8-char unique code: [archetype][nonce×5][checksum][integrity]
+// Timestamp entropy in nonce makes each run unique even with same answers
 function encodeCode(archetype: string, answers: QuizAnswer[]): string {
-  const archetypeMap: Record<string, number> = {
-    meadow: 0, neon_alley: 1, ocean: 2, tokyo_rooftop: 3,
-    desert_canyon: 4, storm_forest: 5, arctic: 6, autumn_forest: 7, factory: 8, cloud_sea: 9
-  }
-  const idx = archetypeMap[archetype] ?? 0
-  const checksum = answers.reduce((acc, a) => acc + (typeof a.value === 'string' ? a.value.charCodeAt(0) : Number(a.value)), 0) % 36
-  const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-  return chars[idx] + chars[checksum % 36] + chars[(idx * 7 + 11) % 36] + chars[(checksum * 3 + 5) % 36] + chars[(idx + checksum) % 36] + chars[(idx * 3 + checksum * 2) % 36]
+  const idx = ARCHETYPE_MAP[archetype] ?? 0
+  const ts = Date.now()
+  const n0 = answers.reduce((a, q) => a + (typeof q.value === 'string' ? q.value.charCodeAt(0) : Number(q.value)), 0)
+  const n1 = answers.reduce((a, q) => a + q.questionId * (typeof q.value === 'string' ? q.value.length : Math.floor(Number(q.value) / 10 + 1)), 0)
+  const nonce = [
+    CHARS[n0 % 36],
+    CHARS[n1 % 36],
+    CHARS[(ts & 0x3f) % 36],
+    CHARS[((ts >> 8) & 0x3f) % 36],
+    CHARS[((ts >> 16) & 0x3f) % 36],
+  ].join('')
+  const chk = nonce.split('').reduce((a, ch) => a + CHARS.indexOf(ch), 0) % 36
+  const int2 = (idx * 5 + chk * 3 + 17) % 36
+  return CHARS[idx] + nonce + CHARS[chk] + CHARS[int2]
 }
 
 interface QuizEngineProps { onComplete: (archetype: string, code: string) => void }
@@ -182,23 +196,33 @@ export default function QuizEngine({ onComplete }: QuizEngineProps) {
   const [sliderVal, setSliderVal] = useState(50)
   const [textVal, setTextVal] = useState('')
   const [transitioning, setTransitioning] = useState(false)
+  const [transDir, setTransDir] = useState<'in' | 'out'>('in')
+  const [selectedVal, setSelectedVal] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const q = questions[current]
-  const progress = (current / questions.length) * 100
+  const progress = ((current + 1) / questions.length) * 100
 
   const advance = (value: string | number) => {
     if (transitioning) return
+    if (typeof value === 'string') setSelectedVal(value)
     const newAnswers = [...answers, { questionId: q.id, value }]
     setAnswers(newAnswers)
 
     if (current < questions.length - 1) {
       setTransitioning(true)
-      setTimeout(() => { setCurrent(c => c + 1); setTransitioning(false) }, 400)
+      setTransDir('out')
+      setTimeout(() => {
+        setCurrent(c => c + 1)
+        setSelectedVal(null)
+        setTransDir('in')
+        setTimeout(() => setTransitioning(false), 50)
+      }, 380)
     } else {
       const archetype = mapAnswersToArchetype(newAnswers)
       const code = encodeCode(archetype, newAnswers)
-      setTimeout(() => onComplete(archetype, code), 600)
+      setTransitioning(true)
+      setTimeout(() => onComplete(archetype, code), 700)
     }
   }
 
@@ -206,61 +230,71 @@ export default function QuizEngine({ onComplete }: QuizEngineProps) {
     if (q.type === 'text' && inputRef.current) inputRef.current.focus()
   }, [current, q.type])
 
+  const cardStyle = {
+    opacity: transitioning && transDir === 'out' ? 0 : 1,
+    transform: transitioning && transDir === 'out' ? 'translateX(-28px) scale(0.97)' : transitioning && transDir === 'in' ? 'translateX(28px)' : 'translateX(0) scale(1)',
+    transition: 'opacity 0.38s ease, transform 0.38s cubic-bezier(0.16,1,0.3,1)',
+  }
+
+  const typeLabel: Record<string, string> = { audio: 'sound', slider: 'feel', text: 'essence', visual: 'intuition', word: 'intuition' }
+
   return (
-    <div style={{ minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'2rem', position:'relative' }}>
-      {/* Progress */}
-      <div style={{ position:'fixed', top:0, left:0, right:0, height:'2px', background:'rgba(255,255,255,0.08)', zIndex:10 }}>
-        <div style={{ height:'100%', background:'linear-gradient(90deg, #c8b8f8, #f8c8a8)', width:`${progress}%`, transition:'width 0.5s ease' }} />
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem', position: 'relative' }}>
+      <div style={{ position: 'fixed', top: 0, left: 0, right: 0, height: '2px', background: 'rgba(255,255,255,0.06)', zIndex: 10 }}>
+        <div style={{ height: '100%', background: 'linear-gradient(90deg, #c8b8f8, #f8c8a8)', width: `${progress}%`, transition: 'width 0.6s cubic-bezier(0.16,1,0.3,1)' }} />
       </div>
 
-      {/* Question counter */}
-      <div style={{ position:'fixed', top:'1.5rem', right:'1.5rem', fontSize:'12px', color:'var(--muted)', fontWeight:500 }}>
-        {current + 1} / {questions.length}
+      <div style={{ position: 'fixed', top: '1.4rem', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '6px', zIndex: 10 }}>
+        {questions.map((_, i) => (
+          <div key={i} style={{ width: i === current ? '18px' : '5px', height: '5px', borderRadius: '3px', background: i < current ? 'rgba(200,184,248,0.6)' : i === current ? 'rgba(200,184,248,0.95)' : 'rgba(255,255,255,0.15)', transition: 'all 0.4s ease' }} />
+        ))}
       </div>
 
-      {/* Question */}
-      <div style={{ maxWidth:'520px', width:'100%', opacity: transitioning ? 0 : 1, transform: transitioning ? 'translateY(12px)' : 'translateY(0)', transition:'all 0.4s ease' }}>
-        <div style={{ textAlign:'center', marginBottom:'2.5rem' }}>
-          <div style={{ fontSize:'12px', letterSpacing:'0.1em', color:'var(--accent)', textTransform:'uppercase', marginBottom:'1rem', opacity:0.8 }}>
-            {q.type === 'audio' ? 'sound' : q.type === 'slider' ? 'feel' : q.type === 'text' ? 'essence' : 'intuition'}
+      <div style={{ position: 'fixed', top: '1.5rem', right: '1.5rem', fontSize: '11px', color: 'rgba(255,255,255,0.3)', fontWeight: 500, letterSpacing: '0.06em' }}>
+        {current + 1} <span style={{ color: 'rgba(255,255,255,0.15)' }}>/ {questions.length}</span>
+      </div>
+
+      <div style={{ maxWidth: '540px', width: '100%', ...cardStyle }}>
+        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+          <div style={{ fontSize: '11px', letterSpacing: '0.18em', color: 'var(--accent)', textTransform: 'uppercase', marginBottom: '1rem', opacity: 0.7 }}>
+            {typeLabel[q.type] ?? 'intuition'}
           </div>
-          <h2 style={{ fontSize:'clamp(1.4rem,4vw,1.9rem)', fontWeight:400, fontFamily:'Playfair Display, serif', lineHeight:1.3, marginBottom:'0.75rem', color:'var(--text)' }}>
+          <h2 style={{ fontSize: 'clamp(1.4rem,4vw,2rem)', fontWeight: 400, fontFamily: 'Playfair Display, serif', lineHeight: 1.25, marginBottom: '0.8rem', color: 'var(--text)' }}>
             {q.text}
           </h2>
-          <p style={{ fontSize:'0.9rem', color:'var(--muted)', fontStyle:'italic' }}>{q.sub}</p>
+          <p style={{ fontSize: '0.88rem', color: 'var(--muted)', fontStyle: 'italic' }}>{q.sub}</p>
         </div>
 
-        {/* Options for visual/word/audio */}
         {(q.type === 'visual' || q.type === 'word' || q.type === 'audio') && q.options && (
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px' }}>
-            {q.options.map(opt => (
-              <button key={opt.value} onClick={() => advance(opt.value)}
-                style={{ background:'rgba(255,255,255,0.04)', border:'0.5px solid rgba(255,255,255,0.1)', borderRadius:'14px', padding:'1.2rem', cursor:'pointer', textAlign:'left', transition:'all 0.2s', color:'var(--text)' }}
-                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background='rgba(200,184,248,0.1)'; (e.currentTarget as HTMLButtonElement).style.borderColor='rgba(200,184,248,0.3)' }}
-                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background='rgba(255,255,255,0.04)'; (e.currentTarget as HTMLButtonElement).style.borderColor='rgba(255,255,255,0.1)' }}>
-                <div style={{ fontSize:'1.6rem', marginBottom:'0.5rem' }}>{opt.emoji}</div>
-                <div style={{ fontSize:'0.9rem', fontWeight:500, marginBottom:'0.3rem' }}>{opt.label}</div>
-                <div style={{ fontSize:'0.75rem', color:'var(--muted)' }}>{opt.desc}</div>
-              </button>
-            ))}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+            {q.options.map((opt) => {
+              const isSelected = selectedVal === opt.value
+              return (
+                <button key={opt.value} onClick={() => advance(opt.value)}
+                  style={{ background: isSelected ? 'rgba(200,184,248,0.18)' : 'rgba(255,255,255,0.04)', border: isSelected ? '0.5px solid rgba(200,184,248,0.55)' : '0.5px solid rgba(255,255,255,0.09)', borderRadius: '16px', padding: '1.3rem 1.1rem', cursor: 'pointer', textAlign: 'left', color: 'var(--text)', transform: isSelected ? 'scale(1.03)' : 'scale(1)', boxShadow: isSelected ? '0 0 30px rgba(200,184,248,0.18)' : 'none', transition: 'all 0.22s cubic-bezier(0.16,1,0.3,1)' }}
+                  onMouseEnter={e => { if (!isSelected) { const b = e.currentTarget as HTMLButtonElement; b.style.background = 'rgba(200,184,248,0.09)'; b.style.borderColor = 'rgba(200,184,248,0.28)'; b.style.transform = 'scale(1.02)' } }}
+                  onMouseLeave={e => { if (!isSelected) { const b = e.currentTarget as HTMLButtonElement; b.style.background = 'rgba(255,255,255,0.04)'; b.style.borderColor = 'rgba(255,255,255,0.09)'; b.style.transform = 'scale(1)' } }}>
+                  <div style={{ fontSize: '1.8rem', marginBottom: '0.55rem' }}>{opt.emoji}</div>
+                  <div style={{ fontSize: '0.92rem', fontWeight: 500, marginBottom: '0.3rem' }}>{opt.label}</div>
+                  <div style={{ fontSize: '0.74rem', color: 'var(--muted)', lineHeight: 1.45 }}>{opt.desc}</div>
+                </button>
+              )
+            })}
           </div>
         )}
 
-        {/* Slider */}
         {q.type === 'slider' && (
-          <div style={{ padding:'1rem 0' }}>
-            <div style={{ display:'flex', justifyContent:'space-between', marginBottom:'1rem', fontSize:'0.85rem', color:'var(--muted)' }}>
+          <div style={{ padding: '1rem 0' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.2rem', fontSize: '0.85rem', color: 'var(--muted)' }}>
               <span>{(q as { leftEmoji?: string }).leftEmoji} {(q as { left?: string }).left}</span>
               <span>{(q as { right?: string }).right} {(q as { rightEmoji?: string }).rightEmoji}</span>
             </div>
-            <input type="range" min={0} max={100} value={sliderVal}
-              onChange={e => setSliderVal(Number(e.target.value))}
-              style={{ width:'100%', accentColor:'var(--accent)', cursor:'pointer', height:'6px' }} />
-            <div style={{ marginTop:'2rem', textAlign:'center' }}>
+            <input type="range" min={0} max={100} value={sliderVal} onChange={e => setSliderVal(Number(e.target.value))} style={{ width: '100%', accentColor: 'var(--accent)', cursor: 'pointer', height: '4px' }} />
+            <div style={{ marginTop: '2.5rem', textAlign: 'center' }}>
               <button onClick={() => advance(sliderVal)}
-                style={{ background:'rgba(200,184,248,0.12)', border:'0.5px solid rgba(200,184,248,0.3)', borderRadius:'50px', padding:'0.8rem 2.5rem', color:'var(--text)', cursor:'pointer', fontSize:'0.9rem', fontWeight:500, transition:'all 0.2s' }}
-                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background='rgba(200,184,248,0.2)' }}
-                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background='rgba(200,184,248,0.12)' }}>
+                style={{ background: 'rgba(200,184,248,0.12)', border: '0.5px solid rgba(200,184,248,0.32)', borderRadius: '50px', padding: '0.85rem 2.8rem', color: 'var(--text)', cursor: 'pointer', fontSize: '0.92rem', fontWeight: 500, transition: 'all 0.2s' }}
+                onMouseEnter={e => { const b = e.currentTarget as HTMLButtonElement; b.style.background = 'rgba(200,184,248,0.22)'; b.style.boxShadow = '0 0 30px rgba(200,184,248,0.15)' }}
+                onMouseLeave={e => { const b = e.currentTarget as HTMLButtonElement; b.style.background = 'rgba(200,184,248,0.12)'; b.style.boxShadow = 'none' }}>
                 This feels right →
               </button>
             </div>
