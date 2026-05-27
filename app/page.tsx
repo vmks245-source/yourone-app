@@ -4,10 +4,10 @@ import dynamic from 'next/dynamic'
 import type { SceneId } from './components/SceneRenderer'
 import { scenes } from './components/SceneRenderer'
 
-const AmbientReel = dynamic(() => import('./components/AmbientReel'), { ssr: false })
+const AmbientReel   = dynamic(() => import('./components/AmbientReel'),   { ssr: false })
 const ParticleCanvas = dynamic(() => import('./components/ParticleCanvas'), { ssr: false })
-const SceneRenderer = dynamic(() => import('./components/SceneRenderer'), { ssr: false })
-const QuizEngine = dynamic(() => import('./components/QuizEngine'), { ssr: false })
+const VideoScene    = dynamic(() => import('./components/VideoScene'),    { ssr: false })
+const QuizEngine    = dynamic(() => import('./components/QuizEngine'),    { ssr: false })
 
 type Stage = 'landing' | 'quiz' | 'reveal' | 'place'
 
@@ -148,8 +148,8 @@ export default function Home() {
     const scene = scenes[archetype]
     return (
       <div style={{ minHeight: '100vh', background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
-        <div style={{ position: 'absolute', inset: 0, opacity: revealStep >= 1 ? 1 : 0, transform: revealStep >= 1 ? 'scale(1)' : 'scale(1.08)', transition: 'opacity 2.2s ease, transform 3s ease' }}>
-          <SceneRenderer sceneId={archetype} width={dims.w} height={dims.h} />
+        <div style={{ position: 'absolute', inset: 0, opacity: revealStep >= 1 ? 1 : 0, transform: revealStep >= 1 ? 'scale(1)' : 'scale(1.06)', transition: 'opacity 2.2s ease, transform 3s ease' }}>
+          <VideoScene sceneId={archetype} />
         </div>
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.55)', opacity: revealStep >= 2 ? 0 : 1, transition: 'opacity 1.8s ease', zIndex: 1 }} />
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 50%, transparent 20%, rgba(0,0,0,0.7) 100%)', zIndex: 2 }} />
@@ -180,7 +180,7 @@ export default function Home() {
     return (
       <div style={{ minHeight: '100vh', background: '#000', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'fixed', inset: 0 }}>
-          <SceneRenderer sceneId={archetype} width={dims.w} height={dims.h} />
+          <VideoScene sceneId={archetype} />
         </div>
         <div style={{ position: 'fixed', inset: 0, background: 'linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.92) 100%)', zIndex: 1 }} />
         <div style={{ position: 'relative', zIndex: 2, minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: 'clamp(1.5rem,4vw,3rem)', maxWidth: '600px' }}>
