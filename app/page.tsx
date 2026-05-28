@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import dynamic from 'next/dynamic'
+import Link from 'next/link'
 import type { CategoryKey, ArchetypeResult } from './lib/archetypes'
 import { ARCHETYPE_REGISTRY } from './lib/archetypes'
 import { QUIZ_DATA, SCORE_FUNCTIONS } from './lib/quizData'
@@ -239,8 +240,14 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="fade-in-delay3" style={{ position: 'fixed', bottom: '1.6rem', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '1.5rem', fontSize: '0.72rem', color: 'rgba(255,255,255,0.18)', whiteSpace: 'nowrap' }}>
-          <span>No account</span><span>·</span><span>50+ worlds</span><span>·</span><span>Yours forever</span>
+        <div className="fade-in-delay3" style={{ position: 'fixed', bottom: '1.6rem', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '1.2rem', alignItems: 'center', fontSize: '0.72rem', color: 'rgba(255,255,255,0.18)', whiteSpace: 'nowrap' }}>
+          <Link href="/pricing" style={{ color: 'rgba(255,255,255,0.28)', textDecoration: 'none' }}>Pricing</Link>
+          <span>·</span>
+          <Link href="/terms" style={{ color: 'rgba(255,255,255,0.28)', textDecoration: 'none' }}>Terms</Link>
+          <span>·</span>
+          <Link href="/privacy" style={{ color: 'rgba(255,255,255,0.28)', textDecoration: 'none' }}>Privacy</Link>
+          <span>·</span>
+          <Link href="/refund" style={{ color: 'rgba(255,255,255,0.28)', textDecoration: 'none' }}>Refunds</Link>
         </div>
       </div>
     </div>
