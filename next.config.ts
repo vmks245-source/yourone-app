@@ -1,17 +1,7 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  async headers() {
-    return [
-      {
-        source: '/(.*)',
-        headers: [
-          { key: 'Cross-Origin-Embedder-Policy', value: 'credentialless' },
-          { key: 'Cross-Origin-Opener-Policy',   value: 'same-origin' },
-        ],
-      },
-    ]
-  },
+  // COEP/COOP headers removed — they blocked cross-origin R2 media loading
 }
 
 export default nextConfig
