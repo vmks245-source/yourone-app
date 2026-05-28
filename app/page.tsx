@@ -23,10 +23,10 @@ interface CatDef {
 }
 
 const CATEGORIES: CatDef[] = [
-  { key: 'animal',    label: 'Spirit Animal',   emoji: '🐾', teaser: 'Which creature carries your soul?',             price: '$0.99', color: '#c07828', gradient: 'rgba(192,120,40,0.15)' },
-  { key: 'world',     label: 'Your World',       emoji: '🌍', teaser: 'A living, breathing place — uniquely yours.',   price: '$1.80', color: '#c8b8f8', gradient: 'rgba(200,184,248,0.15)' },
-  { key: 'celebrity', label: 'Your Celebrity',   emoji: '⭐', teaser: 'Which icon resonates with your personality?',   price: '$1.50', color: '#f8d44a', gradient: 'rgba(248,212,74,0.15)' },
-  { key: 'planet',    label: 'Your Planet',       emoji: '🪐', teaser: 'Where in the cosmos do you truly belong?',     price: '$2.90', color: '#88ccff', gradient: 'rgba(136,204,255,0.15)' },
+  { key: 'animal',    label: 'Spirit Animal',   emoji: '🐾', teaser: 'Which creature carries your soul?',             price: '$0.99', color: '#f09438', gradient: 'rgba(240,148,56,0.16)' },
+  { key: 'world',     label: 'Your World',       emoji: '🌍', teaser: 'A living, breathing place — uniquely yours.',   price: '$1.80', color: '#a07af8', gradient: 'rgba(160,122,248,0.16)' },
+  { key: 'celebrity', label: 'Your Celebrity',   emoji: '⭐', teaser: 'Which icon resonates with your personality?',   price: '$1.50', color: '#f8cc38', gradient: 'rgba(248,204,56,0.16)' },
+  { key: 'planet',    label: 'Your Planet',       emoji: '🪐', teaser: 'Where in the cosmos do you truly belong?',     price: '$2.90', color: '#38c4f8', gradient: 'rgba(56,196,248,0.16)' },
 ]
 
 const ARCHETYPE_LISTS: Record<CategoryKey, string[]> = {
@@ -175,8 +175,8 @@ export default function Home() {
 
       <div style={{ position: 'relative', zIndex: 5, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem 1.5rem' }}>
         <div className="fade-in" style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div style={{ fontSize: '10px', letterSpacing: '0.28em', color: 'rgba(200,184,248,0.5)', textTransform: 'uppercase', marginBottom: '0.3rem' }}>by Filmos</div>
-          <div style={{ fontSize: '11px', letterSpacing: '0.18em', color: 'rgba(255,255,255,0.2)', textTransform: 'uppercase' }}>yourone · world</div>
+          <div style={{ fontSize: '10px', letterSpacing: '0.28em', color: 'rgba(200,184,248,0.75)', textTransform: 'uppercase', marginBottom: '0.3rem' }}>by Filmos</div>
+          <div style={{ fontSize: '11px', letterSpacing: '0.18em', color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase' }}>yourone · world</div>
         </div>
 
         <div className="fade-in-delay" style={{ textAlign: 'center', marginBottom: '0.8rem', transform: `translate(${mouse.x*-5}px,${mouse.y*-5}px)`, transition: 'transform 0.6s cubic-bezier(0.16,1,0.3,1)' }}>
@@ -190,7 +190,7 @@ export default function Home() {
 
         <div className="fade-in-delay" style={{ marginBottom: '2.5rem', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
           <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'rgba(200,184,248,0.7)', animation: 'pulse-slow 2.4s ease infinite', display: 'inline-block', flexShrink: 0 }} />
-          <span style={{ fontSize: '0.78rem', color: 'rgba(200,184,248,0.5)', letterSpacing: '0.08em' }}>{counter.toLocaleString()} discoveries made</span>
+          <span style={{ fontSize: '0.78rem', color: 'rgba(200,184,248,0.82)', letterSpacing: '0.08em' }}>{counter.toLocaleString()} discoveries made</span>
         </div>
 
         <div className="fade-in-delay2" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', maxWidth: '540px', width: '100%', marginBottom: '2rem' }}>
@@ -201,7 +201,7 @@ export default function Home() {
               <div style={{ height: '2px', background: `linear-gradient(to right, ${cat.color}cc, transparent)`, marginBottom: '1rem', borderRadius: '1px' }} />
               <div style={{ fontSize: '2rem', marginBottom: '0.5rem', filter: `drop-shadow(0 0 10px ${cat.color}55)` }}>{cat.emoji}</div>
               <div style={{ fontSize: '0.95rem', fontWeight: 600, marginBottom: '0.25rem', color: 'rgba(255,255,255,0.92)' }}>{cat.label}</div>
-              <div style={{ fontSize: '0.73rem', color: 'rgba(255,255,255,0.38)', lineHeight: 1.45, marginBottom: '0.9rem' }}>{cat.teaser}</div>
+              <div style={{ fontSize: '0.73rem', color: 'rgba(255,255,255,0.62)', lineHeight: 1.45, marginBottom: '0.9rem' }}>{cat.teaser}</div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <span style={{ fontSize: '1rem', fontWeight: 600, color: cat.color }}>{cat.price}</span>
                 <span style={{ fontSize: '0.7rem', color: cat.color, opacity: 0.5 }}>Discover →</span>
@@ -213,7 +213,7 @@ export default function Home() {
         {/* ── Open Your World — always visible ── */}
         <div className="fade-in-delay3" style={{ maxWidth: '540px', width: '100%', marginTop: '0.5rem' }}>
           <div style={{ background: 'rgba(255,255,255,0.03)', border: '0.5px solid rgba(255,255,255,0.1)', borderRadius: '18px', padding: '1.2rem 1.4rem' }}>
-            <div style={{ fontSize: '10px', letterSpacing: '0.18em', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', marginBottom: '0.9rem', textAlign: 'center' }}>
+            <div style={{ fontSize: '10px', letterSpacing: '0.18em', color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase', marginBottom: '0.9rem', textAlign: 'center' }}>
               🔑 Already have a code? Open your world
             </div>
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
@@ -252,13 +252,13 @@ export default function Home() {
       </div>
     </div>
     <div style={{ position: 'fixed', bottom: '1.6rem', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '1.2rem', alignItems: 'center', fontSize: '0.72rem', whiteSpace: 'nowrap', zIndex: 20 }}>
-      <Link href="/pricing" style={{ color: 'rgba(255,255,255,0.32)', textDecoration: 'none' }}>Pricing</Link>
-      <span style={{ color: 'rgba(255,255,255,0.18)' }}>·</span>
-      <Link href="/terms" style={{ color: 'rgba(255,255,255,0.32)', textDecoration: 'none' }}>Terms</Link>
-      <span style={{ color: 'rgba(255,255,255,0.18)' }}>·</span>
-      <Link href="/privacy" style={{ color: 'rgba(255,255,255,0.32)', textDecoration: 'none' }}>Privacy</Link>
-      <span style={{ color: 'rgba(255,255,255,0.18)' }}>·</span>
-      <Link href="/refund" style={{ color: 'rgba(255,255,255,0.32)', textDecoration: 'none' }}>Refunds</Link>
+      <Link href="/pricing" style={{ color: 'rgba(255,255,255,0.52)', textDecoration: 'none' }}>Pricing</Link>
+      <span style={{ color: 'rgba(255,255,255,0.28)' }}>·</span>
+      <Link href="/terms" style={{ color: 'rgba(255,255,255,0.52)', textDecoration: 'none' }}>Terms</Link>
+      <span style={{ color: 'rgba(255,255,255,0.28)' }}>·</span>
+      <Link href="/privacy" style={{ color: 'rgba(255,255,255,0.52)', textDecoration: 'none' }}>Privacy</Link>
+      <span style={{ color: 'rgba(255,255,255,0.28)' }}>·</span>
+      <Link href="/refund" style={{ color: 'rgba(255,255,255,0.52)', textDecoration: 'none' }}>Refunds</Link>
     </div>
     </>
   )
@@ -294,7 +294,7 @@ export default function Home() {
                 ))}
               </div>
             )}
-            <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.3)', fontStyle: 'italic' }}>
+            <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.65)', fontStyle: 'italic' }}>
               Your {category.label.toLowerCase()} is forming. {QUIZ_DATA[category.key].length - 1} more questions reveal it — claim it for {category.price} to continue.
             </p>
           </div>
@@ -350,11 +350,11 @@ export default function Home() {
       <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 50%, transparent 20%, rgba(0,0,0,0.7) 100%)', zIndex: 2 }} />
       <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, transparent 28%, transparent 60%, rgba(0,0,0,0.88) 100%)', zIndex: 3 }} />
       <div style={{ position: 'relative', zIndex: 4, textAlign: 'center', padding: '2rem', maxWidth: '520px' }}>
-        <div style={{ fontSize: '10px', letterSpacing: '0.28em', color: 'rgba(200,184,248,0.6)', textTransform: 'uppercase', marginBottom: '1.2rem', opacity: revealStep>=3?1:0, transform: revealStep>=3?'translateY(0)':'translateY(12px)', transition: 'opacity 1s ease, transform 1s ease' }}>{category.label.toLowerCase()}</div>
+        <div style={{ fontSize: '10px', letterSpacing: '0.28em', color: 'rgba(200,184,248,0.9)', textTransform: 'uppercase', marginBottom: '1.2rem', opacity: revealStep>=3?1:0, transform: revealStep>=3?'translateY(0)':'translateY(12px)', transition: 'opacity 1s ease, transform 1s ease' }}>{category.label.toLowerCase()}</div>
         <h1 style={{ fontSize: 'clamp(2.4rem,8vw,5rem)', fontFamily: 'Playfair Display, serif', fontWeight: 400, color: '#fff', textShadow: `0 0 60px ${result.color}66, 0 2px 40px rgba(0,0,0,0.9)`, marginBottom: '0.6rem', lineHeight: 1.1, opacity: revealStep>=4?1:0, transform: revealStep>=4?'translateY(0)':'translateY(20px)', transition: 'opacity 1.2s ease, transform 1.4s cubic-bezier(0.16,1,0.3,1)' }}>{result.name}</h1>
         <div style={{ fontSize: '1rem', fontWeight: 500, color: result.color, marginBottom: '0.8rem', opacity: revealStep>=4?1:0, transition: 'opacity 1s ease 0.3s', fontStyle: 'italic' }}>{result.title}</div>
-        <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.7)', fontStyle: 'italic', maxWidth: '400px', margin: '0 auto', lineHeight: 1.75, textShadow: '0 2px 20px rgba(0,0,0,0.9)', opacity: revealStep>=5?1:0, transform: revealStep>=5?'translateY(0)':'translateY(12px)', transition: 'opacity 1s ease 0.1s, transform 1s ease 0.1s' }}>{result.tagline}</p>
-        <div style={{ marginTop: '2.5rem', fontSize: '0.78rem', letterSpacing: '0.12em', color: 'rgba(255,255,255,0.28)', textTransform: 'uppercase', opacity: revealStep>=6?1:0, transition: 'opacity 1.2s ease' }}>Opening your world…</div>
+        <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.92)', fontStyle: 'italic', maxWidth: '400px', margin: '0 auto', lineHeight: 1.75, textShadow: '0 2px 20px rgba(0,0,0,0.9)', opacity: revealStep>=5?1:0, transform: revealStep>=5?'translateY(0)':'translateY(12px)', transition: 'opacity 1s ease 0.1s, transform 1s ease 0.1s' }}>{result.tagline}</p>
+        <div style={{ marginTop: '2.5rem', fontSize: '0.78rem', letterSpacing: '0.12em', color: 'rgba(255,255,255,0.58)', textTransform: 'uppercase', opacity: revealStep>=6?1:0, transition: 'opacity 1.2s ease' }}>Opening your world…</div>
       </div>
     </div>
   )
@@ -376,14 +376,14 @@ export default function Home() {
 
         <div style={{ position: 'relative', zIndex: 2, paddingTop: 'clamp(42vh, 50vh, 55vh)', padding: 'clamp(42vh,50vh,55vh) clamp(1.5rem,4vw,3rem) clamp(1.5rem,4vw,3rem)', maxWidth: '640px' }}>
           <div style={{ marginBottom: '1.5rem', animation: 'fadeIn 1s ease forwards' }}>
-            <div style={{ fontSize: '10px', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.32)', textTransform: 'uppercase', marginBottom: '0.4rem' }}>{category.label}</div>
+            <div style={{ fontSize: '10px', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.58)', textTransform: 'uppercase', marginBottom: '0.4rem' }}>{category.label}</div>
             <h1 style={{ fontSize: 'clamp(1.8rem,5vw,3rem)', fontFamily: 'Playfair Display, serif', fontWeight: 400, color: '#fff', lineHeight: 1.15, marginBottom: '0.3rem' }}>{result.name}</h1>
             <div style={{ fontSize: '0.95rem', color: result.color, fontStyle: 'italic', marginBottom: '0.8rem', fontWeight: 500 }}>{result.title}</div>
-            <p style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.48)', lineHeight: 1.7, marginBottom: '1.4rem', fontStyle: 'italic' }}>{result.tagline}</p>
+            <p style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.78)', lineHeight: 1.7, marginBottom: '1.4rem', fontStyle: 'italic' }}>{result.tagline}</p>
 
             {/* Full description — the premium content */}
             <div style={{ borderLeft: `2px solid ${result.color}55`, paddingLeft: '1rem', marginBottom: '1.4rem' }}>
-              <p style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.72)', lineHeight: 1.95, letterSpacing: '0.01em' }}>{result.description}</p>
+              <p style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.88)', lineHeight: 1.95, letterSpacing: '0.01em' }}>{result.description}</p>
             </div>
 
             {/* Why you got this */}
@@ -392,7 +392,7 @@ export default function Home() {
               {result.why.map((w, i) => (
                 <div key={i} style={{ display: 'flex', gap: '0.7rem', alignItems: 'flex-start', marginBottom: i < result.why.length-1 ? '0.55rem' : 0 }}>
                   <span style={{ color: result.color, fontSize: '0.65rem', marginTop: '4px', flexShrink: 0 }}>◆</span>
-                  <span style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.62)', lineHeight: 1.6 }}>{w}</span>
+                  <span style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.82)', lineHeight: 1.6 }}>{w}</span>
                 </div>
               ))}
             </div>
@@ -428,7 +428,7 @@ export default function Home() {
               ← Try another category
             </button>
 
-            <p style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.15)', textAlign: 'center', paddingBottom: '0.5rem' }}>a <strong style={{ color: 'rgba(255,255,255,0.28)' }}>Filmos</strong> product · yourone.world</p>
+            <p style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.35)', textAlign: 'center', paddingBottom: '0.5rem' }}>a <strong style={{ color: 'rgba(255,255,255,0.55)' }}>Filmos</strong> product · yourone.world</p>
           </div>
         </div>
       </div>
