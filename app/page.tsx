@@ -164,7 +164,7 @@ export default function Home() {
 
   // ─── HOME ─────────────────────────────────────────────────────────────────
   if (stage === 'home') return (
-    <div style={{ minHeight: '100vh', background: '#04040c', position: 'relative', overflow: 'hidden' }} onMouseMove={onMouseMove}>
+    <><div style={{ minHeight: '100vh', background: '#04040c', position: 'relative', overflow: 'hidden' }} onMouseMove={onMouseMove}>
       <AmbientReel /><ParticleCanvas density={20} />
       <div style={{ position: 'fixed', top: '12%', left: '6%', width: '460px', height: '460px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(200,184,248,0.055) 0%, transparent 65%)', pointerEvents: 'none', zIndex: 4, transform: `translate(${mouse.x*-16}px,${mouse.y*-16}px)`, transition: 'transform 0.8s cubic-bezier(0.16,1,0.3,1)' }} />
       <div style={{ position: 'fixed', bottom: '10%', right: '4%', width: '360px', height: '360px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(248,200,168,0.045) 0%, transparent 65%)', pointerEvents: 'none', zIndex: 4, transform: `translate(${mouse.x*12}px,${mouse.y*12}px)`, transition: 'transform 1s cubic-bezier(0.16,1,0.3,1)' }} />
@@ -240,17 +240,18 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="fade-in-delay3" style={{ position: 'fixed', bottom: '1.6rem', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '1.2rem', alignItems: 'center', fontSize: '0.72rem', color: 'rgba(255,255,255,0.18)', whiteSpace: 'nowrap' }}>
-          <Link href="/pricing" style={{ color: 'rgba(255,255,255,0.28)', textDecoration: 'none' }}>Pricing</Link>
-          <span>·</span>
-          <Link href="/terms" style={{ color: 'rgba(255,255,255,0.28)', textDecoration: 'none' }}>Terms</Link>
-          <span>·</span>
-          <Link href="/privacy" style={{ color: 'rgba(255,255,255,0.28)', textDecoration: 'none' }}>Privacy</Link>
-          <span>·</span>
-          <Link href="/refund" style={{ color: 'rgba(255,255,255,0.28)', textDecoration: 'none' }}>Refunds</Link>
-        </div>
       </div>
     </div>
+    <div style={{ position: 'fixed', bottom: '1.6rem', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '1.2rem', alignItems: 'center', fontSize: '0.72rem', whiteSpace: 'nowrap', zIndex: 20 }}>
+      <Link href="/pricing" style={{ color: 'rgba(255,255,255,0.32)', textDecoration: 'none' }}>Pricing</Link>
+      <span style={{ color: 'rgba(255,255,255,0.18)' }}>·</span>
+      <Link href="/terms" style={{ color: 'rgba(255,255,255,0.32)', textDecoration: 'none' }}>Terms</Link>
+      <span style={{ color: 'rgba(255,255,255,0.18)' }}>·</span>
+      <Link href="/privacy" style={{ color: 'rgba(255,255,255,0.32)', textDecoration: 'none' }}>Privacy</Link>
+      <span style={{ color: 'rgba(255,255,255,0.18)' }}>·</span>
+      <Link href="/refund" style={{ color: 'rgba(255,255,255,0.32)', textDecoration: 'none' }}>Refunds</Link>
+    </div>
+    </>
   )
 
   // ─── PREVIEW — Q1 free taste ─────────────────────────────────────────────
