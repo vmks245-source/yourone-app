@@ -85,6 +85,7 @@ export default function Home() {
   const [copied, setCopied] = useState<string | null>(null)
   const [shareDataUrl, setShareDataUrl] = useState<string | null>(null)
   const [mediaReady, setMediaReady] = useState(false)
+  const [checkoutOpened, setCheckoutOpened] = useState(false)
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
   const [btnMag, setBtnMag] = useState({ x: 0, y: 0 })
   const btnRef = useRef<HTMLButtonElement>(null)
@@ -94,21 +95,6 @@ export default function Home() {
     const upd = () => setDims({ w: window.innerWidth, h: window.innerHeight })
     upd(); window.addEventListener('resize', upd)
     const p = new URLSearchParams(window.location.search)
-
-    // Gumroad post-payment redirect: ?paid=true&cat=animal (cat in URL is primary)
-    if (p.get('paid') === 'true') {
-      const catFromUrl = p.get('cat') as CategoryKey | null
-      let resolvedCat: CategoryKey | null = catFromUrl && CATEGORIES.find(c => c.key === catFromUrl) ? catFromUrl : null
-      if (!resolvedCat) {
-        try { resolvedCat = localStorage.getItem('yourone_pending_cat') as CategoryKey | null } catch { /* */ }
-      }
-      try { localStorage.removeItem('yourone_pending_cat') } catch { /* */ }
-      const catDef = CATEGORIES.find(c => c.key === resolvedCat) ?? CATEGORIES[1]
-      setCategory(catDef)
-      window.history.replaceState({}, '', '/')
-      setStage('quiz')
-      return () => window.removeEventListener('resize', upd)
-    }
 
     const urlCode = p.get('code') || window.location.pathname.split('/place/')[1]
     const urlCat = (p.get('cat') as CategoryKey) || 'world'
@@ -142,8 +128,8 @@ export default function Home() {
   const startPayment = () => {
     const url = GUMROAD_URLS[category.key]
     if (url === '#') { setStage('quiz'); return }
-    try { localStorage.setItem('yourone_pending_cat', category.key) } catch { /* */ }
-    window.location.href = url
+    window.open(url, '_blank', 'noopener')
+    setCheckoutOpened(true)
   }
 
   const onQuizComplete = (answers: Record<number, string | number>) => {
@@ -279,7 +265,7 @@ export default function Home() {
       <div style={{ minHeight: '100vh', background: '#04040c', position: 'relative', overflow: 'hidden' }} onMouseMove={onMouseMove}>
         <AmbientReel /><ParticleCanvas density={20} />
         <div style={{ position: 'relative', zIndex: 5, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
-          <button onClick={() => setStage('home')} style={{ position: 'fixed', top: '1.5rem', left: '1.5rem', background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', cursor: 'pointer', fontSize: '0.82rem' }}>← Back</button>
+          <button onClick={() => { setStage('home'); setCheckoutOpened(false) }} style={{ position: 'fixed', top: '1.5rem', left: '1.5rem', background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', cursor: 'pointer', fontSize: '0.82rem' }}>← Back</button>
 
           <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
             <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>{category.emoji}</div>
@@ -306,12 +292,28 @@ export default function Home() {
             </p>
           </div>
 
-          <button ref={btnRef} onClick={startPayment}
-            style={{ background: `linear-gradient(135deg, ${category.gradient}, rgba(248,200,168,0.08))`, border: `0.5px solid ${category.color}66`, borderRadius: '50px', padding: '1.15rem 3.2rem', color: 'var(--text)', cursor: 'pointer', fontSize: '1rem', fontWeight: 500, letterSpacing: '0.02em', boxShadow: `0 0 50px ${category.color}2e, 0 4px 24px rgba(0,0,0,0.5)`, transition: 'box-shadow 0.3s, transform 0.25s cubic-bezier(0.16,1,0.3,1)', transform: `translate(${btnMag.x}px,${btnMag.y}px)` }}
-            onMouseEnter={e=>{(e.currentTarget as HTMLButtonElement).style.boxShadow=`0 0 80px ${category.color}55, 0 4px 28px rgba(0,0,0,0.6)`}}
-            onMouseLeave={e=>{(e.currentTarget as HTMLButtonElement).style.boxShadow=`0 0 50px ${category.color}2e, 0 4px 24px rgba(0,0,0,0.5)`}}>
-            {`Claim my ${category.label} — ${category.price}`}
-          </button>
+          {!checkoutOpened ? (
+            <button ref={btnRef} onClick={startPayment}
+              style={{ background: `linear-gradient(135deg, ${category.gradient}, rgba(248,200,168,0.08))`, border: `0.5px solid ${category.color}66`, borderRadius: '50px', padding: '1.15rem 3.2rem', color: 'var(--text)', cursor: 'pointer', fontSize: '1rem', fontWeight: 500, letterSpacing: '0.02em', boxShadow: `0 0 50px ${category.color}2e, 0 4px 24px rgba(0,0,0,0.5)`, transition: 'box-shadow 0.3s, transform 0.25s cubic-bezier(0.16,1,0.3,1)', transform: `translate(${btnMag.x}px,${btnMag.y}px)` }}
+              onMouseEnter={e=>{(e.currentTarget as HTMLButtonElement).style.boxShadow=`0 0 80px ${category.color}55, 0 4px 28px rgba(0,0,0,0.6)`}}
+              onMouseLeave={e=>{(e.currentTarget as HTMLButtonElement).style.boxShadow=`0 0 50px ${category.color}2e, 0 4px 24px rgba(0,0,0,0.5)`}}>
+              {`Claim my ${category.label} — ${category.price}`}
+            </button>
+          ) : (
+            <div style={{ textAlign: 'center', maxWidth: '320px' }}>
+              <div style={{ fontSize: '0.82rem', color: 'var(--muted)', marginBottom: '1.2rem', lineHeight: 1.65 }}>
+                Complete payment in the Gumroad tab.<br />Come back here when done.
+              </div>
+              <button onClick={() => setStage('quiz')}
+                style={{ width: '100%', background: `linear-gradient(135deg, ${category.gradient}, rgba(248,200,168,0.08))`, border: `0.5px solid ${category.color}77`, borderRadius: '50px', padding: '1.1rem 2rem', color: 'var(--text)', cursor: 'pointer', fontSize: '1rem', fontWeight: 600, marginBottom: '0.8rem', boxShadow: `0 0 40px ${category.color}33` }}>
+                ✓ I&apos;ve paid — open my {category.label}
+              </button>
+              <button onClick={startPayment}
+                style={{ background: 'none', border: 'none', color: `${category.color}88`, cursor: 'pointer', fontSize: '0.75rem', textDecoration: 'underline' }}>
+                Gumroad didn&apos;t open? Click here
+              </button>
+            </div>
+          )}
         </div>
       </div>
     )
