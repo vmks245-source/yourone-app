@@ -79,7 +79,6 @@ export default function Home() {
   const [code, setCode] = useState('')
   const [revealStep, setRevealStep] = useState(0)
   const [dims, setDims] = useState({ w: 1200, h: 700 })
-  const [paymentPending] = useState(false)
   const [codeInput, setCodeInput] = useState('')
   const [codeCategory, setCodeCategory] = useState<CategoryKey>('world')
   const [codeError, setCodeError] = useState(false)
@@ -307,18 +306,12 @@ export default function Home() {
             </p>
           </div>
 
-          <button ref={btnRef} onClick={startPayment} disabled={paymentPending}
-            style={{ background: `linear-gradient(135deg, ${category.gradient}, rgba(248,200,168,0.08))`, border: `0.5px solid ${category.color}66`, borderRadius: '50px', padding: '1.15rem 3.2rem', color: 'var(--text)', cursor: paymentPending?'wait':'pointer', fontSize: '1rem', fontWeight: 500, letterSpacing: '0.02em', boxShadow: `0 0 50px ${category.color}2e, 0 4px 24px rgba(0,0,0,0.5)`, transition: 'box-shadow 0.3s, transform 0.25s cubic-bezier(0.16,1,0.3,1)', transform: `translate(${btnMag.x}px,${btnMag.y}px)` }}
+          <button ref={btnRef} onClick={startPayment}
+            style={{ background: `linear-gradient(135deg, ${category.gradient}, rgba(248,200,168,0.08))`, border: `0.5px solid ${category.color}66`, borderRadius: '50px', padding: '1.15rem 3.2rem', color: 'var(--text)', cursor: 'pointer', fontSize: '1rem', fontWeight: 500, letterSpacing: '0.02em', boxShadow: `0 0 50px ${category.color}2e, 0 4px 24px rgba(0,0,0,0.5)`, transition: 'box-shadow 0.3s, transform 0.25s cubic-bezier(0.16,1,0.3,1)', transform: `translate(${btnMag.x}px,${btnMag.y}px)` }}
             onMouseEnter={e=>{(e.currentTarget as HTMLButtonElement).style.boxShadow=`0 0 80px ${category.color}55, 0 4px 28px rgba(0,0,0,0.6)`}}
             onMouseLeave={e=>{(e.currentTarget as HTMLButtonElement).style.boxShadow=`0 0 50px ${category.color}2e, 0 4px 24px rgba(0,0,0,0.5)`}}>
-            {paymentPending ? 'Complete payment in new window…' : `Claim my ${category.label} — ${category.price}`}
+            {`Claim my ${category.label} — ${category.price}`}
           </button>
-          {paymentPending && (
-            <div style={{ marginTop: '1rem', fontSize: '0.78rem', color: 'var(--muted)', maxWidth: '280px', textAlign: 'center', lineHeight: 1.6 }}>
-              Pay in the popup, then your quiz opens automatically.<br />
-              <button onClick={() => { setPaymentPending(false); setStage('quiz') }} style={{ marginTop: '0.6rem', background: 'none', border: 'none', color: `${category.color}88`, cursor: 'pointer', fontSize: '0.72rem', textDecoration: 'underline' }}>Already paid?</button>
-            </div>
-          )}
         </div>
       </div>
     )
