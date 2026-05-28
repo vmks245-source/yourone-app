@@ -4,9 +4,10 @@ import { videoUrl } from '../lib/videoMap'
 interface Props {
   sceneId: string
   style?: React.CSSProperties
+  onReady?: () => void
 }
 
-export default function VideoScene({ sceneId, style }: Props) {
+export default function VideoScene({ sceneId, style, onReady }: Props) {
   return (
     <video
       key={sceneId}
@@ -16,6 +17,7 @@ export default function VideoScene({ sceneId, style }: Props) {
       muted
       playsInline
       preload="auto"
+      onCanPlay={onReady}
       style={{
         position: 'absolute',
         inset: 0,

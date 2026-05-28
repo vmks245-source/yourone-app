@@ -6,12 +6,13 @@ import { ARCHETYPE_REGISTRY } from './lib/archetypes'
 import { QUIZ_DATA, SCORE_FUNCTIONS } from './lib/quizData'
 import { triggerDownload } from './components/ShareCard'
 
-const AmbientReel    = dynamic(() => import('./components/AmbientReel'),    { ssr: false })
-const ParticleCanvas = dynamic(() => import('./components/ParticleCanvas'), { ssr: false })
-const VideoScene     = dynamic(() => import('./components/VideoScene'),     { ssr: false })
-const ImageScene     = dynamic(() => import('./components/ImageScene'),     { ssr: false })
-const QuizEngine     = dynamic(() => import('./components/QuizEngine'),     { ssr: false })
-const ShareCard      = dynamic(() => import('./components/ShareCard'),      { ssr: false })
+const AmbientReel      = dynamic(() => import('./components/AmbientReel'),      { ssr: false })
+const ParticleCanvas   = dynamic(() => import('./components/ParticleCanvas'),   { ssr: false })
+const VideoScene       = dynamic(() => import('./components/VideoScene'),       { ssr: false })
+const ImageScene       = dynamic(() => import('./components/ImageScene'),       { ssr: false })
+const LoadingOverlay   = dynamic(() => import('./components/LoadingOverlay'),   { ssr: false })
+const QuizEngine       = dynamic(() => import('./components/QuizEngine'),       { ssr: false })
+const ShareCard        = dynamic(() => import('./components/ShareCard'),        { ssr: false })
 
 type Stage = 'home' | 'preview' | 'quiz' | 'reveal' | 'place'
 
@@ -78,12 +79,12 @@ export default function Home() {
   const [revealStep, setRevealStep] = useState(0)
   const [dims, setDims] = useState({ w: 1200, h: 700 })
   const [paymentPending, setPaymentPending] = useState(false)
-  const [showCodeEntry, setShowCodeEntry] = useState(false)
   const [codeInput, setCodeInput] = useState('')
   const [codeCategory, setCodeCategory] = useState<CategoryKey>('world')
   const [codeError, setCodeError] = useState(false)
   const [copied, setCopied] = useState<string | null>(null)
   const [shareDataUrl, setShareDataUrl] = useState<string | null>(null)
+  const [mediaReady, setMediaReady] = useState(false)
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
   const [btnMag, setBtnMag] = useState({ x: 0, y: 0 })
   const btnRef = useRef<HTMLButtonElement>(null)
@@ -100,7 +101,7 @@ export default function Home() {
       const decoded = decodeCode(urlCode.toUpperCase(), urlCat)
       if (decoded) {
         const r = ARCHETYPE_REGISTRY[urlCat][decoded]
-        if (r) { setResult(r); setCode(urlCode.toUpperCase()); setCategory(catDef); setStage('place') }
+        if (r) { setResult(r); setCode(urlCode.toUpperCase()); setCategory(catDef); setMediaReady(false); setStage('place') }
       }
     }
     return () => window.removeEventListener('resize', upd)
@@ -131,7 +132,7 @@ export default function Home() {
     const r = ARCHETYPE_REGISTRY[category.key][id]
     if (!r) return
     const c = encodeCode(category.key, id, answers)
-    setResult(r); setCode(c); setStage('reveal'); setRevealStep(0)
+    setResult(r); setCode(c); setMediaReady(false); setStage('reveal'); setRevealStep(0)
     setTimeout(() => setRevealStep(1), 800)
     setTimeout(() => setRevealStep(2), 2200)
     setTimeout(() => setRevealStep(3), 3400)
@@ -147,7 +148,7 @@ export default function Home() {
     if (id) {
       const r = ARCHETYPE_REGISTRY[codeCategory][id]
       const catDef = CATEGORIES.find(x => x.key === codeCategory) || CATEGORIES[1]
-      if (r) { setResult(r); setCode(c); setCategory(catDef); setStage('place'); window.history.replaceState({}, '', `/place/${c}?cat=${codeCategory}`) }
+      if (r) { setResult(r); setCode(c); setCategory(catDef); setMediaReady(false); setStage('place'); window.history.replaceState({}, '', `/place/${c}?cat=${codeCategory}`) }
     } else { setCodeError(true); setTimeout(() => setCodeError(false), 1500) }
   }
 
@@ -199,17 +200,43 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="fade-in-delay3" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.7rem' }}>
-          {!showCodeEntry
-            ? <button onClick={() => setShowCodeEntry(true)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.22)', cursor: 'pointer', fontSize: '0.78rem', transition: 'color 0.2s' }} onMouseEnter={e=>{(e.currentTarget as HTMLButtonElement).style.color='rgba(255,255,255,0.5)'}} onMouseLeave={e=>{(e.currentTarget as HTMLButtonElement).style.color='rgba(255,255,255,0.22)'}}>Already have a code? Return to your world →</button>
-            : <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
-                <select value={codeCategory} onChange={e => setCodeCategory(e.target.value as CategoryKey)} style={{ background: 'rgba(255,255,255,0.05)', border: '0.5px solid rgba(255,255,255,0.15)', borderRadius: '8px', padding: '0.55rem 0.6rem', color: 'var(--muted)', fontSize: '0.78rem', outline: 'none' }}>
-                  {CATEGORIES.map(c => <option key={c.key} value={c.key}>{c.label}</option>)}
-                </select>
-                <input value={codeInput} onChange={e => setCodeInput(e.target.value.toUpperCase())} onKeyDown={e => e.key==='Enter'&&enterCode()} placeholder="YOUR CODE" maxLength={8} style={{ background: 'rgba(255,255,255,0.05)', border: `0.5px solid ${codeError?'rgba(255,80,80,0.6)':'rgba(255,255,255,0.18)'}`, borderRadius: '8px', padding: '0.55rem 0.8rem', color: 'var(--text)', fontSize: '0.85rem', fontFamily: 'monospace', letterSpacing: '0.18em', outline: 'none', width: '150px', textTransform: 'uppercase', textAlign: 'center' }} />
-                <button onClick={enterCode} style={{ background: 'rgba(255,255,255,0.07)', border: '0.5px solid rgba(255,255,255,0.15)', borderRadius: '8px', padding: '0.55rem 1rem', color: 'var(--text)', cursor: 'pointer', fontSize: '0.85rem' }}>Enter</button>
-              </div>
-          }
+        {/* ── Open Your World — always visible ── */}
+        <div className="fade-in-delay3" style={{ maxWidth: '540px', width: '100%', marginTop: '0.5rem' }}>
+          <div style={{ background: 'rgba(255,255,255,0.03)', border: '0.5px solid rgba(255,255,255,0.1)', borderRadius: '18px', padding: '1.2rem 1.4rem' }}>
+            <div style={{ fontSize: '10px', letterSpacing: '0.18em', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', marginBottom: '0.9rem', textAlign: 'center' }}>
+              🔑 Already have a code? Open your world
+            </div>
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
+              <select value={codeCategory} onChange={e => setCodeCategory(e.target.value as CategoryKey)}
+                style={{ background: 'rgba(255,255,255,0.06)', border: '0.5px solid rgba(255,255,255,0.15)', borderRadius: '10px', padding: '0.6rem 0.7rem', color: 'rgba(255,255,255,0.7)', fontSize: '0.82rem', outline: 'none', cursor: 'pointer' }}>
+                {CATEGORIES.map(c => <option key={c.key} value={c.key} style={{ background: '#0a0a18' }}>{c.emoji} {c.label}</option>)}
+              </select>
+              <input
+                value={codeInput}
+                onChange={e => setCodeInput(e.target.value.toUpperCase())}
+                onKeyDown={e => e.key === 'Enter' && enterCode()}
+                placeholder="YOUR CODE"
+                maxLength={8}
+                style={{
+                  background: 'rgba(255,255,255,0.05)',
+                  border: `0.5px solid ${codeError ? 'rgba(255,80,80,0.6)' : 'rgba(255,255,255,0.18)'}`,
+                  borderRadius: '10px', padding: '0.6rem 0.9rem',
+                  color: 'var(--text)', fontSize: '0.88rem', fontFamily: 'monospace',
+                  letterSpacing: '0.2em', outline: 'none', width: '155px',
+                  textTransform: 'uppercase', textAlign: 'center',
+                  boxShadow: codeError ? '0 0 14px rgba(255,80,80,0.2)' : 'none',
+                  transition: 'border-color 0.2s, box-shadow 0.2s',
+                }}
+              />
+              <button onClick={enterCode}
+                style={{ background: 'rgba(200,184,248,0.12)', border: '0.5px solid rgba(200,184,248,0.3)', borderRadius: '10px', padding: '0.6rem 1.2rem', color: 'var(--text)', cursor: 'pointer', fontSize: '0.88rem', fontWeight: 500, transition: 'all 0.2s' }}
+                onMouseEnter={e => { const b=e.currentTarget as HTMLButtonElement; b.style.background='rgba(200,184,248,0.22)'; b.style.boxShadow='0 0 20px rgba(200,184,248,0.15)' }}
+                onMouseLeave={e => { const b=e.currentTarget as HTMLButtonElement; b.style.background='rgba(200,184,248,0.12)'; b.style.boxShadow='none' }}>
+                Open →
+              </button>
+            </div>
+            {codeError && <div style={{ textAlign: 'center', marginTop: '0.55rem', fontSize: '0.75rem', color: 'rgba(255,100,100,0.8)' }}>Invalid code — check the category and try again</div>}
+          </div>
         </div>
 
         <div className="fade-in-delay3" style={{ position: 'fixed', bottom: '1.6rem', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '1.5rem', fontSize: '0.72rem', color: 'rgba(255,255,255,0.18)', whiteSpace: 'nowrap' }}>
@@ -285,9 +312,10 @@ export default function Home() {
     <div style={{ minHeight: '100vh', background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
       <div style={{ position: 'absolute', inset: 0, opacity: revealStep>=1?1:0, transform: revealStep>=1?'scale(1)':'scale(1.06)', transition: 'opacity 2.2s ease, transform 3s ease' }}>
         {category.key === 'world'
-          ? <VideoScene sceneId={result.id} />
-          : <ImageScene archetypeId={result.id} />
+          ? <VideoScene sceneId={result.id} onReady={() => setMediaReady(true)} />
+          : <ImageScene archetypeId={result.id} onReady={() => setMediaReady(true)} />
         }
+        <LoadingOverlay show={!mediaReady} emoji={category.emoji} label={`Loading ${category.label.toLowerCase()}`} color={category.color} />
       </div>
       <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.55)', opacity: revealStep>=2?0:1, transition: 'opacity 1.8s ease', zIndex: 1 }} />
       <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 50%, transparent 20%, rgba(0,0,0,0.7) 100%)', zIndex: 2 }} />
@@ -310,9 +338,10 @@ export default function Home() {
         <ShareCard result={result} code={code} category={category.label} onReady={setShareDataUrl} />
         <div style={{ position: 'fixed', inset: 0 }}>
           {category.key === 'world'
-            ? <VideoScene sceneId={result.id} />
-            : <ImageScene archetypeId={result.id} />
+            ? <VideoScene sceneId={result.id} onReady={() => setMediaReady(true)} />
+            : <ImageScene archetypeId={result.id} onReady={() => setMediaReady(true)} />
           }
+          <LoadingOverlay show={!mediaReady} emoji={category.emoji} label={`Loading ${category.label.toLowerCase()}`} color={category.color} />
         </div>
         <div style={{ position: 'fixed', inset: 0, background: 'linear-gradient(to bottom, transparent 28%, rgba(0,0,0,0.94) 100%)', zIndex: 1 }} />
 

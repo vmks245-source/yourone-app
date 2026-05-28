@@ -9,18 +9,21 @@ const FADE_MS    = 2000
 interface Props {
   archetypeId: string
   style?: React.CSSProperties
+  onReady?: () => void
 }
 
-export default function ImageScene({ archetypeId, style }: Props) {
-  const [curr, setCurr] = useState(0)
-  const [next, setNext] = useState(1)
+export default function ImageScene({ archetypeId, style, onReady }: Props) {
+  const [curr,   setCurr]   = useState(0)
+  const [next,   setNext]   = useState(1)
   const [fading, setFading] = useState(false)
-  const tick = useRef(0)
+  const tick     = useRef(0)
+  const notified = useRef(false)
 
   const url = (n: number) => `${R2}/${archetypeId}_${n % TOTAL}.jpg`
 
   useEffect(() => {
-    setCurr(0); setNext(1); setFading(false); tick.current = 0
+    setCurr(0); setNext(1); setFading(false)
+    tick.current = 0; notified.current = false
 
     const timer = setInterval(() => {
       tick.current++
@@ -35,29 +38,28 @@ export default function ImageScene({ archetypeId, style }: Props) {
     return () => clearInterval(timer)
   }, [archetypeId])
 
+  const handleFirstLoad = () => {
+    if (!notified.current) {
+      notified.current = true
+      onReady?.()
+    }
+  }
+
   return (
     <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', background: '#06060e', ...style }}>
-      {/* Next image preloaded underneath */}
-      <img
-        key={`next-${archetypeId}-${next}`}
-        src={url(next)}
-        alt=""
-        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0 }}
-      />
-      {/* Current image on top — fades out to reveal next */}
-      <img
-        key={`curr-${archetypeId}-${curr}`}
-        src={url(curr)}
-        alt=""
+      {/* Preload next image */}
+      <img key={`n-${archetypeId}-${next}`} src={url(next)} alt=""
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0 }} />
+      {/* Current image */}
+      <img key={`c-${archetypeId}-${curr}`} src={url(curr)} alt=""
+        onLoad={handleFirstLoad}
         style={{
           position: 'absolute', inset: 0, width: '100%', height: '100%',
           objectFit: 'cover',
           opacity: fading ? 0 : 1,
           transition: fading ? `opacity ${FADE_MS}ms ease` : 'none',
-          transform: 'scale(1.05)',
           animation: 'kenBurns 14s ease-out forwards',
-        }}
-      />
+        }} />
     </div>
   )
 }
