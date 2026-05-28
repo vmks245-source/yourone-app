@@ -17,7 +17,7 @@ export default function ParticleCanvas({ density = 80 }: { density?: number }) {
 
     let animId: number
     let particles: Particle[] = []
-    const colors = ['rgba(200,184,248,', 'rgba(180,160,255,', 'rgba(248,200,168,', 'rgba(160,200,255,', 'rgba(255,255,255,']
+    const colors = ['rgba(160,122,248,', 'rgba(140,100,255,', 'rgba(240,148,56,', 'rgba(56,196,248,', 'rgba(255,255,255,', 'rgba(248,204,56,']
 
     const resize = () => {
       canvas.width = window.innerWidth
@@ -70,7 +70,7 @@ export default function ParticleCanvas({ density = 80 }: { density?: number }) {
             ctx.beginPath()
             ctx.moveTo(particles[i].x, particles[i].y)
             ctx.lineTo(particles[j].x, particles[j].y)
-            ctx.strokeStyle = `rgba(200,184,248,${0.04 * (1 - dist / 80)})`
+            ctx.strokeStyle = `rgba(160,122,248,${0.05 * (1 - dist / 80)})`
             ctx.lineWidth = 0.4
             ctx.stroke()
           }

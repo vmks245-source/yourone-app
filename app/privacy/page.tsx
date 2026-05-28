@@ -34,10 +34,10 @@ export default function PrivacyPage() {
 
         <Section title="2. Information We Collect">
           <p style={{ marginBottom: '0.75rem' }}>
-            <strong style={{ color: 'var(--text)' }}>Information you provide:</strong> When you complete our quiz and make a purchase, we collect your quiz answers and the email address used for payment receipt (handled by our payment processor, Paddle).
+            <strong style={{ color: 'var(--text)' }}>Information you provide:</strong> When you complete our quiz and make a purchase, we collect your quiz answers and the email address used for payment receipt (handled by our payment processor, Gumroad).
           </p>
           <p style={{ marginBottom: '0.75rem' }}>
-            <strong style={{ color: 'var(--text)' }}>Payment information:</strong> We do not collect or store your payment card details. All payment processing is handled by Paddle.com Market Limited, who act as our Merchant of Record. Paddle&apos;s privacy policy governs their handling of your payment data.
+            <strong style={{ color: 'var(--text)' }}>Payment information:</strong> We do not collect or store your payment card details. All payment processing is handled by Gumroad.com Market Limited, who act as our Merchant of Record. Gumroad&apos;s privacy policy governs their handling of your payment data.
           </p>
           <p>
             <strong style={{ color: 'var(--text)' }}>Automatically collected information:</strong> We may automatically collect certain technical information, including your IP address, browser type, device type, pages viewed, and time spent on the Service. This is used solely for service operation and improvement.
@@ -70,7 +70,7 @@ export default function PrivacyPage() {
         <Section title="6. Data Sharing and Disclosure">
           <p style={{ marginBottom: '0.75rem' }}>We share your information only in the following circumstances:</p>
           <ul style={{ paddingLeft: '1.5rem', lineHeight: 2, color: 'var(--muted)' }}>
-            <li><strong style={{ color: 'var(--text)' }}>Paddle:</strong> As our payment processor and Merchant of Record, Paddle receives the information necessary to process your transaction.</li>
+            <li><strong style={{ color: 'var(--text)' }}>Gumroad:</strong> As our payment processor and Merchant of Record, Gumroad receives the information necessary to process your transaction.</li>
             <li><strong style={{ color: 'var(--text)' }}>Service providers:</strong> Trusted third parties who assist us in operating the Service (e.g., hosting, analytics), bound by confidentiality obligations.</li>
             <li><strong style={{ color: 'var(--text)' }}>Legal requirements:</strong> When required by law, court order, or to protect the rights and safety of our users or the public.</li>
             <li><strong style={{ color: 'var(--text)' }}>Business transfers:</strong> In connection with a merger, acquisition, or sale of assets, with appropriate confidentiality protections.</li>

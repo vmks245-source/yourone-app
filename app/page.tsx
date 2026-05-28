@@ -7,13 +7,13 @@ import { ARCHETYPE_REGISTRY } from './lib/archetypes'
 import { QUIZ_DATA, SCORE_FUNCTIONS } from './lib/quizData'
 import { triggerDownload } from './components/ShareCard'
 
-const AmbientReel      = dynamic(() => import('./components/AmbientReel'),      { ssr: false })
-const ParticleCanvas   = dynamic(() => import('./components/ParticleCanvas'),   { ssr: false })
-const VideoScene       = dynamic(() => import('./components/VideoScene'),       { ssr: false })
-const ImageScene       = dynamic(() => import('./components/ImageScene'),       { ssr: false })
-const LoadingOverlay   = dynamic(() => import('./components/LoadingOverlay'),   { ssr: false })
-const QuizEngine       = dynamic(() => import('./components/QuizEngine'),       { ssr: false })
-const ShareCard        = dynamic(() => import('./components/ShareCard'),        { ssr: false })
+const AmbientReel    = dynamic(() => import('./components/AmbientReel'),    { ssr: false })
+const ParticleCanvas = dynamic(() => import('./components/ParticleCanvas'), { ssr: false })
+const VideoScene     = dynamic(() => import('./components/VideoScene'),     { ssr: false })
+const ImageScene     = dynamic(() => import('./components/ImageScene'),     { ssr: false })
+const LoadingOverlay = dynamic(() => import('./components/LoadingOverlay'), { ssr: false })
+const QuizEngine     = dynamic(() => import('./components/QuizEngine'),     { ssr: false })
+const ShareCard      = dynamic(() => import('./components/ShareCard'),      { ssr: false })
 
 type Stage = 'home' | 'preview' | 'quiz' | 'reveal' | 'place'
 
@@ -23,10 +23,10 @@ interface CatDef {
 }
 
 const CATEGORIES: CatDef[] = [
-  { key: 'animal',    label: 'Spirit Animal',   emoji: '🐾', teaser: 'Which creature carries your soul?',             price: '$0.99', color: '#f09438', gradient: 'rgba(240,148,56,0.16)' },
-  { key: 'world',     label: 'Your World',       emoji: '🌍', teaser: 'A living, breathing place — uniquely yours.',   price: '$1.80', color: '#a07af8', gradient: 'rgba(160,122,248,0.16)' },
-  { key: 'celebrity', label: 'Your Celebrity',   emoji: '⭐', teaser: 'Which icon resonates with your personality?',   price: '$1.50', color: '#f8cc38', gradient: 'rgba(248,204,56,0.16)' },
-  { key: 'planet',    label: 'Your Planet',       emoji: '🪐', teaser: 'Where in the cosmos do you truly belong?',     price: '$2.90', color: '#38c4f8', gradient: 'rgba(56,196,248,0.16)' },
+  { key: 'animal',    label: 'Spirit Animal',  emoji: '🐾', teaser: 'Which creature carries your soul?',            price: '$0.99', color: '#f09438', gradient: 'rgba(240,148,56,0.14)' },
+  { key: 'world',     label: 'Your World',      emoji: '🌍', teaser: 'A living, breathing place — uniquely yours.',  price: '$1.80', color: '#a07af8', gradient: 'rgba(160,122,248,0.14)' },
+  { key: 'celebrity', label: 'Your Celebrity',  emoji: '⭐', teaser: 'Which icon shares your energy?',              price: '$1.50', color: '#f8cc38', gradient: 'rgba(248,204,56,0.14)' },
+  { key: 'planet',    label: 'Your Planet',      emoji: '🪐', teaser: 'Where in the cosmos do you belong?',          price: '$2.90', color: '#38c4f8', gradient: 'rgba(56,196,248,0.14)' },
 ]
 
 const ARCHETYPE_LISTS: Record<CategoryKey, string[]> = {
@@ -35,6 +35,8 @@ const ARCHETYPE_LISTS: Record<CategoryKey, string[]> = {
   celebrity: ['elon_musk','rihanna','keanu_reeves','oprah','david_bowie','beyonce','obama','billie_eilish','freddie_mercury','steve_jobs','leonardo_dicaprio','kanye_west'],
   planet:    ['mars','venus','saturn','jupiter','neptune','mercury','pluto','orion_nebula','black_hole','sirius','moon','andromeda'],
 }
+
+const TICKER_NAMES = ['Sunlit Meadow','Wolf','Tokyo Rooftop','Eagle','Neon Alley','Mars','Rihanna','Arctic Tundra','Black Hole','Fox','Billie Eilish','Cloud Sea','Jupiter','Panther','David Bowie','Desert Canyon','Sirius','Bear','Andromeda','Freddie Mercury','Storm Forest','Octopus','Saturn','Beyoncé','Autumn Forest','Neptune','Deer','Keanu Reeves','Factory','Pluto','Lion','Orion Nebula','Dolphin','Obama']
 
 const CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
@@ -78,7 +80,6 @@ export default function Home() {
   const [result, setResult] = useState<ArchetypeResult | null>(null)
   const [code, setCode] = useState('')
   const [revealStep, setRevealStep] = useState(0)
-  const [dims, setDims] = useState({ w: 1200, h: 700 })
   const [codeInput, setCodeInput] = useState('')
   const [codeCategory, setCodeCategory] = useState<CategoryKey>('world')
   const [codeError, setCodeError] = useState(false)
@@ -92,10 +93,7 @@ export default function Home() {
   const counter = useCounter(2847)
 
   useEffect(() => {
-    const upd = () => setDims({ w: window.innerWidth, h: window.innerHeight })
-    upd(); window.addEventListener('resize', upd)
     const p = new URLSearchParams(window.location.search)
-
     const urlCode = p.get('code') || window.location.pathname.split('/place/')[1]
     const urlCat = (p.get('cat') as CategoryKey) || 'world'
     if (urlCode) {
@@ -106,7 +104,6 @@ export default function Home() {
         if (r) { setResult(r); setCode(urlCode.toUpperCase()); setCategory(catDef); setMediaReady(false); setStage('place') }
       }
     }
-    return () => window.removeEventListener('resize', upd)
   }, [])
 
   const onMouseMove = useCallback((e: React.MouseEvent) => {
@@ -157,166 +154,224 @@ export default function Home() {
     } else { setCodeError(true); setTimeout(() => setCodeError(false), 1500) }
   }
 
-  const copy = (text: string, key: string) => { navigator.clipboard.writeText(text).catch(() => {}); setCopied(key); setTimeout(() => setCopied(null), 2200) }
-
-  const btnStyle = (cat: CatDef): React.CSSProperties => ({
-    background: cat.gradient, border: `0.5px solid ${cat.color}44`,
-    borderRadius: '18px', padding: '1.4rem 1.2rem', cursor: 'pointer',
-    textAlign: 'left', color: 'var(--text)',
-    transition: 'all 0.22s cubic-bezier(0.16,1,0.3,1)',
-  })
+  const copy = (text: string, key: string) => {
+    navigator.clipboard.writeText(text).catch(() => {})
+    setCopied(key)
+    setTimeout(() => setCopied(null), 2200)
+  }
 
   // ─── HOME ─────────────────────────────────────────────────────────────────
   if (stage === 'home') return (
-    <><div style={{ minHeight: '100vh', background: '#04040c', position: 'relative', overflow: 'hidden' }} onMouseMove={onMouseMove}>
-      <AmbientReel /><ParticleCanvas density={20} />
-      <div style={{ position: 'fixed', top: '12%', left: '6%', width: '460px', height: '460px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(200,184,248,0.055) 0%, transparent 65%)', pointerEvents: 'none', zIndex: 4, transform: `translate(${mouse.x*-16}px,${mouse.y*-16}px)`, transition: 'transform 0.8s cubic-bezier(0.16,1,0.3,1)' }} />
-      <div style={{ position: 'fixed', bottom: '10%', right: '4%', width: '360px', height: '360px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(248,200,168,0.045) 0%, transparent 65%)', pointerEvents: 'none', zIndex: 4, transform: `translate(${mouse.x*12}px,${mouse.y*12}px)`, transition: 'transform 1s cubic-bezier(0.16,1,0.3,1)' }} />
+    <>
+    <div style={{ minHeight: '100vh', background: '#04040c', position: 'relative', overflow: 'hidden' }} onMouseMove={onMouseMove}>
+      <AmbientReel />
+      <ParticleCanvas density={20} />
 
-      <div style={{ position: 'relative', zIndex: 5, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem 1.5rem' }}>
-        <div className="fade-in" style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div style={{ fontSize: '10px', letterSpacing: '0.28em', color: 'rgba(200,184,248,0.75)', textTransform: 'uppercase', marginBottom: '0.3rem' }}>by Filmos</div>
-          <div style={{ fontSize: '11px', letterSpacing: '0.18em', color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase' }}>yourone · world</div>
+      {/* Parallax orbs */}
+      <div style={{ position: 'fixed', top: '6%', left: '4%', width: '520px', height: '520px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(160,122,248,0.07) 0%, transparent 65%)', pointerEvents: 'none', zIndex: 2, transform: `translate(${mouse.x*-18}px,${mouse.y*-18}px)`, transition: 'transform 0.9s cubic-bezier(0.16,1,0.3,1)' }} />
+      <div style={{ position: 'fixed', bottom: '6%', right: '3%', width: '420px', height: '420px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(240,148,56,0.055) 0%, transparent 65%)', pointerEvents: 'none', zIndex: 2, transform: `translate(${mouse.x*14}px,${mouse.y*14}px)`, transition: 'transform 1.1s cubic-bezier(0.16,1,0.3,1)' }} />
+      <div style={{ position: 'fixed', top: '42%', right: '8%', width: '300px', height: '300px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(56,196,248,0.05) 0%, transparent 65%)', pointerEvents: 'none', zIndex: 2, transform: `translate(${mouse.x*9}px,${mouse.y*-9}px)`, transition: 'transform 0.7s cubic-bezier(0.16,1,0.3,1)' }} />
+
+      <div style={{ position: 'relative', zIndex: 5, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '5rem 1.5rem 3rem' }}>
+
+        {/* Brand pill */}
+        <div className="fade-in" style={{ marginBottom: '3rem', textAlign: 'center' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(160,122,248,0.1)', border: '0.5px solid rgba(160,122,248,0.28)', borderRadius: '50px', padding: '0.38rem 1.1rem', marginBottom: '2.4rem' }}>
+            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#a07af8', animation: 'breathe 2.8s ease infinite', display: 'inline-block', flexShrink: 0 }} />
+            <span style={{ fontSize: '0.68rem', letterSpacing: '0.2em', color: 'rgba(160,122,248,0.92)', textTransform: 'uppercase', fontWeight: 500 }}>by Filmos · yourone.world</span>
+          </div>
+
+          {/* Hero */}
+          <div style={{ transform: `translate(${mouse.x*-5}px,${mouse.y*-5}px)`, transition: 'transform 0.6s cubic-bezier(0.16,1,0.3,1)' }}>
+            <h1 style={{ fontSize: 'clamp(2.8rem,9vw,6rem)', fontFamily: 'Playfair Display, serif', fontWeight: 400, lineHeight: 1.04, marginBottom: '1.4rem' }}>
+              <span style={{ color: 'var(--text)' }}>Discover who</span><br />
+              <em style={{ background: 'linear-gradient(125deg, #e0d0ff 0%, #a07af8 45%, #f5a830 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+                you really are
+              </em>
+            </h1>
+            <p style={{ fontSize: 'clamp(0.9rem,1.8vw,1.05rem)', color: 'var(--text-2)', maxWidth: '400px', margin: '0 auto', lineHeight: 1.82 }}>
+              10 questions. A revelation built entirely around you — your world, your animal, your cosmic identity.
+            </p>
+          </div>
         </div>
 
-        <div className="fade-in-delay" style={{ textAlign: 'center', marginBottom: '0.8rem', transform: `translate(${mouse.x*-5}px,${mouse.y*-5}px)`, transition: 'transform 0.6s cubic-bezier(0.16,1,0.3,1)' }}>
-          <h1 style={{ fontSize: 'clamp(2.8rem,9vw,5.5rem)', fontFamily: 'Playfair Display, serif', fontWeight: 400, lineHeight: 1.05, color: 'var(--text)', textShadow: '0 0 80px rgba(200,184,248,0.18)', marginBottom: '1.2rem' }}>
-            Discover who<br /><em style={{ color: 'rgba(200,184,248,0.92)' }}>you really are</em>
-          </h1>
-          <p style={{ fontSize: 'clamp(0.9rem,2vw,1.05rem)', color: 'var(--muted)', maxWidth: '400px', margin: '0 auto', lineHeight: 1.75 }}>
-            Answer 10 questions. Receive a revelation built around who you actually are — not who you think you should be.
-          </p>
+        {/* Archetype ticker */}
+        <div className="fade-in marquee-wrap" style={{ width: '100%', maxWidth: '600px', marginBottom: '2.6rem' }}>
+          <div className="marquee-track">
+            {[...TICKER_NAMES, ...TICKER_NAMES].map((name, i) => (
+              <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0 1.1rem', whiteSpace: 'nowrap' }}>
+                <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.35)', letterSpacing: '0.05em' }}>{name}</span>
+                <span style={{ width: '2px', height: '2px', borderRadius: '50%', background: 'rgba(160,122,248,0.38)', display: 'inline-block', flexShrink: 0 }} />
+              </span>
+            ))}
+          </div>
         </div>
 
-        <div className="fade-in-delay" style={{ marginBottom: '2.5rem', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
-          <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'rgba(200,184,248,0.7)', animation: 'pulse-slow 2.4s ease infinite', display: 'inline-block', flexShrink: 0 }} />
-          <span style={{ fontSize: '0.78rem', color: 'rgba(200,184,248,0.82)', letterSpacing: '0.08em' }}>{counter.toLocaleString()} discoveries made</span>
+        {/* Trust bar */}
+        <div className="fade-in" style={{ marginBottom: '2.2rem', display: 'flex', alignItems: 'center', gap: '1.4rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#a07af8', animation: 'breathe 2.8s ease infinite', display: 'inline-block', flexShrink: 0 }} />
+            <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.72)', fontWeight: 500 }}>{counter.toLocaleString()}<span style={{ color: 'rgba(255,255,255,0.4)', fontWeight: 400 }}> discoveries made</span></span>
+          </div>
+          <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '0.9rem' }}>|</span>
+          <span style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.42)' }}>42 archetypes · 4 dimensions</span>
+          <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '0.9rem' }}>|</span>
+          <span style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.42)' }}>from $0.99</span>
         </div>
 
-        <div className="fade-in-delay2" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', maxWidth: '540px', width: '100%', marginBottom: '2rem' }}>
-          {CATEGORIES.map(cat => (
-            <button key={cat.key} onClick={() => { setCategory(cat); setStage('preview') }} style={btnStyle(cat)}
-              onMouseEnter={e => { const b = e.currentTarget as HTMLButtonElement; b.style.background=cat.gradient.replace('0.15','0.28'); b.style.borderColor=cat.color+'88'; b.style.transform='translateY(-2px) scale(1.02)' }}
-              onMouseLeave={e => { const b = e.currentTarget as HTMLButtonElement; b.style.background=cat.gradient; b.style.borderColor=cat.color+'44'; b.style.transform='' }}>
-              <div style={{ height: '2px', background: `linear-gradient(to right, ${cat.color}cc, transparent)`, marginBottom: '1rem', borderRadius: '1px' }} />
-              <div style={{ fontSize: '2rem', marginBottom: '0.5rem', filter: `drop-shadow(0 0 10px ${cat.color}55)` }}>{cat.emoji}</div>
-              <div style={{ fontSize: '0.95rem', fontWeight: 600, marginBottom: '0.25rem', color: 'rgba(255,255,255,0.92)' }}>{cat.label}</div>
-              <div style={{ fontSize: '0.73rem', color: 'rgba(255,255,255,0.62)', lineHeight: 1.45, marginBottom: '0.9rem' }}>{cat.teaser}</div>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <span style={{ fontSize: '1rem', fontWeight: 600, color: cat.color }}>{cat.price}</span>
-                <span style={{ fontSize: '0.7rem', color: cat.color, opacity: 0.5 }}>Discover →</span>
+        {/* Category cards */}
+        <div className="fade-in-delay2" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', maxWidth: '560px', width: '100%', marginBottom: '1.4rem' }}>
+          {CATEGORIES.map((cat, idx) => (
+            <button key={cat.key}
+              onClick={() => { setCategory(cat); setStage('preview') }}
+              style={{ background: cat.gradient, border: `0.5px solid ${cat.color}30`, borderRadius: '20px', padding: '1.4rem 1.3rem', cursor: 'pointer', textAlign: 'left', color: 'var(--text)', transition: 'all 0.25s cubic-bezier(0.16,1,0.3,1)', position: 'relative', overflow: 'hidden', animation: `slideUp 0.5s cubic-bezier(0.16,1,0.3,1) ${idx * 0.07 + 0.2}s both` }}
+              onMouseEnter={e => { const b = e.currentTarget as HTMLButtonElement; b.style.background=cat.gradient.replace('0.14','0.28'); b.style.borderColor=cat.color+'66'; b.style.transform='translateY(-4px)'; b.style.boxShadow=`0 16px 48px ${cat.color}28, 0 4px 16px rgba(0,0,0,0.5)` }}
+              onMouseLeave={e => { const b = e.currentTarget as HTMLButtonElement; b.style.background=cat.gradient; b.style.borderColor=cat.color+'30'; b.style.transform=''; b.style.boxShadow='none' }}>
+              {/* Top accent bar */}
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: `linear-gradient(90deg, ${cat.color}, ${cat.color}55, transparent)` }} />
+              <div style={{ fontSize: '2.1rem', marginBottom: '0.65rem', filter: `drop-shadow(0 0 16px ${cat.color}77)`, lineHeight: 1 }}>{cat.emoji}</div>
+              <div style={{ fontSize: '0.97rem', fontWeight: 600, marginBottom: '0.3rem', color: 'rgba(255,255,255,0.96)' }}>{cat.label}</div>
+              <div style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.55)', lineHeight: 1.5, marginBottom: '1.1rem' }}>{cat.teaser}</div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem' }}>
+                <span style={{ fontSize: '1.05rem', fontWeight: 700, color: cat.color, letterSpacing: '-0.01em' }}>{cat.price}</span>
+                <span style={{ fontSize: '0.66rem', background: `${cat.color}18`, border: `0.5px solid ${cat.color}40`, borderRadius: '50px', padding: '0.22rem 0.65rem', color: cat.color, fontWeight: 500, flexShrink: 0 }}>Begin →</span>
               </div>
             </button>
           ))}
         </div>
 
-        {/* ── Open Your World — always visible ── */}
-        <div className="fade-in-delay3" style={{ maxWidth: '540px', width: '100%', marginTop: '0.5rem' }}>
-          <div style={{ background: 'rgba(255,255,255,0.03)', border: '0.5px solid rgba(255,255,255,0.1)', borderRadius: '18px', padding: '1.2rem 1.4rem' }}>
-            <div style={{ fontSize: '10px', letterSpacing: '0.18em', color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase', marginBottom: '0.9rem', textAlign: 'center' }}>
-              🔑 Already have a code? Open your world
-            </div>
-            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
+        {/* How it works */}
+        <div className="fade-in-delay3" style={{ maxWidth: '560px', width: '100%', marginBottom: '1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '1px', background: 'rgba(255,255,255,0.06)', borderRadius: '14px', overflow: 'hidden' }}>
+            {[
+              { n: '01', h: 'Choose', sub: 'Pick the dimension to reveal' },
+              { n: '02', h: 'Answer 10', sub: 'Honest questions, precise results' },
+              { n: '03', h: 'Receive', sub: 'Yours forever with a code' },
+            ].map(s => (
+              <div key={s.n} style={{ background: 'rgba(255,255,255,0.022)', padding: '0.9rem 0.75rem', textAlign: 'center' }}>
+                <div style={{ fontSize: '0.58rem', fontWeight: 700, letterSpacing: '0.14em', color: 'rgba(160,122,248,0.55)', textTransform: 'uppercase', marginBottom: '0.35rem' }}>{s.n}</div>
+                <div style={{ fontSize: '0.78rem', fontWeight: 600, color: 'rgba(255,255,255,0.82)', marginBottom: '0.25rem' }}>{s.h}</div>
+                <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.38)', lineHeight: 1.4 }}>{s.sub}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Code entry — collapsible */}
+        <div className="fade-in-delay3" style={{ maxWidth: '560px', width: '100%' }}>
+          <details style={{ background: 'rgba(255,255,255,0.02)', border: '0.5px solid rgba(255,255,255,0.07)', borderRadius: '12px', padding: '0.8rem 1.1rem' }}>
+            <summary style={{ fontSize: '0.76rem', color: 'rgba(255,255,255,0.42)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', userSelect: 'none', listStyle: 'none' }}>
+              <span>🔑</span><span>Already have a code? Return to your world</span>
+            </summary>
+            <div style={{ paddingTop: '0.85rem', display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
               <select value={codeCategory} onChange={e => setCodeCategory(e.target.value as CategoryKey)}
-                style={{ background: 'rgba(255,255,255,0.06)', border: '0.5px solid rgba(255,255,255,0.15)', borderRadius: '10px', padding: '0.6rem 0.7rem', color: 'rgba(255,255,255,0.7)', fontSize: '0.82rem', outline: 'none', cursor: 'pointer' }}>
+                style={{ background: 'rgba(255,255,255,0.06)', border: '0.5px solid rgba(255,255,255,0.14)', borderRadius: '9px', padding: '0.58rem 0.65rem', color: 'rgba(255,255,255,0.7)', fontSize: '0.8rem', outline: 'none', cursor: 'pointer' }}>
                 {CATEGORIES.map(c => <option key={c.key} value={c.key} style={{ background: '#0a0a18' }}>{c.emoji} {c.label}</option>)}
               </select>
-              <input
-                value={codeInput}
-                onChange={e => setCodeInput(e.target.value.toUpperCase())}
-                onKeyDown={e => e.key === 'Enter' && enterCode()}
-                placeholder="YOUR CODE"
-                maxLength={8}
-                style={{
-                  background: 'rgba(255,255,255,0.05)',
-                  border: `0.5px solid ${codeError ? 'rgba(255,80,80,0.6)' : 'rgba(255,255,255,0.18)'}`,
-                  borderRadius: '10px', padding: '0.6rem 0.9rem',
-                  color: 'var(--text)', fontSize: '0.88rem', fontFamily: 'monospace',
-                  letterSpacing: '0.2em', outline: 'none', width: '155px',
-                  textTransform: 'uppercase', textAlign: 'center',
-                  boxShadow: codeError ? '0 0 14px rgba(255,80,80,0.2)' : 'none',
-                  transition: 'border-color 0.2s, box-shadow 0.2s',
-                }}
-              />
+              <input value={codeInput} onChange={e => setCodeInput(e.target.value.toUpperCase())} onKeyDown={e => e.key === 'Enter' && enterCode()} placeholder="YOUR CODE" maxLength={8}
+                style={{ background: 'rgba(255,255,255,0.05)', border: `0.5px solid ${codeError ? 'rgba(255,70,70,0.65)' : 'rgba(255,255,255,0.16)'}`, borderRadius: '9px', padding: '0.58rem 0.85rem', color: 'var(--text)', fontSize: '0.88rem', fontFamily: 'monospace', letterSpacing: '0.22em', outline: 'none', width: '138px', textTransform: 'uppercase', textAlign: 'center', boxShadow: codeError ? '0 0 14px rgba(255,70,70,0.22)' : 'none', transition: 'border-color 0.2s, box-shadow 0.2s' }} />
               <button onClick={enterCode}
-                style={{ background: 'rgba(200,184,248,0.12)', border: '0.5px solid rgba(200,184,248,0.3)', borderRadius: '10px', padding: '0.6rem 1.2rem', color: 'var(--text)', cursor: 'pointer', fontSize: '0.88rem', fontWeight: 500, transition: 'all 0.2s' }}
-                onMouseEnter={e => { const b=e.currentTarget as HTMLButtonElement; b.style.background='rgba(200,184,248,0.22)'; b.style.boxShadow='0 0 20px rgba(200,184,248,0.15)' }}
-                onMouseLeave={e => { const b=e.currentTarget as HTMLButtonElement; b.style.background='rgba(200,184,248,0.12)'; b.style.boxShadow='none' }}>
+                style={{ background: 'rgba(160,122,248,0.16)', border: '0.5px solid rgba(160,122,248,0.38)', borderRadius: '9px', padding: '0.58rem 1.1rem', color: 'var(--text)', cursor: 'pointer', fontSize: '0.84rem', fontWeight: 500, transition: 'all 0.2s' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background='rgba(160,122,248,0.3)' }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background='rgba(160,122,248,0.16)' }}>
                 Open →
               </button>
             </div>
-            {codeError && <div style={{ textAlign: 'center', marginTop: '0.55rem', fontSize: '0.75rem', color: 'rgba(255,100,100,0.8)' }}>Invalid code — check the category and try again</div>}
-          </div>
+            {codeError && <p style={{ textAlign: 'center', marginTop: '0.6rem', fontSize: '0.73rem', color: 'rgba(255,80,80,0.9)' }}>Invalid code — check the category and try again</p>}
+          </details>
         </div>
 
       </div>
     </div>
-    <div style={{ position: 'fixed', bottom: '1.6rem', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '1.2rem', alignItems: 'center', fontSize: '0.72rem', whiteSpace: 'nowrap', zIndex: 20 }}>
-      <Link href="/pricing" style={{ color: 'rgba(255,255,255,0.52)', textDecoration: 'none' }}>Pricing</Link>
-      <span style={{ color: 'rgba(255,255,255,0.28)' }}>·</span>
-      <Link href="/terms" style={{ color: 'rgba(255,255,255,0.52)', textDecoration: 'none' }}>Terms</Link>
-      <span style={{ color: 'rgba(255,255,255,0.28)' }}>·</span>
-      <Link href="/privacy" style={{ color: 'rgba(255,255,255,0.52)', textDecoration: 'none' }}>Privacy</Link>
-      <span style={{ color: 'rgba(255,255,255,0.28)' }}>·</span>
-      <Link href="/refund" style={{ color: 'rgba(255,255,255,0.52)', textDecoration: 'none' }}>Refunds</Link>
+
+    {/* Floating footer */}
+    <div style={{ position: 'fixed', bottom: '1.2rem', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '0.9rem', alignItems: 'center', fontSize: '0.68rem', whiteSpace: 'nowrap', zIndex: 20, background: 'rgba(4,4,14,0.7)', backdropFilter: 'blur(12px)', border: '0.5px solid rgba(255,255,255,0.07)', borderRadius: '50px', padding: '0.45rem 1.1rem' }}>
+      <Link href="/pricing" style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'none' }}>Pricing</Link>
+      <span style={{ color: 'rgba(255,255,255,0.18)' }}>·</span>
+      <Link href="/terms" style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'none' }}>Terms</Link>
+      <span style={{ color: 'rgba(255,255,255,0.18)' }}>·</span>
+      <Link href="/privacy" style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'none' }}>Privacy</Link>
+      <span style={{ color: 'rgba(255,255,255,0.18)' }}>·</span>
+      <Link href="/refund" style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'none' }}>Refunds</Link>
     </div>
     </>
   )
 
-  // ─── PREVIEW — Q1 free taste ─────────────────────────────────────────────
+  // ─── PREVIEW — taste Q1, then pay ────────────────────────────────────────
   if (stage === 'preview') {
     const q1 = QUIZ_DATA[category.key][0]
     return (
       <div style={{ minHeight: '100vh', background: '#04040c', position: 'relative', overflow: 'hidden' }} onMouseMove={onMouseMove}>
-        <AmbientReel /><ParticleCanvas density={20} />
-        {/* Category ambient glow */}
-      <div style={{ position: 'fixed', inset: 0, background: `radial-gradient(ellipse at 50% 60%, ${category.color}18 0%, transparent 65%)`, pointerEvents: 'none', zIndex: 1 }} />
-      <div style={{ position: 'relative', zIndex: 5, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
-          <button onClick={() => { setStage('home'); setCheckoutOpened(false) }} style={{ position: 'fixed', top: '1.5rem', left: '1.5rem', background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', cursor: 'pointer', fontSize: '0.82rem' }}>← Back</button>
+        <AmbientReel />
+        <ParticleCanvas density={18} />
+        <div style={{ position: 'fixed', inset: 0, background: `radial-gradient(ellipse at 50% 55%, ${category.color}1a 0%, transparent 68%)`, pointerEvents: 'none', zIndex: 1 }} />
 
-          <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '0.6rem', filter: `drop-shadow(0 0 20px ${category.color}66)` }}>{category.emoji}</div>
-            <div style={{ fontSize: '0.72rem', letterSpacing: '0.24em', color: category.color, textTransform: 'uppercase', opacity: 0.85 }}>{category.label}</div>
+        <div style={{ position: 'relative', zIndex: 5, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem 1.5rem' }}>
+          <button onClick={() => { setStage('home'); setCheckoutOpened(false) }}
+            style={{ position: 'fixed', top: '1.4rem', left: '1.4rem', background: 'rgba(255,255,255,0.04)', border: '0.5px solid rgba(255,255,255,0.1)', borderRadius: '50px', padding: '0.45rem 1rem', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', fontSize: '0.78rem', backdropFilter: 'blur(8px)', transition: 'all 0.2s' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.85)' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.5)' }}>
+            ← Back
+          </button>
+
+          {/* Category identity */}
+          <div style={{ marginBottom: '2.2rem', textAlign: 'center' }}>
+            <div style={{ fontSize: '3.2rem', marginBottom: '0.7rem', filter: `drop-shadow(0 0 24px ${category.color}88)`, lineHeight: 1, animation: 'breathe 3s ease-in-out infinite' }}>{category.emoji}</div>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: `${category.color}15`, border: `0.5px solid ${category.color}40`, borderRadius: '50px', padding: '0.3rem 0.9rem' }}>
+              <span style={{ fontSize: '0.68rem', letterSpacing: '0.2em', color: category.color, textTransform: 'uppercase', fontWeight: 600 }}>{category.label}</span>
+              <span style={{ fontSize: '0.65rem', color: `${category.color}77` }}>{category.price}</span>
+            </div>
           </div>
 
+          {/* Q1 preview */}
           <div style={{ maxWidth: '520px', width: '100%', textAlign: 'center', marginBottom: '2.5rem' }}>
-            <div style={{ fontSize: '11px', letterSpacing: '0.18em', color: category.color, textTransform: 'uppercase', marginBottom: '1rem', opacity: 0.7 }}>Question 1 of {QUIZ_DATA[category.key].length}</div>
-            <h2 style={{ fontSize: 'clamp(1.4rem,4vw,2rem)', fontWeight: 400, fontFamily: 'Playfair Display, serif', lineHeight: 1.25, marginBottom: '0.8rem', color: 'var(--text)' }}>{q1.text}</h2>
-            <p style={{ fontSize: '0.88rem', color: 'var(--muted)', fontStyle: 'italic', marginBottom: '2rem' }}>{q1.sub}</p>
+            <div style={{ fontSize: '10px', letterSpacing: '0.2em', color: `${category.color}88`, textTransform: 'uppercase', marginBottom: '1rem' }}>
+              Question 1 of {QUIZ_DATA[category.key].length} — preview
+            </div>
+            <h2 style={{ fontSize: 'clamp(1.35rem,3.8vw,1.9rem)', fontWeight: 400, fontFamily: 'Playfair Display, serif', lineHeight: 1.3, marginBottom: '0.7rem', color: 'var(--text)' }}>{q1.text}</h2>
+            <p style={{ fontSize: '0.87rem', color: 'var(--muted)', fontStyle: 'italic', marginBottom: '1.8rem' }}>{q1.sub}</p>
+
             {q1.options && (
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '2rem' }}>
-                {q1.options.map(opt => (
-                  <div key={opt.value} style={{ background: 'rgba(255,255,255,0.04)', border: '0.5px solid rgba(255,255,255,0.09)', borderRadius: '16px', padding: '1.2rem', textAlign: 'left', color: 'var(--text)', opacity: 0.6 }}>
-                    <div style={{ fontSize: '1.8rem', marginBottom: '0.5rem' }}>{opt.emoji}</div>
-                    <div style={{ fontSize: '0.88rem', fontWeight: 500, marginBottom: '0.25rem' }}>{opt.label}</div>
-                    <div style={{ fontSize: '0.72rem', color: 'var(--muted)' }}>{opt.desc}</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '9px', marginBottom: '1.8rem' }}>
+                {q1.options.map((opt, i) => (
+                  <div key={opt.value} style={{ background: 'rgba(255,255,255,0.03)', border: '0.5px solid rgba(255,255,255,0.07)', borderRadius: '16px', padding: '1.1rem', textAlign: 'left', opacity: 0.55, position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ position: 'absolute', top: '0.45rem', right: '0.45rem', width: '16px', height: '16px', borderRadius: '5px', background: 'rgba(255,255,255,0.04)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.58rem', color: 'rgba(255,255,255,0.2)', fontWeight: 600 }}>{i+1}</div>
+                    <div style={{ fontSize: '1.7rem', marginBottom: '0.45rem' }}>{opt.emoji}</div>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 500, marginBottom: '0.22rem', color: 'rgba(255,255,255,0.8)' }}>{opt.label}</div>
+                    <div style={{ fontSize: '0.7rem', color: 'var(--muted)', lineHeight: 1.4 }}>{opt.desc}</div>
                   </div>
                 ))}
               </div>
             )}
-            <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.65)', fontStyle: 'italic' }}>
-              Your {category.label.toLowerCase()} is forming. {QUIZ_DATA[category.key].length - 1} more questions reveal it — claim it for {category.price} to continue.
+
+            <p style={{ fontSize: '0.84rem', color: 'rgba(255,255,255,0.6)', fontStyle: 'italic' }}>
+              {QUIZ_DATA[category.key].length - 1} more questions reveal your {category.label.toLowerCase()}. Claim it for {category.price}.
             </p>
           </div>
 
           {!checkoutOpened ? (
             <button ref={btnRef} onClick={startPayment}
-              style={{ background: `linear-gradient(135deg, ${category.gradient}, rgba(248,200,168,0.08))`, border: `0.5px solid ${category.color}66`, borderRadius: '50px', padding: '1.15rem 3.2rem', color: 'var(--text)', cursor: 'pointer', fontSize: '1rem', fontWeight: 500, letterSpacing: '0.02em', boxShadow: `0 0 50px ${category.color}2e, 0 4px 24px rgba(0,0,0,0.5)`, transition: 'box-shadow 0.3s, transform 0.25s cubic-bezier(0.16,1,0.3,1)', transform: `translate(${btnMag.x}px,${btnMag.y}px)` }}
-              onMouseEnter={e=>{(e.currentTarget as HTMLButtonElement).style.boxShadow=`0 0 80px ${category.color}55, 0 4px 28px rgba(0,0,0,0.6)`}}
-              onMouseLeave={e=>{(e.currentTarget as HTMLButtonElement).style.boxShadow=`0 0 50px ${category.color}2e, 0 4px 24px rgba(0,0,0,0.5)`}}>
-              {`Claim my ${category.label} — ${category.price}`}
+              style={{ background: `linear-gradient(135deg, ${category.gradient.replace('0.14','0.22')}, rgba(0,0,0,0.2))`, border: `0.5px solid ${category.color}60`, borderRadius: '50px', padding: '1.1rem 3.2rem', color: '#fff', cursor: 'pointer', fontSize: '0.98rem', fontWeight: 600, letterSpacing: '0.02em', boxShadow: `0 0 48px ${category.color}30, 0 4px 24px rgba(0,0,0,0.5)`, transition: 'box-shadow 0.3s, transform 0.25s cubic-bezier(0.16,1,0.3,1)', transform: `translate(${btnMag.x}px,${btnMag.y}px)` }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.boxShadow = `0 0 80px ${category.color}55, 0 4px 28px rgba(0,0,0,0.6)` }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.boxShadow = `0 0 48px ${category.color}30, 0 4px 24px rgba(0,0,0,0.5)` }}>
+              Claim my {category.label} — {category.price}
             </button>
           ) : (
-            <div style={{ textAlign: 'center', maxWidth: '320px' }}>
-              <div style={{ fontSize: '0.82rem', color: 'var(--muted)', marginBottom: '1.2rem', lineHeight: 1.65 }}>
-                Complete payment in the Gumroad tab.<br />Come back here when done.
+            <div style={{ textAlign: 'center', maxWidth: '340px' }}>
+              <div style={{ background: `${category.color}0f`, border: `0.5px solid ${category.color}30`, borderRadius: '16px', padding: '1.2rem 1.4rem', marginBottom: '1rem' }}>
+                <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>💳</div>
+                <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.7 }}>
+                  Complete payment in the Gumroad tab,<br />then come back here.
+                </div>
               </div>
               <button onClick={() => setStage('quiz')}
-                style={{ width: '100%', background: `linear-gradient(135deg, ${category.gradient}, rgba(248,200,168,0.08))`, border: `0.5px solid ${category.color}77`, borderRadius: '50px', padding: '1.1rem 2rem', color: 'var(--text)', cursor: 'pointer', fontSize: '1rem', fontWeight: 600, marginBottom: '0.8rem', boxShadow: `0 0 40px ${category.color}33` }}>
-                ✓ I&apos;ve paid — open my {category.label}
+                style={{ width: '100%', background: `linear-gradient(135deg, ${category.gradient.replace('0.14','0.25')}, rgba(0,0,0,0.15))`, border: `0.5px solid ${category.color}70`, borderRadius: '50px', padding: '1.05rem 2rem', color: '#fff', cursor: 'pointer', fontSize: '0.98rem', fontWeight: 600, marginBottom: '0.7rem', boxShadow: `0 0 40px ${category.color}2a`, transition: 'box-shadow 0.2s' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.boxShadow = `0 0 60px ${category.color}44` }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.boxShadow = `0 0 40px ${category.color}2a` }}>
+                ✓ I&apos;ve paid — reveal my {category.label}
               </button>
               <button onClick={startPayment}
-                style={{ background: 'none', border: 'none', color: `${category.color}77`, cursor: 'pointer', fontSize: '0.75rem', textDecoration: 'underline' }}>
+                style={{ background: 'none', border: 'none', color: `${category.color}70`, cursor: 'pointer', fontSize: '0.74rem', textDecoration: 'underline' }}>
                 Gumroad didn&apos;t open? Click here
               </button>
             </div>
@@ -329,7 +384,7 @@ export default function Home() {
   // ─── QUIZ ─────────────────────────────────────────────────────────────────
   if (stage === 'quiz') return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
-      <ParticleCanvas density={25} />
+      <ParticleCanvas density={22} />
       <div style={{ position: 'relative', zIndex: 1 }}>
         <QuizEngine category={category.key} accentColor={category.color} onComplete={onQuizComplete} />
       </div>
@@ -339,22 +394,27 @@ export default function Home() {
   // ─── REVEAL ───────────────────────────────────────────────────────────────
   if (stage === 'reveal' && result) return (
     <div style={{ minHeight: '100vh', background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
-      <div style={{ position: 'absolute', inset: 0, opacity: revealStep>=1?1:0, transform: revealStep>=1?'scale(1)':'scale(1.06)', transition: 'opacity 2.2s ease, transform 3s ease' }}>
+      <div style={{ position: 'absolute', inset: 0, opacity: revealStep>=1?1:0, transform: revealStep>=1?'scale(1)':'scale(1.08)', transition: 'opacity 2.4s ease, transform 3.2s ease' }}>
         {category.key === 'world'
           ? <VideoScene sceneId={result.id} onReady={() => setMediaReady(true)} />
           : <ImageScene archetypeId={result.id} onReady={() => setMediaReady(true)} />
         }
-        <LoadingOverlay show={!mediaReady} emoji={category.emoji} label={`Loading ${category.label.toLowerCase()}`} color={category.color} />
+        <LoadingOverlay show={!mediaReady} emoji={category.emoji} label={`Loading your ${category.label.toLowerCase()}`} color={category.color} />
       </div>
-      <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.55)', opacity: revealStep>=2?0:1, transition: 'opacity 1.8s ease', zIndex: 1 }} />
-      <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 50%, transparent 20%, rgba(0,0,0,0.7) 100%)', zIndex: 2 }} />
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, transparent 28%, transparent 60%, rgba(0,0,0,0.88) 100%)', zIndex: 3 }} />
-      <div style={{ position: 'relative', zIndex: 4, textAlign: 'center', padding: '2rem', maxWidth: '520px' }}>
-        <div style={{ fontSize: '10px', letterSpacing: '0.28em', color: 'rgba(200,184,248,0.9)', textTransform: 'uppercase', marginBottom: '1.2rem', opacity: revealStep>=3?1:0, transform: revealStep>=3?'translateY(0)':'translateY(12px)', transition: 'opacity 1s ease, transform 1s ease' }}>{category.label.toLowerCase()}</div>
-        <h1 style={{ fontSize: 'clamp(2.4rem,8vw,5rem)', fontFamily: 'Playfair Display, serif', fontWeight: 400, color: '#fff', textShadow: `0 0 60px ${result.color}66, 0 2px 40px rgba(0,0,0,0.9)`, marginBottom: '0.6rem', lineHeight: 1.1, opacity: revealStep>=4?1:0, transform: revealStep>=4?'translateY(0)':'translateY(20px)', transition: 'opacity 1.2s ease, transform 1.4s cubic-bezier(0.16,1,0.3,1)' }}>{result.name}</h1>
-        <div style={{ fontSize: '1rem', fontWeight: 500, color: result.color, marginBottom: '0.8rem', opacity: revealStep>=4?1:0, transition: 'opacity 1s ease 0.3s', fontStyle: 'italic' }}>{result.title}</div>
-        <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.92)', fontStyle: 'italic', maxWidth: '400px', margin: '0 auto', lineHeight: 1.75, textShadow: '0 2px 20px rgba(0,0,0,0.9)', opacity: revealStep>=5?1:0, transform: revealStep>=5?'translateY(0)':'translateY(12px)', transition: 'opacity 1s ease 0.1s, transform 1s ease 0.1s' }}>{result.tagline}</p>
-        <div style={{ marginTop: '2.5rem', fontSize: '0.78rem', letterSpacing: '0.12em', color: 'rgba(255,255,255,0.58)', textTransform: 'uppercase', opacity: revealStep>=6?1:0, transition: 'opacity 1.2s ease' }}>Opening your world…</div>
+      {/* Veil lifts */}
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.6)', opacity: revealStep>=2?0:1, transition: 'opacity 2s ease', zIndex: 1 }} />
+      {/* Persistent vignette */}
+      <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 50%, transparent 18%, rgba(0,0,0,0.65) 100%)', zIndex: 2 }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, transparent 25%, transparent 58%, rgba(0,0,0,0.9) 100%)', zIndex: 3 }} />
+      {/* Color glow from archetype */}
+      <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(ellipse at 50% 60%, ${result.color}15 0%, transparent 55%)`, zIndex: 2, opacity: revealStep>=4?1:0, transition: 'opacity 2s ease' }} />
+
+      <div style={{ position: 'relative', zIndex: 4, textAlign: 'center', padding: '2rem', maxWidth: '540px' }}>
+        <div style={{ fontSize: '10px', letterSpacing: '0.3em', color: result.color, textTransform: 'uppercase', marginBottom: '1.4rem', opacity: revealStep>=3?1:0, transform: revealStep>=3?'translateY(0)':'translateY(14px)', transition: 'opacity 1s ease, transform 1s ease', fontWeight: 500 }}>{category.label}</div>
+        <h1 style={{ fontSize: 'clamp(2.6rem,9vw,5.5rem)', fontFamily: 'Playfair Display, serif', fontWeight: 400, color: '#fff', textShadow: `0 0 80px ${result.color}66, 0 0 160px ${result.color}22, 0 4px 40px rgba(0,0,0,0.9)`, marginBottom: '0.7rem', lineHeight: 1.08, opacity: revealStep>=4?1:0, transform: revealStep>=4?'translateY(0)':'translateY(22px)', transition: 'opacity 1.3s ease, transform 1.5s cubic-bezier(0.16,1,0.3,1)' }}>{result.name}</h1>
+        <div style={{ fontSize: '1.05rem', fontWeight: 500, color: result.color, marginBottom: '0.9rem', opacity: revealStep>=4?1:0, transition: 'opacity 1s ease 0.35s', fontStyle: 'italic', textShadow: `0 0 40px ${result.color}44` }}>{result.title}</div>
+        <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.9)', fontStyle: 'italic', maxWidth: '420px', margin: '0 auto', lineHeight: 1.8, textShadow: '0 2px 20px rgba(0,0,0,0.9)', opacity: revealStep>=5?1:0, transform: revealStep>=5?'translateY(0)':'translateY(14px)', transition: 'opacity 1s ease 0.15s, transform 1s ease 0.15s' }}>{result.tagline}</p>
+        <div style={{ marginTop: '2.8rem', fontSize: '0.75rem', letterSpacing: '0.16em', color: 'rgba(255,255,255,0.52)', textTransform: 'uppercase', opacity: revealStep>=6?1:0, transition: 'opacity 1.4s ease', animation: revealStep>=6 ? 'loadBreath 2s ease-in-out infinite' : 'none' }}>Opening your world…</div>
       </div>
     </div>
   )
@@ -362,9 +422,13 @@ export default function Home() {
   // ─── PLACE ────────────────────────────────────────────────────────────────
   if (stage === 'place' && result) {
     const shareUrl = `https://yourone.world/place/${code}?cat=${category.key}`
+    const otherCats = CATEGORIES.filter(c => c.key !== category.key)
+
     return (
       <div style={{ minHeight: '100vh', background: '#000', position: 'relative' }}>
         <ShareCard result={result} code={code} category={category.label} onReady={setShareDataUrl} />
+
+        {/* Background media */}
         <div style={{ position: 'fixed', inset: 0 }}>
           {category.key === 'world'
             ? <VideoScene sceneId={result.id} onReady={() => setMediaReady(true)} />
@@ -372,63 +436,114 @@ export default function Home() {
           }
           <LoadingOverlay show={!mediaReady} emoji={category.emoji} label={`Loading ${category.label.toLowerCase()}`} color={category.color} />
         </div>
-        <div style={{ position: 'fixed', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, transparent 30%, rgba(0,0,0,0.7) 55%, rgba(0,0,0,0.97) 100%)', zIndex: 1 }} />
 
-        <div style={{ position: 'relative', zIndex: 2, paddingTop: 'clamp(42vh, 50vh, 55vh)', padding: 'clamp(42vh,50vh,55vh) clamp(1.5rem,4vw,3rem) clamp(1.5rem,4vw,3rem)', maxWidth: '640px' }}>
-          <div style={{ marginBottom: '1.5rem', animation: 'fadeIn 1s ease forwards' }}>
-            <div style={{ fontSize: '10px', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.58)', textTransform: 'uppercase', marginBottom: '0.4rem' }}>{category.label}</div>
-            <h1 style={{ fontSize: 'clamp(1.8rem,5vw,3rem)', fontFamily: 'Playfair Display, serif', fontWeight: 400, color: '#fff', lineHeight: 1.15, marginBottom: '0.3rem' }}>{result.name}</h1>
-            <div style={{ fontSize: '0.95rem', color: result.color, fontStyle: 'italic', marginBottom: '0.8rem', fontWeight: 500 }}>{result.title}</div>
-            <p style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.78)', lineHeight: 1.7, marginBottom: '1.4rem', fontStyle: 'italic' }}>{result.tagline}</p>
+        {/* Gradient overlays */}
+        <div style={{ position: 'fixed', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.22) 0%, transparent 28%, rgba(0,0,0,0.65) 52%, rgba(0,0,0,0.97) 100%)', zIndex: 1 }} />
+        <div style={{ position: 'fixed', inset: 0, background: `radial-gradient(ellipse at 50% 80%, ${result.color}0c 0%, transparent 55%)`, zIndex: 1 }} />
 
-            {/* Full description — the premium content */}
-            <div style={{ borderLeft: `2px solid ${result.color}55`, paddingLeft: '1rem', marginBottom: '1.4rem' }}>
-              <p style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.88)', lineHeight: 1.95, letterSpacing: '0.01em' }}>{result.description}</p>
+        {/* Scrollable content */}
+        <div style={{ position: 'relative', zIndex: 2, padding: 'clamp(44vh,52vh,58vh) clamp(1.4rem,4vw,2.8rem) clamp(1.5rem,4vw,3rem)', maxWidth: '660px' }}>
+          <div style={{ animation: 'fadeIn 1s ease forwards' }}>
+
+            {/* Identity header */}
+            <div style={{ marginBottom: '1.8rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem' }}>
+                <span style={{ fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.18em', color: `${result.color}99`, textTransform: 'uppercase' }}>{category.label}</span>
+                <span style={{ width: '1px', height: '10px', background: `${result.color}40` }} />
+                <span style={{ fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.18em', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase' }}>{code}</span>
+              </div>
+              <h1 style={{ fontSize: 'clamp(2rem,6vw,3.2rem)', fontFamily: 'Playfair Display, serif', fontWeight: 400, color: '#fff', lineHeight: 1.12, marginBottom: '0.4rem', textShadow: `0 0 60px ${result.color}22` }}>{result.name}</h1>
+              <div style={{ fontSize: '1rem', color: result.color, fontStyle: 'italic', marginBottom: '0.9rem', fontWeight: 500 }}>{result.title}</div>
+              <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.75)', lineHeight: 1.75, fontStyle: 'italic', borderLeft: `2px solid ${result.color}44`, paddingLeft: '0.8rem' }}>{result.tagline}</p>
+            </div>
+
+            {/* Description — premium content */}
+            <div style={{ background: 'rgba(0,0,0,0.42)', backdropFilter: 'blur(16px)', border: `0.5px solid ${result.color}20`, borderRadius: '16px', padding: '1.4rem 1.5rem', marginBottom: '1rem' }}>
+              <div style={{ fontSize: '9px', letterSpacing: '0.18em', color: `${result.color}70`, textTransform: 'uppercase', marginBottom: '1rem', fontWeight: 600 }}>Your revelation</div>
+              <p style={{ fontSize: '0.92rem', color: 'rgba(255,255,255,0.9)', lineHeight: 2, letterSpacing: '0.01em' }}>{result.description}</p>
             </div>
 
             {/* Why you got this */}
-            <div style={{ background: 'rgba(0,0,0,0.45)', border: `0.5px solid ${result.color}22`, borderRadius: '14px', padding: '1rem 1.2rem', marginBottom: '1rem', backdropFilter: 'blur(12px)' }}>
-              <div style={{ fontSize: '10px', letterSpacing: '0.14em', color: `${result.color}88`, textTransform: 'uppercase', marginBottom: '0.8rem' }}>Why your answers pointed here</div>
-              {result.why.map((w, i) => (
-                <div key={i} style={{ display: 'flex', gap: '0.7rem', alignItems: 'flex-start', marginBottom: i < result.why.length-1 ? '0.55rem' : 0 }}>
-                  <span style={{ color: result.color, fontSize: '0.65rem', marginTop: '4px', flexShrink: 0 }}>◆</span>
-                  <span style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.82)', lineHeight: 1.6 }}>{w}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Code */}
-            <div style={{ background: 'rgba(0,0,0,0.55)', border: `0.5px solid ${result.color}22`, borderRadius: '14px', padding: '0.9rem 1.2rem', marginBottom: '0.75rem', backdropFilter: 'blur(14px)' }}>
-              <div style={{ fontSize: '9px', letterSpacing: '0.16em', color: `${result.color}88`, textTransform: 'uppercase', marginBottom: '0.4rem' }}>Your code — return anytime</div>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
-                <span style={{ fontSize: '1.3rem', letterSpacing: '0.2em', fontWeight: 700, color: '#fff', fontFamily: 'monospace' }}>{code}</span>
-                <button onClick={() => copy(code,'code')} style={{ background: `${result.color}18`, border: `0.5px solid ${result.color}44`, borderRadius: '8px', padding: '0.4rem 0.9rem', color: result.color, cursor: 'pointer', fontSize: '0.75rem', fontWeight: 500, whiteSpace: 'nowrap', flexShrink: 0, transition: 'all 0.2s' }}>{copied==='code'?'✓ Copied':'Copy code'}</button>
+            <div style={{ background: 'rgba(0,0,0,0.38)', backdropFilter: 'blur(12px)', border: `0.5px solid rgba(255,255,255,0.07)`, borderRadius: '16px', padding: '1.2rem 1.4rem', marginBottom: '1rem' }}>
+              <div style={{ fontSize: '9px', letterSpacing: '0.18em', color: `${result.color}70`, textTransform: 'uppercase', marginBottom: '0.9rem', fontWeight: 600 }}>Why your answers pointed here</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+                {result.why.map((w, i) => (
+                  <div key={i} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+                    <span style={{ width: '20px', height: '20px', borderRadius: '6px', background: `${result.color}18`, border: `0.5px solid ${result.color}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>
+                      <span style={{ color: result.color, fontSize: '0.55rem', fontWeight: 700 }}>{String.fromCharCode(65+i)}</span>
+                    </span>
+                    <span style={{ fontSize: '0.84rem', color: 'rgba(255,255,255,0.84)', lineHeight: 1.65 }}>{w}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
-            {/* Share row */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '7px', marginBottom: '0.75rem' }}>
-              <button onClick={() => copy(shareUrl,'link')} style={{ background: 'rgba(255,255,255,0.05)', border: '0.5px solid rgba(255,255,255,0.14)', borderRadius: '40px', padding: '0.6rem 0.3rem', color: 'rgba(255,255,255,0.75)', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 500, transition: 'all 0.2s' }}>{copied==='link'?'✓':'📋'} Link</button>
-              <a href={`https://wa.me/?text=${encodeURIComponent(result.shareCaption)}`} target="_blank" rel="noreferrer" style={{ background: 'rgba(37,211,102,0.08)', border: '0.5px solid rgba(37,211,102,0.2)', borderRadius: '40px', padding: '0.6rem 0.3rem', color: 'rgba(255,255,255,0.75)', fontSize: '0.7rem', fontWeight: 500, textDecoration: 'none', textAlign: 'center', display: 'block' }}>💬 WhatsApp</a>
-              <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(result.shareCaption)}`} target="_blank" rel="noreferrer" style={{ background: 'rgba(255,255,255,0.05)', border: '0.5px solid rgba(255,255,255,0.14)', borderRadius: '40px', padding: '0.6rem 0.3rem', color: 'rgba(255,255,255,0.75)', fontSize: '0.7rem', fontWeight: 500, textDecoration: 'none', textAlign: 'center', display: 'block' }}>𝕏 Post</a>
-              <button onClick={() => shareDataUrl && triggerDownload(shareDataUrl, `yourone-${code}.png`)} disabled={!shareDataUrl} style={{ background: 'rgba(255,255,255,0.05)', border: '0.5px solid rgba(255,255,255,0.14)', borderRadius: '40px', padding: '0.6rem 0.3rem', color: 'rgba(255,255,255,0.75)', cursor: shareDataUrl?'pointer':'default', fontSize: '0.7rem', fontWeight: 500, opacity: shareDataUrl?1:0.5, transition: 'all 0.2s' }}>🖼 Card</button>
+            {/* Code + share */}
+            <div style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(14px)', border: `0.5px solid ${result.color}20`, borderRadius: '16px', padding: '1rem 1.3rem', marginBottom: '0.75rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', marginBottom: '0.85rem' }}>
+                <div>
+                  <div style={{ fontSize: '8px', letterSpacing: '0.18em', color: `${result.color}66`, textTransform: 'uppercase', marginBottom: '0.3rem' }}>Your code — return anytime</div>
+                  <span style={{ fontSize: '1.4rem', letterSpacing: '0.22em', fontWeight: 700, color: '#fff', fontFamily: 'monospace' }}>{code}</span>
+                </div>
+                <button onClick={() => copy(code,'code')}
+                  style={{ background: `${result.color}18`, border: `0.5px solid ${result.color}44`, borderRadius: '9px', padding: '0.45rem 1rem', color: result.color, cursor: 'pointer', fontSize: '0.75rem', fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0, transition: 'all 0.2s' }}>
+                  {copied==='code' ? '✓ Copied' : 'Copy'}
+                </button>
+              </div>
+
+              {/* Share buttons */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '6px' }}>
+                <button onClick={() => copy(shareUrl,'link')}
+                  style={{ background: 'rgba(255,255,255,0.05)', border: '0.5px solid rgba(255,255,255,0.12)', borderRadius: '10px', padding: '0.55rem 0.2rem', color: 'rgba(255,255,255,0.78)', cursor: 'pointer', fontSize: '0.67rem', fontWeight: 500, transition: 'all 0.2s' }}>
+                  {copied==='link'?'✓':'📋'} Link
+                </button>
+                <a href={`https://wa.me/?text=${encodeURIComponent(result.shareCaption)}`} target="_blank" rel="noreferrer"
+                  style={{ background: 'rgba(37,211,102,0.08)', border: '0.5px solid rgba(37,211,102,0.22)', borderRadius: '10px', padding: '0.55rem 0.2rem', color: 'rgba(255,255,255,0.78)', fontSize: '0.67rem', fontWeight: 500, textDecoration: 'none', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  💬 WA
+                </a>
+                <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(result.shareCaption)}`} target="_blank" rel="noreferrer"
+                  style={{ background: 'rgba(255,255,255,0.05)', border: '0.5px solid rgba(255,255,255,0.12)', borderRadius: '10px', padding: '0.55rem 0.2rem', color: 'rgba(255,255,255,0.78)', fontSize: '0.67rem', fontWeight: 500, textDecoration: 'none', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  𝕏 Post
+                </a>
+                <button onClick={() => shareDataUrl && triggerDownload(shareDataUrl, `yourone-${code}.png`)} disabled={!shareDataUrl}
+                  style={{ background: 'rgba(255,255,255,0.05)', border: '0.5px solid rgba(255,255,255,0.12)', borderRadius: '10px', padding: '0.55rem 0.2rem', color: 'rgba(255,255,255,0.78)', cursor: shareDataUrl?'pointer':'default', fontSize: '0.67rem', fontWeight: 500, opacity: shareDataUrl?1:0.45, transition: 'all 0.2s' }}>
+                  🖼 Card
+                </button>
+              </div>
             </div>
 
-            {/* Challenge */}
+            {/* Challenge CTA */}
             <a href={`https://wa.me/?text=${encodeURIComponent(`I found my ${category.label}. Bet yours is completely different. ${category.price} → yourone.world`)}`} target="_blank" rel="noreferrer"
-              style={{ display: 'block', textAlign: 'center', background: `${result.color}14`, border: `0.5px solid ${result.color}30`, borderRadius: '50px', padding: '0.72rem 1rem', color: result.color, fontSize: '0.8rem', fontWeight: 500, textDecoration: 'none', marginBottom: '0.55rem' }}>
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', textAlign: 'center', background: `${result.color}12`, border: `0.5px solid ${result.color}2a`, borderRadius: '50px', padding: '0.72rem 1rem', color: result.color, fontSize: '0.8rem', fontWeight: 500, textDecoration: 'none', marginBottom: '0.6rem', transition: 'all 0.2s' }}>
               Challenge a friend — bet yours is different →
             </a>
 
-            {/* Home button */}
+            {/* Cross-sell strip */}
+            <div style={{ background: 'rgba(0,0,0,0.3)', border: '0.5px solid rgba(255,255,255,0.06)', borderRadius: '16px', padding: '1rem 1.2rem', marginBottom: '0.7rem' }}>
+              <div style={{ fontSize: '9px', letterSpacing: '0.16em', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', marginBottom: '0.7rem' }}>Explore other dimensions</div>
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                {otherCats.map(c => (
+                  <button key={c.key} onClick={() => { setCategory(c); setResult(null); setCode(''); setCheckoutOpened(false); setMediaReady(false); window.history.replaceState({}, '', '/'); setStage('preview') }}
+                    style={{ background: `${c.color}12`, border: `0.5px solid ${c.color}30`, borderRadius: '50px', padding: '0.38rem 0.85rem', color: c.color, cursor: 'pointer', fontSize: '0.72rem', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.35rem', transition: 'all 0.2s' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background=`${c.color}24` }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background=`${c.color}12` }}>
+                    {c.emoji} {c.label} <span style={{ opacity: 0.6 }}>{c.price}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Back to home */}
             <button onClick={() => { setStage('home'); setResult(null); setCode(''); window.history.replaceState({}, '', '/') }}
-              style={{ display: 'block', width: '100%', background: 'rgba(255,255,255,0.04)', border: '0.5px solid rgba(255,255,255,0.1)', borderRadius: '50px', padding: '0.65rem', color: 'rgba(255,255,255,0.38)', cursor: 'pointer', fontSize: '0.75rem', marginBottom: '1rem', transition: 'all 0.2s' }}
-              onMouseEnter={e => { const b=e.currentTarget as HTMLButtonElement; b.style.background='rgba(255,255,255,0.09)'; b.style.color='rgba(255,255,255,0.65)' }}
-              onMouseLeave={e => { const b=e.currentTarget as HTMLButtonElement; b.style.background='rgba(255,255,255,0.04)'; b.style.color='rgba(255,255,255,0.38)' }}>
-              ← Try another category
+              style={{ display: 'block', width: '100%', background: 'rgba(255,255,255,0.03)', border: '0.5px solid rgba(255,255,255,0.08)', borderRadius: '50px', padding: '0.62rem', color: 'rgba(255,255,255,0.38)', cursor: 'pointer', fontSize: '0.72rem', marginBottom: '1.2rem', transition: 'all 0.2s' }}
+              onMouseEnter={e => { const b=e.currentTarget as HTMLButtonElement; b.style.color='rgba(255,255,255,0.65)'; b.style.background='rgba(255,255,255,0.07)' }}
+              onMouseLeave={e => { const b=e.currentTarget as HTMLButtonElement; b.style.color='rgba(255,255,255,0.38)'; b.style.background='rgba(255,255,255,0.03)' }}>
+              ← Back to all worlds
             </button>
 
-            <p style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.35)', textAlign: 'center', paddingBottom: '0.5rem' }}>a <strong style={{ color: 'rgba(255,255,255,0.55)' }}>Filmos</strong> product · yourone.world</p>
+            <p style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.28)', textAlign: 'center', paddingBottom: '0.5rem' }}>
+              a <strong style={{ color: 'rgba(255,255,255,0.5)' }}>Filmos</strong> product · yourone.world
+            </p>
           </div>
         </div>
       </div>

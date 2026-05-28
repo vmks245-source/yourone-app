@@ -46,17 +46,20 @@ export default function AmbientReel() {
   }, [])
 
   const base: React.CSSProperties = {
-    position: 'absolute', inset: 0, width: '100%', height: '100%',
-    objectFit: 'cover', transition: `opacity ${FADE_DURATION}ms ease`,
+    position: 'absolute', inset: '-4%', width: '108%', height: '108%',
+    objectFit: 'cover',
+    transition: `opacity ${FADE_DURATION}ms cubic-bezier(0.45,0,0.55,1)`,
+    animation: 'kenBurns 12s ease-in-out infinite alternate',
   }
 
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 0, background: '#060610' }}>
+    <div style={{ position: 'fixed', inset: 0, zIndex: 0, background: '#04040c', overflow: 'hidden' }}>
       <video ref={vidA} autoPlay loop muted playsInline preload="auto" style={{ ...base, opacity: opacityA }} />
-      <video ref={vidB} autoPlay loop muted playsInline preload="auto" style={{ ...base, opacity: opacityB }} />
-      <div style={{ position: 'absolute', inset: 0, background: 'rgba(4,4,14,0.62)', zIndex: 1 }} />
-      <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 50%, transparent 28%, rgba(0,0,0,0.62) 100%)', zIndex: 2 }} />
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.38) 0%, transparent 22%, transparent 72%, rgba(0,0,0,0.55) 100%)', zIndex: 3 }} />
+      <video ref={vidB} autoPlay loop muted playsInline preload="auto" style={{ ...base, opacity: opacityB, animationDelay: '-6s' }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(4,4,14,0.55)', zIndex: 1 }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 50%, transparent 20%, rgba(0,0,0,0.55) 75%, rgba(0,0,0,0.85) 100%)', zIndex: 2 }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, transparent 18%, transparent 68%, rgba(0,0,0,0.72) 100%)', zIndex: 3 }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(0,0,0,0.18) 0%, transparent 12%, transparent 88%, rgba(0,0,0,0.18) 100%)', zIndex: 3 }} />
     </div>
   )
 }

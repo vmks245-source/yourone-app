@@ -42,7 +42,7 @@ export default function TermsPage() {
 
         <Section title="4. Purchases and Payments">
           <p style={{ marginBottom: '0.75rem' }}>
-            All purchases on the Service are processed by Paddle.com Market Limited ("Paddle"), our authorised reseller and Merchant of Record. Paddle handles all payment processing, tax compliance, and invoicing. Your purchase is subject to Paddle&apos;s terms and conditions in addition to these terms.
+            All purchases on the Service are processed by Gumroad.com Market Limited ("Gumroad"), our authorised reseller and Merchant of Record. Gumroad handles all payment processing, tax compliance, and invoicing. Your purchase is subject to Gumroad&apos;s terms and conditions in addition to these terms.
           </p>
           <p>
             Prices are displayed in USD. Applicable taxes may be added at checkout depending on your location. You agree to pay all charges incurred by you or any users of your account at the prices in effect when such charges are incurred.
