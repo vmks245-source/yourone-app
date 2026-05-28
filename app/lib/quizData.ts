@@ -198,7 +198,29 @@ export const ANIMAL_QUESTIONS: QuizQuestion[] = [
     ],
   },
   {
-    id: 8, type: 'text',
+    id: 8, type: 'choice',
+    text: 'When something breaks you open, you…',
+    sub: 'The honest pattern. Not the composed version.',
+    options: [
+      { value: 'vanish_heal', label: 'Disappear until you\'re whole again', emoji: '🌑', desc: 'Solitude repairs. Contact only postpones it.' },
+      { value: 'move_through', label: 'Let it move through you fully', emoji: '🌊', desc: 'Feel every edge of it until it passes.' },
+      { value: 'protect_others', label: 'Make sure no one else feels it', emoji: '🐻', desc: 'Your pain stays yours. Not theirs.' },
+      { value: 'redirect', label: 'Redirect it into something', emoji: '🦊', desc: 'Pain is energy. Transform it immediately.' },
+    ],
+  },
+  {
+    id: 9, type: 'choice',
+    text: 'What you do when no one is watching reveals…',
+    sub: 'The truest self is the one that nobody performs.',
+    options: [
+      { value: 'always_building', label: 'You are always building something', emoji: '🦅', desc: 'Arranging, creating, constructing — always.' },
+      { value: 'watching_closely', label: 'You watch everything closely', emoji: '🦉', desc: 'Reading the world constantly when the pressure is off.' },
+      { value: 'deeper_rest', label: 'You rest harder than you let on', emoji: '🐻', desc: 'Conservation. You are built for deep recovery.' },
+      { value: 'more_playful', label: 'You are lighter than you show', emoji: '🐬', desc: 'Alone, the mask comes off. You are easier than they know.' },
+    ],
+  },
+  {
+    id: 10, type: 'text',
     text: 'One word. In your most honest moment, you are…',
     sub: 'The word you would use if no one was listening.',
     placeholder: 'Type your word…',
@@ -489,7 +511,7 @@ export function mapAnimalAnswers(a: A): string {
   const s: Record<string, number> = { wolf:0, eagle:0, fox:0, bear:0, dolphin:0, lion:0, owl:0, deer:0, tiger:0, octopus:0, panther:0, elephant:0 }
   const add = (k: string, n: number) => { s[k] += n }
 
-  const q1=a[1],q2=a[2],q3=a[3],q4=a[4],slider=Number(a[5]??50),q6=a[6],q7=a[7]
+  const q1=a[1],q2=a[2],q3=a[3],q4=a[4],slider=Number(a[5]??50),q6=a[6],q7=a[7],q8=a[8],q9=a[9]
 
   if (q1==='face')   { add('lion',2); add('tiger',2); add('bear',1) }
   if (q1==='vanish') { add('panther',2); add('fox',2); add('octopus',1) }
@@ -525,6 +547,16 @@ export function mapAnimalAnswers(a: A): string {
   if (q7==='nature') { add('deer',2); add('bear',1) }
   if (q7==='work')   { add('eagle',2); add('octopus',1) }
   if (q7==='others') { add('dolphin',2); add('wolf',1); add('elephant',1) }
+
+  if (q8==='vanish_heal')    { add('panther',2); add('tiger',1); add('owl',1) }
+  if (q8==='move_through')   { add('wolf',2); add('dolphin',1); add('deer',1) }
+  if (q8==='protect_others') { add('bear',2); add('elephant',2) }
+  if (q8==='redirect')       { add('fox',2); add('octopus',2); add('eagle',1) }
+
+  if (q9==='always_building')  { add('eagle',2); add('octopus',2) }
+  if (q9==='watching_closely') { add('owl',2); add('panther',1); add('fox',1) }
+  if (q9==='deeper_rest')      { add('bear',2); add('elephant',1) }
+  if (q9==='more_playful')     { add('dolphin',2); add('fox',1); add('deer',1) }
 
   return topScore(s)
 }

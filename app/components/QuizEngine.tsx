@@ -54,6 +54,19 @@ export default function QuizEngine({ category, accentColor = '#c8b8f8', onComple
     if (q?.type === 'text' && inputRef.current) inputRef.current.focus()
   }, [current, q?.type])
 
+  useEffect(() => {
+    if (q?.type !== 'choice' || !q.options) return
+    const handler = (e: KeyboardEvent) => {
+      if ((e.target as HTMLElement).tagName === 'INPUT') return
+      const idx = parseInt(e.key) - 1
+      if (idx >= 0 && idx < (q.options?.length ?? 0) && !transitioning) {
+        advance(q.options![idx].value)
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [q, advance, transitioning])
+
   if (!q) return null
 
   const frame: React.CSSProperties = {
@@ -64,9 +77,11 @@ export default function QuizEngine({ category, accentColor = '#c8b8f8', onComple
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem', position: 'relative' }}>
+      {/* Ambient category color */}
+      <div style={{ position: 'fixed', inset: 0, background: `radial-gradient(ellipse at 50% 70%, ${accentColor}14 0%, transparent 68%)`, pointerEvents: 'none', zIndex: 0 }} />
       {/* Progress */}
       <div style={{ position: 'fixed', top: 0, left: 0, right: 0, height: '2px', background: 'rgba(255,255,255,0.06)', zIndex: 10 }}>
-        <div style={{ height: '100%', background: `linear-gradient(90deg, ${accentColor}, #f8c8a8)`, width: `${progress}%`, transition: 'width 0.6s cubic-bezier(0.16,1,0.3,1)' }} />
+        <div style={{ height: '100%', background: `linear-gradient(90deg, ${accentColor}, ${accentColor}88)`, width: `${progress}%`, transition: 'width 0.6s cubic-bezier(0.16,1,0.3,1)' }} />
       </div>
 
       {/* Step dots */}
@@ -83,8 +98,9 @@ export default function QuizEngine({ category, accentColor = '#c8b8f8', onComple
       {/* Card */}
       <div style={{ maxWidth: '540px', width: '100%', ...frame }}>
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-          <div style={{ fontSize: '11px', letterSpacing: '0.18em', color: accentColor, textTransform: 'uppercase', marginBottom: '1rem', opacity: 0.7 }}>
-            {q.type === 'text' ? 'essence' : q.type === 'slider' ? 'feel' : 'intuition'}
+          <div style={{ fontSize: '11px', letterSpacing: '0.18em', color: accentColor, textTransform: 'uppercase', marginBottom: '1rem', opacity: 0.7, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem' }}>
+            <span>{q.type === 'text' ? 'essence' : q.type === 'slider' ? 'feel' : 'intuition'}</span>
+            {q.type === 'choice' && <span style={{ opacity: 0.4, fontSize: '9px', letterSpacing: '0.1em', textTransform: 'lowercase', fontStyle: 'italic' }}>press 1–4</span>}
           </div>
           <h2 style={{ fontSize: 'clamp(1.4rem,4vw,2rem)', fontWeight: 400, fontFamily: 'Playfair Display, serif', lineHeight: 1.25, marginBottom: '0.8rem', color: 'var(--text)' }}>{q.text}</h2>
           <p style={{ fontSize: '0.88rem', color: 'var(--muted)', fontStyle: 'italic' }}>{q.sub}</p>
@@ -93,7 +109,7 @@ export default function QuizEngine({ category, accentColor = '#c8b8f8', onComple
         {/* Choice */}
         {q.type === 'choice' && q.options && (
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-            {q.options.map(opt => {
+            {q.options.map((opt, index) => {
               const isSel = selected === opt.value
               return (
                 <button key={opt.value} onClick={e => advance(opt.value, e)}
@@ -103,6 +119,9 @@ export default function QuizEngine({ category, accentColor = '#c8b8f8', onComple
                   {isSel && ripple && (
                     <span style={{ position: 'absolute', borderRadius: '50%', background: `${accentColor}30`, width: '200px', height: '200px', top: ripple.y - 100, left: ripple.x - 100, animation: 'rippleOut 0.5s ease forwards', pointerEvents: 'none' }} />
                   )}
+                  <div style={{ position: 'absolute', top: '0.55rem', right: '0.55rem', width: '17px', height: '17px', borderRadius: '5px', background: isSel ? `${accentColor}44` : 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.6rem', color: isSel ? accentColor : 'rgba(255,255,255,0.2)', fontWeight: 600 }}>
+                    {index + 1}
+                  </div>
                   <div style={{ fontSize: '1.8rem', marginBottom: '0.55rem' }}>{opt.emoji}</div>
                   <div style={{ fontSize: '0.92rem', fontWeight: 500, marginBottom: '0.3rem' }}>{opt.label}</div>
                   <div style={{ fontSize: '0.74rem', color: 'var(--muted)', lineHeight: 1.45 }}>{opt.desc}</div>

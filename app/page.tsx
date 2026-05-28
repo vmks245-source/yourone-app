@@ -86,9 +86,6 @@ export default function Home() {
   const [shareDataUrl, setShareDataUrl] = useState<string | null>(null)
   const [mediaReady, setMediaReady] = useState(false)
   const [checkoutOpened, setCheckoutOpened] = useState(false)
-  const [licenseKey, setLicenseKey] = useState('')
-  const [verifying, setVerifying] = useState(false)
-  const [verifyError, setVerifyError] = useState('')
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
   const [btnMag, setBtnMag] = useState({ x: 0, y: 0 })
   const btnRef = useRef<HTMLButtonElement>(null)
@@ -133,22 +130,6 @@ export default function Home() {
     if (url === '#') { setStage('quiz'); return }
     window.open(url, '_blank', 'noopener')
     setCheckoutOpened(true)
-  }
-
-  const verifyLicense = async () => {
-    const key = licenseKey.trim()
-    if (!key) { setVerifyError('Please enter your license key'); return }
-    setVerifying(true); setVerifyError('')
-    try {
-      const res = await fetch('/api/verify-license', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ licenseKey: key, category: category.key }),
-      })
-      const data: { success: boolean; error?: string } = await res.json()
-      if (data.success) { setStage('quiz') } else { setVerifyError(data.error || 'Invalid license key') }
-    } catch { setVerifyError('Network error — please try again') }
-    finally { setVerifying(false) }
   }
 
   const onQuizComplete = (answers: Record<number, string | number>) => {
@@ -202,13 +183,14 @@ export default function Home() {
           <h1 style={{ fontSize: 'clamp(2.8rem,9vw,5.5rem)', fontFamily: 'Playfair Display, serif', fontWeight: 400, lineHeight: 1.05, color: 'var(--text)', textShadow: '0 0 80px rgba(200,184,248,0.18)', marginBottom: '1.2rem' }}>
             Discover who<br /><em style={{ color: 'rgba(200,184,248,0.92)' }}>you really are</em>
           </h1>
-          <p style={{ fontSize: 'clamp(0.9rem,2vw,1.05rem)', color: 'var(--muted)', maxWidth: '380px', margin: '0 auto', lineHeight: 1.75 }}>
-            Answer 10 questions. Receive a revelation. You will not know what you get until it is revealed.
+          <p style={{ fontSize: 'clamp(0.9rem,2vw,1.05rem)', color: 'var(--muted)', maxWidth: '400px', margin: '0 auto', lineHeight: 1.75 }}>
+            Answer 10 questions. Receive a revelation built around who you actually are — not who you think you should be.
           </p>
         </div>
 
-        <div className="fade-in-delay" style={{ marginBottom: '2.5rem', fontSize: '0.78rem', color: 'rgba(200,184,248,0.5)', letterSpacing: '0.08em' }}>
-          ✦ {counter.toLocaleString()} discoveries made
+        <div className="fade-in-delay" style={{ marginBottom: '2.5rem', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
+          <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'rgba(200,184,248,0.7)', animation: 'pulse-slow 2.4s ease infinite', display: 'inline-block', flexShrink: 0 }} />
+          <span style={{ fontSize: '0.78rem', color: 'rgba(200,184,248,0.5)', letterSpacing: '0.08em' }}>{counter.toLocaleString()} discoveries made</span>
         </div>
 
         <div className="fade-in-delay2" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', maxWidth: '540px', width: '100%', marginBottom: '2rem' }}>
@@ -216,10 +198,14 @@ export default function Home() {
             <button key={cat.key} onClick={() => { setCategory(cat); setStage('preview') }} style={btnStyle(cat)}
               onMouseEnter={e => { const b = e.currentTarget as HTMLButtonElement; b.style.background=cat.gradient.replace('0.15','0.28'); b.style.borderColor=cat.color+'88'; b.style.transform='translateY(-2px) scale(1.02)' }}
               onMouseLeave={e => { const b = e.currentTarget as HTMLButtonElement; b.style.background=cat.gradient; b.style.borderColor=cat.color+'44'; b.style.transform='' }}>
-              <div style={{ fontSize: '1.8rem', marginBottom: '0.55rem' }}>{cat.emoji}</div>
-              <div style={{ fontSize: '0.95rem', fontWeight: 600, marginBottom: '0.3rem', color: 'rgba(255,255,255,0.92)' }}>{cat.label}</div>
-              <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.42)', lineHeight: 1.45, marginBottom: '0.8rem' }}>{cat.teaser}</div>
-              <div style={{ fontSize: '1rem', fontWeight: 600, color: cat.color }}>{cat.price}</div>
+              <div style={{ height: '2px', background: `linear-gradient(to right, ${cat.color}cc, transparent)`, marginBottom: '1rem', borderRadius: '1px' }} />
+              <div style={{ fontSize: '2rem', marginBottom: '0.5rem', filter: `drop-shadow(0 0 10px ${cat.color}55)` }}>{cat.emoji}</div>
+              <div style={{ fontSize: '0.95rem', fontWeight: 600, marginBottom: '0.25rem', color: 'rgba(255,255,255,0.92)' }}>{cat.label}</div>
+              <div style={{ fontSize: '0.73rem', color: 'rgba(255,255,255,0.38)', lineHeight: 1.45, marginBottom: '0.9rem' }}>{cat.teaser}</div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: '1rem', fontWeight: 600, color: cat.color }}>{cat.price}</span>
+                <span style={{ fontSize: '0.7rem', color: cat.color, opacity: 0.5 }}>Discover →</span>
+              </div>
             </button>
           ))}
         </div>
@@ -283,12 +269,14 @@ export default function Home() {
     return (
       <div style={{ minHeight: '100vh', background: '#04040c', position: 'relative', overflow: 'hidden' }} onMouseMove={onMouseMove}>
         <AmbientReel /><ParticleCanvas density={20} />
-        <div style={{ position: 'relative', zIndex: 5, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
-          <button onClick={() => { setStage('home'); setCheckoutOpened(false); setLicenseKey(''); setVerifyError('') }} style={{ position: 'fixed', top: '1.5rem', left: '1.5rem', background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', cursor: 'pointer', fontSize: '0.82rem' }}>← Back</button>
+        {/* Category ambient glow */}
+      <div style={{ position: 'fixed', inset: 0, background: `radial-gradient(ellipse at 50% 60%, ${category.color}18 0%, transparent 65%)`, pointerEvents: 'none', zIndex: 1 }} />
+      <div style={{ position: 'relative', zIndex: 5, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+          <button onClick={() => { setStage('home'); setCheckoutOpened(false) }} style={{ position: 'fixed', top: '1.5rem', left: '1.5rem', background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', cursor: 'pointer', fontSize: '0.82rem' }}>← Back</button>
 
           <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
-            <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>{category.emoji}</div>
-            <div style={{ fontSize: '0.75rem', letterSpacing: '0.2em', color: category.color, textTransform: 'uppercase', opacity: 0.8 }}>{category.label}</div>
+            <div style={{ fontSize: '3rem', marginBottom: '0.6rem', filter: `drop-shadow(0 0 20px ${category.color}66)` }}>{category.emoji}</div>
+            <div style={{ fontSize: '0.72rem', letterSpacing: '0.24em', color: category.color, textTransform: 'uppercase', opacity: 0.85 }}>{category.label}</div>
           </div>
 
           <div style={{ maxWidth: '520px', width: '100%', textAlign: 'center', marginBottom: '2.5rem' }}>
@@ -307,7 +295,7 @@ export default function Home() {
               </div>
             )}
             <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.3)', fontStyle: 'italic' }}>
-              Your {category.label.toLowerCase()} is forming. Claim it for {category.price} to continue.
+              Your {category.label.toLowerCase()} is forming. {QUIZ_DATA[category.key].length - 1} more questions reveal it — claim it for {category.price} to continue.
             </p>
           </div>
 
@@ -319,43 +307,18 @@ export default function Home() {
               {`Claim my ${category.label} — ${category.price}`}
             </button>
           ) : (
-            <div style={{ textAlign: 'center', maxWidth: '340px', width: '100%' }}>
-              <div style={{ fontSize: '0.82rem', color: 'var(--muted)', marginBottom: '1.4rem', lineHeight: 1.65 }}>
-                Complete payment in the Gumroad tab, then paste your license key below.
+            <div style={{ textAlign: 'center', maxWidth: '320px' }}>
+              <div style={{ fontSize: '0.82rem', color: 'var(--muted)', marginBottom: '1.2rem', lineHeight: 1.65 }}>
+                Complete payment in the Gumroad tab.<br />Come back here when done.
               </div>
-              <input
-                value={licenseKey}
-                onChange={e => { setLicenseKey(e.target.value.toUpperCase()); setVerifyError('') }}
-                onKeyDown={e => e.key === 'Enter' && verifyLicense()}
-                placeholder="XXXX-XXXX-XXXX-XXXX"
-                style={{
-                  width: '100%', boxSizing: 'border-box',
-                  background: 'rgba(255,255,255,0.05)',
-                  border: `0.5px solid ${verifyError ? 'rgba(255,80,80,0.55)' : `${category.color}44`}`,
-                  borderRadius: '14px', padding: '0.85rem 1rem',
-                  color: 'var(--text)', fontSize: '0.92rem', fontFamily: 'monospace',
-                  letterSpacing: '0.15em', outline: 'none', textAlign: 'center',
-                  marginBottom: '0.75rem',
-                  boxShadow: verifyError ? '0 0 14px rgba(255,80,80,0.18)' : 'none',
-                  transition: 'border-color 0.2s, box-shadow 0.2s',
-                }}
-              />
-              {verifyError && (
-                <div style={{ fontSize: '0.75rem', color: 'rgba(255,90,90,0.85)', marginBottom: '0.75rem' }}>
-                  {verifyError}
-                </div>
-              )}
-              <button onClick={verifyLicense} disabled={verifying}
-                style={{ width: '100%', background: `linear-gradient(135deg, ${category.gradient}, rgba(248,200,168,0.08))`, border: `0.5px solid ${category.color}77`, borderRadius: '50px', padding: '1.05rem 2rem', color: 'var(--text)', cursor: verifying ? 'not-allowed' : 'pointer', fontSize: '1rem', fontWeight: 600, marginBottom: '0.9rem', boxShadow: `0 0 40px ${category.color}33`, opacity: verifying ? 0.7 : 1, transition: 'opacity 0.2s' }}>
-                {verifying ? 'Verifying…' : `✓ Unlock my ${category.label}`}
+              <button onClick={() => setStage('quiz')}
+                style={{ width: '100%', background: `linear-gradient(135deg, ${category.gradient}, rgba(248,200,168,0.08))`, border: `0.5px solid ${category.color}77`, borderRadius: '50px', padding: '1.1rem 2rem', color: 'var(--text)', cursor: 'pointer', fontSize: '1rem', fontWeight: 600, marginBottom: '0.8rem', boxShadow: `0 0 40px ${category.color}33` }}>
+                ✓ I&apos;ve paid — open my {category.label}
               </button>
               <button onClick={startPayment}
                 style={{ background: 'none', border: 'none', color: `${category.color}77`, cursor: 'pointer', fontSize: '0.75rem', textDecoration: 'underline' }}>
                 Gumroad didn&apos;t open? Click here
               </button>
-              <div style={{ marginTop: '0.9rem', fontSize: '0.72rem', color: 'rgba(255,255,255,0.22)', lineHeight: 1.55 }}>
-                License key is in your Gumroad receipt email
-              </div>
             </div>
           )}
         </div>
@@ -400,7 +363,7 @@ export default function Home() {
   if (stage === 'place' && result) {
     const shareUrl = `https://yourone.world/place/${code}?cat=${category.key}`
     return (
-      <div style={{ minHeight: '100vh', background: '#000', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ minHeight: '100vh', background: '#000', position: 'relative' }}>
         <ShareCard result={result} code={code} category={category.label} onReady={setShareDataUrl} />
         <div style={{ position: 'fixed', inset: 0 }}>
           {category.key === 'world'
@@ -409,63 +372,63 @@ export default function Home() {
           }
           <LoadingOverlay show={!mediaReady} emoji={category.emoji} label={`Loading ${category.label.toLowerCase()}`} color={category.color} />
         </div>
-        <div style={{ position: 'fixed', inset: 0, background: 'linear-gradient(to bottom, transparent 28%, rgba(0,0,0,0.94) 100%)', zIndex: 1 }} />
+        <div style={{ position: 'fixed', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, transparent 30%, rgba(0,0,0,0.7) 55%, rgba(0,0,0,0.97) 100%)', zIndex: 1 }} />
 
-        <div style={{ position: 'relative', zIndex: 2, minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: 'clamp(1.5rem,4vw,3rem)', maxWidth: '620px' }}>
+        <div style={{ position: 'relative', zIndex: 2, paddingTop: 'clamp(42vh, 50vh, 55vh)', padding: 'clamp(42vh,50vh,55vh) clamp(1.5rem,4vw,3rem) clamp(1.5rem,4vw,3rem)', maxWidth: '640px' }}>
           <div style={{ marginBottom: '1.5rem', animation: 'fadeIn 1s ease forwards' }}>
             <div style={{ fontSize: '10px', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.32)', textTransform: 'uppercase', marginBottom: '0.4rem' }}>{category.label}</div>
             <h1 style={{ fontSize: 'clamp(1.8rem,5vw,3rem)', fontFamily: 'Playfair Display, serif', fontWeight: 400, color: '#fff', lineHeight: 1.15, marginBottom: '0.3rem' }}>{result.name}</h1>
             <div style={{ fontSize: '0.95rem', color: result.color, fontStyle: 'italic', marginBottom: '0.8rem', fontWeight: 500 }}>{result.title}</div>
-            <p style={{ fontSize: '0.92rem', color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, marginBottom: '1.2rem', fontStyle: 'italic' }}>{result.tagline}</p>
+            <p style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.48)', lineHeight: 1.7, marginBottom: '1.4rem', fontStyle: 'italic' }}>{result.tagline}</p>
+
+            {/* Full description — the premium content */}
+            <div style={{ borderLeft: `2px solid ${result.color}55`, paddingLeft: '1rem', marginBottom: '1.4rem' }}>
+              <p style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.72)', lineHeight: 1.95, letterSpacing: '0.01em' }}>{result.description}</p>
+            </div>
 
             {/* Why you got this */}
-            <div style={{ background: 'rgba(0,0,0,0.5)', border: '0.5px solid rgba(255,255,255,0.1)', borderRadius: '14px', padding: '1rem 1.2rem', marginBottom: '1rem', backdropFilter: 'blur(12px)' }}>
-              <div style={{ fontSize: '10px', letterSpacing: '0.12em', color: 'rgba(255,255,255,0.28)', textTransform: 'uppercase', marginBottom: '0.7rem' }}>Why you got this</div>
+            <div style={{ background: 'rgba(0,0,0,0.45)', border: `0.5px solid ${result.color}22`, borderRadius: '14px', padding: '1rem 1.2rem', marginBottom: '1rem', backdropFilter: 'blur(12px)' }}>
+              <div style={{ fontSize: '10px', letterSpacing: '0.14em', color: `${result.color}88`, textTransform: 'uppercase', marginBottom: '0.8rem' }}>Why your answers pointed here</div>
               {result.why.map((w, i) => (
-                <div key={i} style={{ display: 'flex', gap: '0.6rem', alignItems: 'flex-start', marginBottom: i < result.why.length-1 ? '0.5rem' : 0 }}>
-                  <span style={{ color: result.color, fontSize: '0.7rem', marginTop: '3px', flexShrink: 0 }}>◆</span>
-                  <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.58)', lineHeight: 1.55 }}>{w}</span>
+                <div key={i} style={{ display: 'flex', gap: '0.7rem', alignItems: 'flex-start', marginBottom: i < result.why.length-1 ? '0.55rem' : 0 }}>
+                  <span style={{ color: result.color, fontSize: '0.65rem', marginTop: '4px', flexShrink: 0 }}>◆</span>
+                  <span style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.62)', lineHeight: 1.6 }}>{w}</span>
                 </div>
               ))}
             </div>
 
             {/* Code */}
-            <div style={{ background: 'rgba(0,0,0,0.5)', border: '0.5px solid rgba(255,255,255,0.12)', borderRadius: '14px', padding: '1rem 1.2rem', marginBottom: '0.8rem', backdropFilter: 'blur(12px)' }}>
-              <div style={{ fontSize: '10px', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.3)', marginBottom: '0.5rem' }}>YOUR CODE — RETURN ANYTIME</div>
+            <div style={{ background: 'rgba(0,0,0,0.55)', border: `0.5px solid ${result.color}22`, borderRadius: '14px', padding: '0.9rem 1.2rem', marginBottom: '0.75rem', backdropFilter: 'blur(14px)' }}>
+              <div style={{ fontSize: '9px', letterSpacing: '0.16em', color: `${result.color}88`, textTransform: 'uppercase', marginBottom: '0.4rem' }}>Your code — return anytime</div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
-                <span style={{ fontSize: '1.4rem', letterSpacing: '0.18em', fontWeight: 700, color: '#fff', fontFamily: 'monospace' }}>{code}</span>
-                <button onClick={() => copy(code,'code')} style={{ background: 'rgba(255,255,255,0.08)', border: '0.5px solid rgba(255,255,255,0.18)', borderRadius: '8px', padding: '0.4rem 1rem', color: 'rgba(255,255,255,0.7)', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 500, whiteSpace: 'nowrap', flexShrink: 0 }}>{copied==='code'?'✓ Copied':'Copy'}</button>
+                <span style={{ fontSize: '1.3rem', letterSpacing: '0.2em', fontWeight: 700, color: '#fff', fontFamily: 'monospace' }}>{code}</span>
+                <button onClick={() => copy(code,'code')} style={{ background: `${result.color}18`, border: `0.5px solid ${result.color}44`, borderRadius: '8px', padding: '0.4rem 0.9rem', color: result.color, cursor: 'pointer', fontSize: '0.75rem', fontWeight: 500, whiteSpace: 'nowrap', flexShrink: 0, transition: 'all 0.2s' }}>{copied==='code'?'✓ Copied':'Copy code'}</button>
               </div>
             </div>
 
             {/* Share row */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '7px', marginBottom: '0.7rem' }}>
-              <button onClick={() => copy(shareUrl,'link')} style={{ background: 'rgba(200,184,248,0.1)', border: '0.5px solid rgba(200,184,248,0.22)', borderRadius: '40px', padding: '0.65rem 0.4rem', color: '#fff', cursor: 'pointer', fontSize: '0.72rem', fontWeight: 500 }}>{copied==='link'?'✓ Copied':'📋 Link'}</button>
-              <a href={`https://wa.me/?text=${encodeURIComponent(result.shareCaption)}`} target="_blank" rel="noreferrer" style={{ background: 'rgba(37,211,102,0.1)', border: '0.5px solid rgba(37,211,102,0.22)', borderRadius: '40px', padding: '0.65rem 0.4rem', color: '#fff', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', textAlign: 'center', display: 'block' }}>💬 Share</a>
-              <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(result.shareCaption)}`} target="_blank" rel="noreferrer" style={{ background: 'rgba(29,161,242,0.1)', border: '0.5px solid rgba(29,161,242,0.22)', borderRadius: '40px', padding: '0.65rem 0.4rem', color: '#fff', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', textAlign: 'center', display: 'block' }}>𝕏 Post</a>
-              <button onClick={() => shareDataUrl && triggerDownload(shareDataUrl, `yourone-${code}.png`)} disabled={!shareDataUrl} style={{ background: 'rgba(255,255,255,0.07)', border: '0.5px solid rgba(255,255,255,0.15)', borderRadius: '40px', padding: '0.65rem 0.4rem', color: '#fff', cursor: shareDataUrl?'pointer':'default', fontSize: '0.72rem', fontWeight: 500, opacity: shareDataUrl?1:0.4 }}>🖼 Card</button>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '7px', marginBottom: '0.75rem' }}>
+              <button onClick={() => copy(shareUrl,'link')} style={{ background: 'rgba(255,255,255,0.05)', border: '0.5px solid rgba(255,255,255,0.14)', borderRadius: '40px', padding: '0.6rem 0.3rem', color: 'rgba(255,255,255,0.75)', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 500, transition: 'all 0.2s' }}>{copied==='link'?'✓':'📋'} Link</button>
+              <a href={`https://wa.me/?text=${encodeURIComponent(result.shareCaption)}`} target="_blank" rel="noreferrer" style={{ background: 'rgba(37,211,102,0.08)', border: '0.5px solid rgba(37,211,102,0.2)', borderRadius: '40px', padding: '0.6rem 0.3rem', color: 'rgba(255,255,255,0.75)', fontSize: '0.7rem', fontWeight: 500, textDecoration: 'none', textAlign: 'center', display: 'block' }}>💬 WhatsApp</a>
+              <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(result.shareCaption)}`} target="_blank" rel="noreferrer" style={{ background: 'rgba(255,255,255,0.05)', border: '0.5px solid rgba(255,255,255,0.14)', borderRadius: '40px', padding: '0.6rem 0.3rem', color: 'rgba(255,255,255,0.75)', fontSize: '0.7rem', fontWeight: 500, textDecoration: 'none', textAlign: 'center', display: 'block' }}>𝕏 Post</a>
+              <button onClick={() => shareDataUrl && triggerDownload(shareDataUrl, `yourone-${code}.png`)} disabled={!shareDataUrl} style={{ background: 'rgba(255,255,255,0.05)', border: '0.5px solid rgba(255,255,255,0.14)', borderRadius: '40px', padding: '0.6rem 0.3rem', color: 'rgba(255,255,255,0.75)', cursor: shareDataUrl?'pointer':'default', fontSize: '0.7rem', fontWeight: 500, opacity: shareDataUrl?1:0.5, transition: 'all 0.2s' }}>🖼 Card</button>
             </div>
 
             {/* Challenge */}
-            <a href={`https://wa.me/?text=${encodeURIComponent(`I found my ${category.label}. I bet yours is completely different. It's ${category.price} → yourone.world`)}`} target="_blank" rel="noreferrer"
-              style={{ display: 'block', textAlign: 'center', background: `linear-gradient(135deg, ${result.color}18, transparent)`, border: `0.5px solid ${result.color}33`, borderRadius: '50px', padding: '0.75rem 1rem', color: result.color, fontSize: '0.82rem', fontWeight: 500, textDecoration: 'none', marginBottom: '0.7rem', transition: 'all 0.2s' }}>
+            <a href={`https://wa.me/?text=${encodeURIComponent(`I found my ${category.label}. Bet yours is completely different. ${category.price} → yourone.world`)}`} target="_blank" rel="noreferrer"
+              style={{ display: 'block', textAlign: 'center', background: `${result.color}14`, border: `0.5px solid ${result.color}30`, borderRadius: '50px', padding: '0.72rem 1rem', color: result.color, fontSize: '0.8rem', fontWeight: 500, textDecoration: 'none', marginBottom: '0.55rem' }}>
               Challenge a friend — bet yours is different →
             </a>
 
-            {/* Upsell */}
-            <button onClick={() => setStage('home')} style={{ display: 'block', width: '100%', background: 'none', border: '0.5px solid rgba(255,255,255,0.1)', borderRadius: '50px', padding: '0.65rem', color: 'rgba(255,255,255,0.32)', cursor: 'pointer', fontSize: '0.75rem', marginBottom: '0.8rem' }}>
-              Gift a discovery to someone — from $0.99 →
-            </button>
-
             {/* Home button */}
             <button onClick={() => { setStage('home'); setResult(null); setCode(''); window.history.replaceState({}, '', '/') }}
-              style={{ display: 'block', width: '100%', background: 'rgba(255,255,255,0.05)', border: '0.5px solid rgba(255,255,255,0.12)', borderRadius: '50px', padding: '0.7rem', color: 'rgba(255,255,255,0.45)', cursor: 'pointer', fontSize: '0.78rem', marginBottom: '0.8rem', transition: 'all 0.2s' }}
-              onMouseEnter={e => { const b=e.currentTarget as HTMLButtonElement; b.style.background='rgba(255,255,255,0.1)'; b.style.color='rgba(255,255,255,0.7)' }}
-              onMouseLeave={e => { const b=e.currentTarget as HTMLButtonElement; b.style.background='rgba(255,255,255,0.05)'; b.style.color='rgba(255,255,255,0.45)' }}>
+              style={{ display: 'block', width: '100%', background: 'rgba(255,255,255,0.04)', border: '0.5px solid rgba(255,255,255,0.1)', borderRadius: '50px', padding: '0.65rem', color: 'rgba(255,255,255,0.38)', cursor: 'pointer', fontSize: '0.75rem', marginBottom: '1rem', transition: 'all 0.2s' }}
+              onMouseEnter={e => { const b=e.currentTarget as HTMLButtonElement; b.style.background='rgba(255,255,255,0.09)'; b.style.color='rgba(255,255,255,0.65)' }}
+              onMouseLeave={e => { const b=e.currentTarget as HTMLButtonElement; b.style.background='rgba(255,255,255,0.04)'; b.style.color='rgba(255,255,255,0.38)' }}>
               ← Try another category
             </button>
 
-            <p style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.18)', textAlign: 'center' }}>a <strong style={{ color: 'rgba(255,255,255,0.32)' }}>Filmos</strong> product · yourone.world</p>
+            <p style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.15)', textAlign: 'center', paddingBottom: '0.5rem' }}>a <strong style={{ color: 'rgba(255,255,255,0.28)' }}>Filmos</strong> product · yourone.world</p>
           </div>
         </div>
       </div>
