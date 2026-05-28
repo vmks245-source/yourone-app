@@ -79,7 +79,7 @@ export default function Home() {
   const [code, setCode] = useState('')
   const [revealStep, setRevealStep] = useState(0)
   const [dims, setDims] = useState({ w: 1200, h: 700 })
-  const [paymentPending, setPaymentPending] = useState(false)
+  const [paymentPending] = useState(false)
   const [codeInput, setCodeInput] = useState('')
   const [codeCategory, setCodeCategory] = useState<CategoryKey>('world')
   const [codeError, setCodeError] = useState(false)
@@ -95,6 +95,22 @@ export default function Home() {
     const upd = () => setDims({ w: window.innerWidth, h: window.innerHeight })
     upd(); window.addEventListener('resize', upd)
     const p = new URLSearchParams(window.location.search)
+
+    // Gumroad post-payment redirect lands here with ?paid=true
+    if (p.get('paid') === 'true') {
+      try {
+        const pendingCat = localStorage.getItem('yourone_pending_cat') as CategoryKey | null
+        if (pendingCat) {
+          localStorage.removeItem('yourone_pending_cat')
+          const catDef = CATEGORIES.find(c => c.key === pendingCat) || CATEGORIES[1]
+          setCategory(catDef)
+          window.history.replaceState({}, '', '/')
+          setStage('quiz')
+          return () => window.removeEventListener('resize', upd)
+        }
+      } catch { /* */ }
+    }
+
     const urlCode = p.get('code') || window.location.pathname.split('/place/')[1]
     const urlCat = (p.get('cat') as CategoryKey) || 'world'
     if (urlCode) {
@@ -117,15 +133,18 @@ export default function Home() {
     }
   }, [])
 
+  const GUMROAD_URLS: Record<CategoryKey, string> = {
+    world:     process.env.NEXT_PUBLIC_GUMROAD_WORLD     || '#',
+    animal:    process.env.NEXT_PUBLIC_GUMROAD_ANIMAL    || '#',
+    celebrity: process.env.NEXT_PUBLIC_GUMROAD_CELEBRITY || '#',
+    planet:    process.env.NEXT_PUBLIC_GUMROAD_PLANET    || '#',
+  }
+
   const startPayment = () => {
-    setPaymentPending(true)
-    const url = (process.env.NEXT_PUBLIC_LEMON_CHECKOUT_URL as string) || '#'
-    if (url === '#') { setPaymentPending(false); setStage('quiz'); return }
-    window.open(url, '_blank', 'width=520,height=700,scrollbars=yes')
-    const t = setInterval(() => {
-      try { if (localStorage.getItem('yourone_paid') === 'true') { clearInterval(t); localStorage.removeItem('yourone_paid'); setPaymentPending(false); setStage('quiz') } } catch { /* */ }
-    }, 800)
-    setTimeout(() => clearInterval(t), 120000)
+    const url = GUMROAD_URLS[category.key]
+    if (url === '#') { setStage('quiz'); return }
+    try { localStorage.setItem('yourone_pending_cat', category.key) } catch { /* */ }
+    window.location.href = url
   }
 
   const onQuizComplete = (answers: Record<number, string | number>) => {
