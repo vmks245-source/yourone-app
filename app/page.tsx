@@ -86,6 +86,9 @@ export default function Home() {
   const [shareDataUrl, setShareDataUrl] = useState<string | null>(null)
   const [mediaReady, setMediaReady] = useState(false)
   const [checkoutOpened, setCheckoutOpened] = useState(false)
+  const [licenseKey, setLicenseKey] = useState('')
+  const [verifying, setVerifying] = useState(false)
+  const [verifyError, setVerifyError] = useState('')
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
   const [btnMag, setBtnMag] = useState({ x: 0, y: 0 })
   const btnRef = useRef<HTMLButtonElement>(null)
@@ -130,6 +133,22 @@ export default function Home() {
     if (url === '#') { setStage('quiz'); return }
     window.open(url, '_blank', 'noopener')
     setCheckoutOpened(true)
+  }
+
+  const verifyLicense = async () => {
+    const key = licenseKey.trim()
+    if (!key) { setVerifyError('Please enter your license key'); return }
+    setVerifying(true); setVerifyError('')
+    try {
+      const res = await fetch('/api/verify-license', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ licenseKey: key, category: category.key }),
+      })
+      const data: { success: boolean; error?: string } = await res.json()
+      if (data.success) { setStage('quiz') } else { setVerifyError(data.error || 'Invalid license key') }
+    } catch { setVerifyError('Network error — please try again') }
+    finally { setVerifying(false) }
   }
 
   const onQuizComplete = (answers: Record<number, string | number>) => {
@@ -265,7 +284,7 @@ export default function Home() {
       <div style={{ minHeight: '100vh', background: '#04040c', position: 'relative', overflow: 'hidden' }} onMouseMove={onMouseMove}>
         <AmbientReel /><ParticleCanvas density={20} />
         <div style={{ position: 'relative', zIndex: 5, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
-          <button onClick={() => { setStage('home'); setCheckoutOpened(false) }} style={{ position: 'fixed', top: '1.5rem', left: '1.5rem', background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', cursor: 'pointer', fontSize: '0.82rem' }}>← Back</button>
+          <button onClick={() => { setStage('home'); setCheckoutOpened(false); setLicenseKey(''); setVerifyError('') }} style={{ position: 'fixed', top: '1.5rem', left: '1.5rem', background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', cursor: 'pointer', fontSize: '0.82rem' }}>← Back</button>
 
           <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
             <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>{category.emoji}</div>
@@ -300,18 +319,43 @@ export default function Home() {
               {`Claim my ${category.label} — ${category.price}`}
             </button>
           ) : (
-            <div style={{ textAlign: 'center', maxWidth: '320px' }}>
-              <div style={{ fontSize: '0.82rem', color: 'var(--muted)', marginBottom: '1.2rem', lineHeight: 1.65 }}>
-                Complete payment in the Gumroad tab.<br />Come back here when done.
+            <div style={{ textAlign: 'center', maxWidth: '340px', width: '100%' }}>
+              <div style={{ fontSize: '0.82rem', color: 'var(--muted)', marginBottom: '1.4rem', lineHeight: 1.65 }}>
+                Complete payment in the Gumroad tab, then paste your license key below.
               </div>
-              <button onClick={() => setStage('quiz')}
-                style={{ width: '100%', background: `linear-gradient(135deg, ${category.gradient}, rgba(248,200,168,0.08))`, border: `0.5px solid ${category.color}77`, borderRadius: '50px', padding: '1.1rem 2rem', color: 'var(--text)', cursor: 'pointer', fontSize: '1rem', fontWeight: 600, marginBottom: '0.8rem', boxShadow: `0 0 40px ${category.color}33` }}>
-                ✓ I&apos;ve paid — open my {category.label}
+              <input
+                value={licenseKey}
+                onChange={e => { setLicenseKey(e.target.value.toUpperCase()); setVerifyError('') }}
+                onKeyDown={e => e.key === 'Enter' && verifyLicense()}
+                placeholder="XXXX-XXXX-XXXX-XXXX"
+                style={{
+                  width: '100%', boxSizing: 'border-box',
+                  background: 'rgba(255,255,255,0.05)',
+                  border: `0.5px solid ${verifyError ? 'rgba(255,80,80,0.55)' : `${category.color}44`}`,
+                  borderRadius: '14px', padding: '0.85rem 1rem',
+                  color: 'var(--text)', fontSize: '0.92rem', fontFamily: 'monospace',
+                  letterSpacing: '0.15em', outline: 'none', textAlign: 'center',
+                  marginBottom: '0.75rem',
+                  boxShadow: verifyError ? '0 0 14px rgba(255,80,80,0.18)' : 'none',
+                  transition: 'border-color 0.2s, box-shadow 0.2s',
+                }}
+              />
+              {verifyError && (
+                <div style={{ fontSize: '0.75rem', color: 'rgba(255,90,90,0.85)', marginBottom: '0.75rem' }}>
+                  {verifyError}
+                </div>
+              )}
+              <button onClick={verifyLicense} disabled={verifying}
+                style={{ width: '100%', background: `linear-gradient(135deg, ${category.gradient}, rgba(248,200,168,0.08))`, border: `0.5px solid ${category.color}77`, borderRadius: '50px', padding: '1.05rem 2rem', color: 'var(--text)', cursor: verifying ? 'not-allowed' : 'pointer', fontSize: '1rem', fontWeight: 600, marginBottom: '0.9rem', boxShadow: `0 0 40px ${category.color}33`, opacity: verifying ? 0.7 : 1, transition: 'opacity 0.2s' }}>
+                {verifying ? 'Verifying…' : `✓ Unlock my ${category.label}`}
               </button>
               <button onClick={startPayment}
-                style={{ background: 'none', border: 'none', color: `${category.color}88`, cursor: 'pointer', fontSize: '0.75rem', textDecoration: 'underline' }}>
+                style={{ background: 'none', border: 'none', color: `${category.color}77`, cursor: 'pointer', fontSize: '0.75rem', textDecoration: 'underline' }}>
                 Gumroad didn&apos;t open? Click here
               </button>
+              <div style={{ marginTop: '0.9rem', fontSize: '0.72rem', color: 'rgba(255,255,255,0.22)', lineHeight: 1.55 }}>
+                License key is in your Gumroad receipt email
+              </div>
             </div>
           )}
         </div>
