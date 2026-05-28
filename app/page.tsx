@@ -9,6 +9,7 @@ import { triggerDownload } from './components/ShareCard'
 const AmbientReel    = dynamic(() => import('./components/AmbientReel'),    { ssr: false })
 const ParticleCanvas = dynamic(() => import('./components/ParticleCanvas'), { ssr: false })
 const VideoScene     = dynamic(() => import('./components/VideoScene'),     { ssr: false })
+const ImageScene     = dynamic(() => import('./components/ImageScene'),     { ssr: false })
 const QuizEngine     = dynamic(() => import('./components/QuizEngine'),     { ssr: false })
 const ShareCard      = dynamic(() => import('./components/ShareCard'),      { ssr: false })
 
@@ -283,7 +284,10 @@ export default function Home() {
   if (stage === 'reveal' && result) return (
     <div style={{ minHeight: '100vh', background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
       <div style={{ position: 'absolute', inset: 0, opacity: revealStep>=1?1:0, transform: revealStep>=1?'scale(1)':'scale(1.06)', transition: 'opacity 2.2s ease, transform 3s ease' }}>
-        <VideoScene sceneId={result.id} />
+        {category.key === 'world'
+          ? <VideoScene sceneId={result.id} />
+          : <ImageScene archetypeId={result.id} />
+        }
       </div>
       <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.55)', opacity: revealStep>=2?0:1, transition: 'opacity 1.8s ease', zIndex: 1 }} />
       <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 50%, transparent 20%, rgba(0,0,0,0.7) 100%)', zIndex: 2 }} />
@@ -304,7 +308,12 @@ export default function Home() {
     return (
       <div style={{ minHeight: '100vh', background: '#000', position: 'relative', overflow: 'hidden' }}>
         <ShareCard result={result} code={code} category={category.label} onReady={setShareDataUrl} />
-        <div style={{ position: 'fixed', inset: 0 }}><VideoScene sceneId={result.id} /></div>
+        <div style={{ position: 'fixed', inset: 0 }}>
+          {category.key === 'world'
+            ? <VideoScene sceneId={result.id} />
+            : <ImageScene archetypeId={result.id} />
+          }
+        </div>
         <div style={{ position: 'fixed', inset: 0, background: 'linear-gradient(to bottom, transparent 28%, rgba(0,0,0,0.94) 100%)', zIndex: 1 }} />
 
         <div style={{ position: 'relative', zIndex: 2, minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: 'clamp(1.5rem,4vw,3rem)', maxWidth: '620px' }}>
@@ -351,6 +360,14 @@ export default function Home() {
             {/* Upsell */}
             <button onClick={() => setStage('home')} style={{ display: 'block', width: '100%', background: 'none', border: '0.5px solid rgba(255,255,255,0.1)', borderRadius: '50px', padding: '0.65rem', color: 'rgba(255,255,255,0.32)', cursor: 'pointer', fontSize: '0.75rem', marginBottom: '0.8rem' }}>
               Gift a discovery to someone — from $0.99 →
+            </button>
+
+            {/* Home button */}
+            <button onClick={() => { setStage('home'); setResult(null); setCode(''); window.history.replaceState({}, '', '/') }}
+              style={{ display: 'block', width: '100%', background: 'rgba(255,255,255,0.05)', border: '0.5px solid rgba(255,255,255,0.12)', borderRadius: '50px', padding: '0.7rem', color: 'rgba(255,255,255,0.45)', cursor: 'pointer', fontSize: '0.78rem', marginBottom: '0.8rem', transition: 'all 0.2s' }}
+              onMouseEnter={e => { const b=e.currentTarget as HTMLButtonElement; b.style.background='rgba(255,255,255,0.1)'; b.style.color='rgba(255,255,255,0.7)' }}
+              onMouseLeave={e => { const b=e.currentTarget as HTMLButtonElement; b.style.background='rgba(255,255,255,0.05)'; b.style.color='rgba(255,255,255,0.45)' }}>
+              ← Try another category
             </button>
 
             <p style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.18)', textAlign: 'center' }}>a <strong style={{ color: 'rgba(255,255,255,0.32)' }}>Filmos</strong> product · yourone.world</p>
