@@ -95,19 +95,19 @@ export default function Home() {
     upd(); window.addEventListener('resize', upd)
     const p = new URLSearchParams(window.location.search)
 
-    // Gumroad post-payment redirect lands here with ?paid=true
+    // Gumroad post-payment redirect: ?paid=true&cat=animal (cat in URL is primary)
     if (p.get('paid') === 'true') {
-      try {
-        const pendingCat = localStorage.getItem('yourone_pending_cat') as CategoryKey | null
-        if (pendingCat) {
-          localStorage.removeItem('yourone_pending_cat')
-          const catDef = CATEGORIES.find(c => c.key === pendingCat) || CATEGORIES[1]
-          setCategory(catDef)
-          window.history.replaceState({}, '', '/')
-          setStage('quiz')
-          return () => window.removeEventListener('resize', upd)
-        }
-      } catch { /* */ }
+      const catFromUrl = p.get('cat') as CategoryKey | null
+      let resolvedCat: CategoryKey | null = catFromUrl && CATEGORIES.find(c => c.key === catFromUrl) ? catFromUrl : null
+      if (!resolvedCat) {
+        try { resolvedCat = localStorage.getItem('yourone_pending_cat') as CategoryKey | null } catch { /* */ }
+      }
+      try { localStorage.removeItem('yourone_pending_cat') } catch { /* */ }
+      const catDef = CATEGORIES.find(c => c.key === resolvedCat) ?? CATEGORIES[1]
+      setCategory(catDef)
+      window.history.replaceState({}, '', '/')
+      setStage('quiz')
+      return () => window.removeEventListener('resize', upd)
     }
 
     const urlCode = p.get('code') || window.location.pathname.split('/place/')[1]
