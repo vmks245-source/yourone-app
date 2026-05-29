@@ -1,0 +1,8 @@
+videos/
+images/
+node_modules/
+.next/
+*.mp4
+*.mov
+*.avi
+*.webm
