@@ -124,8 +124,30 @@ export default function Home() {
     planet:    'https://15682690152.gumroad.com/l/errpt',
   }
 
+  useEffect(() => {
+    const onPurchase = () => {
+      const cat = sessionStorage.getItem('pendingQuizCat') as CategoryKey | null
+      if (cat) {
+        const catDef = CATEGORIES.find(c => c.key === cat)
+        if (catDef) { setCategory(catDef); setStage('quiz') }
+        sessionStorage.removeItem('pendingQuizCat')
+      } else {
+        setStage('quiz')
+      }
+    }
+    document.addEventListener('gumroad:purchase', onPurchase)
+    return () => document.removeEventListener('gumroad:purchase', onPurchase)
+  }, [])
+
   const startPayment = () => {
-    window.location.href = GUMROAD_URLS[category.key]
+    sessionStorage.setItem('pendingQuizCat', category.key)
+    const url = GUMROAD_URLS[category.key]
+    const a = document.createElement('a')
+    a.href = url
+    a.setAttribute('data-gumroad-single-product', 'true')
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
   }
 
   const onQuizComplete = (answers: Record<number, string | number>) => {

@@ -36,6 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <meta name="theme-color" content="#05050f" />
         <meta name="color-scheme" content="dark" />
+        <script src="https://gumroad.com/js/gumroad.js" async></script>
       </head>
       <body>{children}</body>
     </html>
