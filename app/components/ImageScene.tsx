@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState, useRef } from 'react'
+import { IMAGE_MAP, pexelsUrl } from '../lib/imageMap'
 
 const R2 = 'https://pub-558ced66b1054a088b11443d1cd1ea5d.r2.dev'
 const TOTAL      = 5
@@ -19,7 +20,9 @@ export default function ImageScene({ archetypeId, style, onReady }: Props) {
   const tick     = useRef(0)
   const notified = useRef(false)
 
-  const url = (n: number) => `${R2}/${archetypeId}_${n % TOTAL}.jpg`
+  const ids = IMAGE_MAP[archetypeId]
+  const url = (n: number) =>
+    ids ? pexelsUrl(ids[n % ids.length]) : `${R2}/${archetypeId}_${n % TOTAL}.jpg`
 
   useEffect(() => {
     setCurr(0); setNext(1); setFading(false)

@@ -31,12 +31,12 @@ const CATEGORIES: CatDef[] = [
 
 const ARCHETYPE_LISTS: Record<CategoryKey, string[]> = {
   world:     ['meadow','neon_alley','ocean','tokyo_rooftop','desert_canyon','storm_forest','arctic','autumn_forest','factory','cloud_sea'],
-  animal:    ['wolf','eagle','fox','bear','dolphin','lion','owl','deer','tiger','octopus','panther','elephant'],
-  celebrity: ['elon_musk','rihanna','keanu_reeves','oprah','david_bowie','beyonce','obama','billie_eilish','freddie_mercury','steve_jobs','leonardo_dicaprio','kanye_west'],
-  planet:    ['mars','venus','saturn','jupiter','neptune','mercury','pluto','orion_nebula','black_hole','sirius','moon','andromeda'],
+  animal:    ['wolf','eagle','fox','bear','dolphin','lion','owl','deer','tiger','octopus','panther','elephant','raven','cheetah','horse','whale','snake','hummingbird','gorilla','falcon'],
+  celebrity: ['elon_musk','rihanna','keanu_reeves','oprah','david_bowie','beyonce','obama','billie_eilish','freddie_mercury','steve_jobs','leonardo_dicaprio','kanye_west','taylor_swift','lady_gaga','morgan_freeman','einstein','marilyn_monroe','nikola_tesla','tupac','nelson_mandela'],
+  planet:    ['mars','venus','saturn','jupiter','neptune','mercury','pluto','orion_nebula','black_hole','sirius','moon','andromeda','europa','sun','milky_way','vega','titan'],
 }
 
-const TICKER_NAMES = ['Sunlit Meadow','Wolf','Tokyo Rooftop','Eagle','Neon Alley','Mars','Rihanna','Arctic Tundra','Black Hole','Fox','Billie Eilish','Cloud Sea','Jupiter','Panther','David Bowie','Desert Canyon','Sirius','Bear','Andromeda','Freddie Mercury','Storm Forest','Octopus','Saturn','Beyoncé','Autumn Forest','Neptune','Deer','Keanu Reeves','Factory','Pluto','Lion','Orion Nebula','Dolphin','Obama']
+const TICKER_NAMES = ['Sunlit Meadow','Wolf','Tokyo Rooftop','Eagle','Neon Alley','Mars','Rihanna','Arctic Tundra','Black Hole','Fox','Billie Eilish','Cloud Sea','Jupiter','Panther','David Bowie','Desert Canyon','Sirius','Bear','Andromeda','Freddie Mercury','Storm Forest','Octopus','Saturn','Beyoncé','Autumn Forest','Neptune','Deer','Keanu Reeves','Factory','Pluto','Lion','Orion Nebula','Dolphin','Obama','Raven','Cheetah','Horse','Humpback Whale','Serpent','Hummingbird','Gorilla','Falcon','Taylor Swift','Lady Gaga','Morgan Freeman','Einstein','Marilyn Monroe','Tesla','Tupac','Mandela','Europa','The Sun','Milky Way','Vega','Titan']
 
 const CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 

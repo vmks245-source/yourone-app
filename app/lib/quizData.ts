@@ -508,159 +508,172 @@ function topScore(s: Record<string, number>): string {
 }
 
 export function mapAnimalAnswers(a: A): string {
-  const s: Record<string, number> = { wolf:0, eagle:0, fox:0, bear:0, dolphin:0, lion:0, owl:0, deer:0, tiger:0, octopus:0, panther:0, elephant:0 }
+  const s: Record<string, number> = {
+    wolf:0, eagle:0, fox:0, bear:0, dolphin:0, lion:0, owl:0, deer:0,
+    tiger:0, octopus:0, panther:0, elephant:0,
+    raven:0, cheetah:0, horse:0, whale:0, snake:0, hummingbird:0, gorilla:0, falcon:0,
+  }
   const add = (k: string, n: number) => { s[k] += n }
 
   const q1=a[1],q2=a[2],q3=a[3],q4=a[4],slider=Number(a[5]??50),q6=a[6],q7=a[7],q8=a[8],q9=a[9]
 
-  if (q1==='face')   { add('lion',2); add('tiger',2); add('bear',1) }
-  if (q1==='vanish') { add('panther',2); add('fox',2); add('octopus',1) }
-  if (q1==='circle') { add('wolf',2); add('eagle',2); add('owl',1) }
-  if (q1==='alert')  { add('elephant',2); add('dolphin',2); add('deer',1) }
+  if (q1==='face')   { add('lion',2); add('tiger',2); add('bear',1); add('gorilla',1) }
+  if (q1==='vanish') { add('panther',2); add('fox',2); add('octopus',1); add('snake',1) }
+  if (q1==='circle') { add('wolf',2); add('eagle',2); add('owl',1); add('falcon',2) }
+  if (q1==='alert')  { add('elephant',2); add('dolphin',2); add('deer',1); add('whale',1) }
 
-  if (q2==='lead_quietly') { add('wolf',2); add('lion',1) }
-  if (q2==='alone')        { add('tiger',2); add('panther',2); add('eagle',1) }
-  if (q2==='bridge')       { add('dolphin',2); add('fox',2) }
-  if (q2==='centre')       { add('elephant',2); add('bear',1); add('owl',1) }
+  if (q2==='lead_quietly') { add('wolf',2); add('lion',1); add('gorilla',1) }
+  if (q2==='alone')        { add('tiger',2); add('panther',2); add('eagle',1); add('falcon',1) }
+  if (q2==='bridge')       { add('dolphin',2); add('fox',2); add('hummingbird',1) }
+  if (q2==='centre')       { add('elephant',2); add('bear',1); add('owl',1); add('whale',1) }
 
-  if (q3==='direct')       { add('tiger',2); add('lion',2) }
-  if (q3==='patience')     { add('owl',2); add('bear',2) }
-  if (q3==='intelligence') { add('fox',2); add('octopus',2) }
-  if (q3==='together')     { add('wolf',2); add('dolphin',2); add('elephant',1) }
+  if (q3==='direct')       { add('tiger',2); add('lion',2); add('cheetah',3) }
+  if (q3==='patience')     { add('owl',2); add('bear',2); add('snake',2) }
+  if (q3==='intelligence') { add('fox',2); add('octopus',2); add('raven',2) }
+  if (q3==='together')     { add('wolf',2); add('dolphin',2); add('elephant',1); add('whale',1) }
 
-  if (q4==='protect')       { add('bear',2); add('wolf',1); add('elephant',1) }
-  if (q4==='full_attention') { add('eagle',2); add('tiger',1) }
-  if (q4==='lead_toward')   { add('lion',2); add('elephant',1) }
-  if (q4==='play')          { add('dolphin',2); add('fox',1) }
+  if (q4==='protect')       { add('bear',2); add('wolf',1); add('elephant',1); add('gorilla',2) }
+  if (q4==='full_attention') { add('eagle',2); add('tiger',1); add('falcon',1) }
+  if (q4==='lead_toward')   { add('lion',2); add('elephant',1); add('horse',2) }
+  if (q4==='play')          { add('dolphin',2); add('fox',1); add('hummingbird',2) }
 
-  if (slider<30)       { add('tiger',2); add('panther',2); add('eagle',1) }
-  else if (slider<50)  { add('wolf',1); add('bear',1) }
-  else if (slider<70)  { add('dolphin',1); add('wolf',1) }
-  else                 { add('dolphin',2); add('elephant',2); add('deer',1) }
+  if (slider<30)       { add('tiger',2); add('panther',2); add('eagle',1); add('falcon',2) }
+  else if (slider<50)  { add('wolf',1); add('bear',1); add('snake',1) }
+  else if (slider<70)  { add('dolphin',1); add('wolf',1); add('horse',1) }
+  else                 { add('dolphin',2); add('elephant',2); add('deer',1); add('whale',2) }
 
-  if (q6==='stillness') { add('owl',2); add('bear',1) }
-  if (q6==='energy')    { add('dolphin',2); add('fox',1) }
-  if (q6==='sharpness') { add('eagle',2); add('tiger',1) }
-  if (q6==='warmth')    { add('deer',2); add('elephant',1) }
+  if (q6==='stillness') { add('owl',2); add('bear',1); add('snake',1) }
+  if (q6==='energy')    { add('dolphin',2); add('fox',1); add('hummingbird',3) }
+  if (q6==='sharpness') { add('eagle',2); add('tiger',1); add('raven',1) }
+  if (q6==='warmth')    { add('deer',2); add('elephant',1); add('horse',1) }
 
-  if (q7==='self')   { add('panther',2); add('tiger',1) }
-  if (q7==='nature') { add('deer',2); add('bear',1) }
-  if (q7==='work')   { add('eagle',2); add('octopus',1) }
-  if (q7==='others') { add('dolphin',2); add('wolf',1); add('elephant',1) }
+  if (q7==='self')   { add('panther',2); add('tiger',1); add('snake',1) }
+  if (q7==='nature') { add('deer',2); add('bear',1); add('horse',2); add('whale',1) }
+  if (q7==='work')   { add('eagle',2); add('octopus',1); add('falcon',1) }
+  if (q7==='others') { add('dolphin',2); add('wolf',1); add('elephant',1); add('gorilla',1) }
 
-  if (q8==='vanish_heal')    { add('panther',2); add('tiger',1); add('owl',1) }
-  if (q8==='move_through')   { add('wolf',2); add('dolphin',1); add('deer',1) }
-  if (q8==='protect_others') { add('bear',2); add('elephant',2) }
-  if (q8==='redirect')       { add('fox',2); add('octopus',2); add('eagle',1) }
+  if (q8==='vanish_heal')    { add('panther',2); add('tiger',1); add('owl',1); add('snake',2) }
+  if (q8==='move_through')   { add('wolf',2); add('dolphin',1); add('deer',1); add('whale',1) }
+  if (q8==='protect_others') { add('bear',2); add('elephant',2); add('gorilla',2) }
+  if (q8==='redirect')       { add('fox',2); add('octopus',2); add('eagle',1); add('raven',1) }
 
-  if (q9==='always_building')  { add('eagle',2); add('octopus',2) }
-  if (q9==='watching_closely') { add('owl',2); add('panther',1); add('fox',1) }
-  if (q9==='deeper_rest')      { add('bear',2); add('elephant',1) }
-  if (q9==='more_playful')     { add('dolphin',2); add('fox',1); add('deer',1) }
+  if (q9==='always_building')  { add('eagle',2); add('octopus',2); add('falcon',1) }
+  if (q9==='watching_closely') { add('owl',2); add('panther',1); add('fox',1); add('raven',3) }
+  if (q9==='deeper_rest')      { add('bear',2); add('elephant',1); add('whale',1) }
+  if (q9==='more_playful')     { add('dolphin',2); add('fox',1); add('deer',1); add('hummingbird',2) }
 
   return topScore(s)
 }
 
 export function mapCelebrityAnswers(a: A): string {
-  const s: Record<string,number> = { elon_musk:0, rihanna:0, keanu_reeves:0, oprah:0, david_bowie:0, beyonce:0, obama:0, billie_eilish:0, freddie_mercury:0, steve_jobs:0, leonardo_dicaprio:0, kanye_west:0 }
+  const s: Record<string,number> = {
+    elon_musk:0, rihanna:0, keanu_reeves:0, oprah:0, david_bowie:0, beyonce:0,
+    obama:0, billie_eilish:0, freddie_mercury:0, steve_jobs:0, leonardo_dicaprio:0, kanye_west:0,
+    taylor_swift:0, lady_gaga:0, morgan_freeman:0, einstein:0,
+    marilyn_monroe:0, nikola_tesla:0, tupac:0, nelson_mandela:0,
+  }
   const add = (k:string,n:number) => { s[k]+=n }
 
   const q1=a[1],q2=a[2],q3=a[3],q4=a[4],slider=Number(a[5]??50),q6=a[6],q7=a[7],q8=a[8]
 
-  if(q1==='change_infrastructure'){add('elon_musk',2);add('steve_jobs',2);add('obama',1)}
-  if(q1==='create_true'){add('billie_eilish',2);add('david_bowie',2);add('kanye_west',1)}
-  if(q1==='become_known'){add('beyonce',2);add('freddie_mercury',2);add('rihanna',1)}
-  if(q1==='make_feel'){add('oprah',2);add('keanu_reeves',2);add('obama',1)}
+  if(q1==='change_infrastructure'){add('elon_musk',2);add('steve_jobs',2);add('obama',1);add('nikola_tesla',2)}
+  if(q1==='create_true'){add('billie_eilish',2);add('david_bowie',2);add('kanye_west',1);add('lady_gaga',2);add('tupac',1)}
+  if(q1==='become_known'){add('beyonce',2);add('freddie_mercury',2);add('rihanna',1);add('taylor_swift',2)}
+  if(q1==='make_feel'){add('oprah',2);add('keanu_reeves',2);add('obama',1);add('morgan_freeman',1);add('nelson_mandela',1)}
 
-  if(q2==='rebuild_louder'){add('elon_musk',2);add('kanye_west',2)}
-  if(q2==='disappear_process'){add('billie_eilish',2);add('keanu_reeves',2)}
-  if(q2==='turn_to_art'){add('david_bowie',2);add('kanye_west',1);add('beyonce',1)}
-  if(q2==='absorb_forgive'){add('obama',2);add('leonardo_dicaprio',2);add('oprah',1)}
+  if(q2==='rebuild_louder'){add('elon_musk',2);add('kanye_west',2);add('taylor_swift',1)}
+  if(q2==='disappear_process'){add('billie_eilish',2);add('keanu_reeves',2);add('marilyn_monroe',1)}
+  if(q2==='turn_to_art'){add('david_bowie',2);add('kanye_west',1);add('beyonce',1);add('lady_gaga',2);add('tupac',1)}
+  if(q2==='absorb_forgive'){add('obama',2);add('leonardo_dicaprio',2);add('oprah',1);add('nelson_mandela',2)}
 
-  if(q3==='visionary'){add('elon_musk',2);add('steve_jobs',2);add('kanye_west',1)}
-  if(q3==='magnetic'){add('freddie_mercury',2);add('rihanna',2);add('kanye_west',1)}
-  if(q3==='unstoppable'){add('beyonce',2);add('rihanna',1);add('elon_musk',1)}
-  if(q3==='transformative'){add('david_bowie',2);add('obama',2);add('oprah',1)}
+  if(q3==='visionary'){add('elon_musk',2);add('steve_jobs',2);add('kanye_west',1);add('nikola_tesla',2);add('einstein',1)}
+  if(q3==='magnetic'){add('freddie_mercury',2);add('rihanna',2);add('kanye_west',1);add('lady_gaga',1)}
+  if(q3==='unstoppable'){add('beyonce',2);add('rihanna',1);add('elon_musk',1);add('taylor_swift',1)}
+  if(q3==='transformative'){add('david_bowie',2);add('obama',2);add('oprah',1);add('nelson_mandela',2)}
 
-  if(q4==='constructed'){add('beyonce',2);add('david_bowie',2);add('rihanna',1)}
-  if(q4==='accidentally'){add('keanu_reeves',2);add('leonardo_dicaprio',1)}
-  if(q4==='exactly_you'){add('billie_eilish',2);add('freddie_mercury',2)}
-  if(q4==='character'){add('david_bowie',2);add('beyonce',1)}
+  if(q4==='constructed'){add('beyonce',2);add('david_bowie',2);add('rihanna',1);add('taylor_swift',2)}
+  if(q4==='accidentally'){add('keanu_reeves',2);add('leonardo_dicaprio',1);add('marilyn_monroe',1)}
+  if(q4==='exactly_you'){add('billie_eilish',2);add('freddie_mercury',2);add('morgan_freeman',1)}
+  if(q4==='character'){add('david_bowie',2);add('beyonce',1);add('lady_gaga',2)}
 
-  if(slider<25){add('steve_jobs',2);add('elon_musk',2)}
-  else if(slider<45){add('obama',1);add('beyonce',1);add('steve_jobs',1)}
-  else if(slider<65){add('leonardo_dicaprio',1);add('keanu_reeves',1)}
-  else{add('oprah',2);add('freddie_mercury',2);add('billie_eilish',1)}
+  if(slider<25){add('steve_jobs',2);add('elon_musk',2);add('nikola_tesla',2)}
+  else if(slider<45){add('obama',1);add('beyonce',1);add('steve_jobs',1);add('einstein',1)}
+  else if(slider<65){add('leonardo_dicaprio',1);add('keanu_reeves',1);add('morgan_freeman',1)}
+  else{add('oprah',2);add('freddie_mercury',2);add('billie_eilish',1);add('marilyn_monroe',1)}
 
-  if(q6==='want_it'){add('elon_musk',2);add('rihanna',1);add('kanye_west',1)}
-  if(q6==='carry_carefully'){add('obama',2);add('beyonce',1)}
-  if(q6==='reject_quietly'){add('david_bowie',2);add('leonardo_dicaprio',2)}
-  if(q6==='in_service'){add('oprah',2);add('keanu_reeves',2)}
+  if(q6==='want_it'){add('elon_musk',2);add('rihanna',1);add('kanye_west',1);add('taylor_swift',1)}
+  if(q6==='carry_carefully'){add('obama',2);add('beyonce',1);add('morgan_freeman',1);add('nelson_mandela',1)}
+  if(q6==='reject_quietly'){add('david_bowie',2);add('leonardo_dicaprio',2);add('nikola_tesla',1)}
+  if(q6==='in_service'){add('oprah',2);add('keanu_reeves',2);add('nelson_mandela',2)}
 
-  if(q7==='changed_possible'){add('elon_musk',2);add('steve_jobs',2)}
-  if(q7==='completely_real'){add('billie_eilish',2);add('freddie_mercury',1)}
-  if(q7==='built_empire'){add('beyonce',2);add('rihanna',2);add('kanye_west',1)}
-  if(q7==='less_alone'){add('oprah',2);add('keanu_reeves',2);add('obama',1)}
+  if(q7==='changed_possible'){add('elon_musk',2);add('steve_jobs',2);add('nikola_tesla',2);add('einstein',2)}
+  if(q7==='completely_real'){add('billie_eilish',2);add('freddie_mercury',1);add('tupac',2)}
+  if(q7==='built_empire'){add('beyonce',2);add('rihanna',2);add('kanye_west',1);add('taylor_swift',2)}
+  if(q7==='less_alone'){add('oprah',2);add('keanu_reeves',2);add('obama',1);add('morgan_freeman',1);add('marilyn_monroe',1)}
 
-  if(q8==='executes_perfectly'){add('steve_jobs',2);add('beyonce',2)}
-  if(q8==='completely_honest'){add('billie_eilish',2);add('freddie_mercury',1)}
-  if(q8==='outlive_you'){add('david_bowie',2);add('elon_musk',1);add('kanye_west',1)}
-  if(q8==='helps_others'){add('oprah',2);add('keanu_reeves',2);add('obama',1);add('leonardo_dicaprio',1)}
+  if(q8==='executes_perfectly'){add('steve_jobs',2);add('beyonce',2);add('taylor_swift',1)}
+  if(q8==='completely_honest'){add('billie_eilish',2);add('freddie_mercury',1);add('tupac',2);add('lady_gaga',1)}
+  if(q8==='outlive_you'){add('david_bowie',2);add('elon_musk',1);add('kanye_west',1);add('nikola_tesla',2)}
+  if(q8==='helps_others'){add('oprah',2);add('keanu_reeves',2);add('obama',1);add('leonardo_dicaprio',1);add('nelson_mandela',2)}
 
   return topScore(s)
 }
 
 export function mapPlanetAnswers(a: A): string {
-  const s: Record<string,number> = { mars:0, venus:0, saturn:0, jupiter:0, neptune:0, mercury:0, pluto:0, orion_nebula:0, black_hole:0, sirius:0, moon:0, andromeda:0 }
+  const s: Record<string,number> = {
+    mars:0, venus:0, saturn:0, jupiter:0, neptune:0, mercury:0,
+    pluto:0, orion_nebula:0, black_hole:0, sirius:0, moon:0, andromeda:0,
+    europa:0, sun:0, milky_way:0, vega:0, titan:0,
+  }
   const add=(k:string,n:number)=>{s[k]+=n}
 
   const q1=a[1],q2=a[2],q3=a[3],q4=a[4],slider=Number(a[5]??50)
   const q6=a[6],q7=a[7],q8=a[8],q9=a[9]
 
-  if(q1==='ahead'){add('mercury',2);add('mars',1)}
-  if(q1==='slower'){add('saturn',2);add('neptune',1);add('andromeda',1)}
-  if(q1==='ignore'){add('neptune',2);add('pluto',2)}
-  if(q1==='controlled'){add('moon',2);add('mercury',1)}
+  if(q1==='ahead'){add('mercury',2);add('mars',1);add('vega',2)}
+  if(q1==='slower'){add('saturn',2);add('neptune',1);add('andromeda',1);add('titan',1)}
+  if(q1==='ignore'){add('neptune',2);add('pluto',2);add('milky_way',1)}
+  if(q1==='controlled'){add('moon',2);add('mercury',1);add('europa',1)}
 
-  if(q2==='smallest'){add('moon',2);add('venus',2)}
-  if(q2==='largest'){add('jupiter',2);add('andromeda',2);add('black_hole',1)}
-  if(q2==='between'){add('pluto',2);add('neptune',2)}
-  if(q2==='ending'){add('orion_nebula',2);add('andromeda',1)}
+  if(q2==='smallest'){add('moon',2);add('venus',2);add('europa',1)}
+  if(q2==='largest'){add('jupiter',2);add('andromeda',2);add('black_hole',1);add('milky_way',2);add('sun',1)}
+  if(q2==='between'){add('pluto',2);add('neptune',2);add('europa',1)}
+  if(q2==='ending'){add('orion_nebula',2);add('andromeda',1);add('vega',1)}
 
-  if(q3==='unnamed_force'){add('black_hole',2);add('saturn',1)}
-  if(q3==='most_stable'){add('jupiter',2);add('saturn',2)}
-  if(q3==='most_exciting'){add('sirius',2);add('mars',2)}
-  if(q3==='go_places'){add('pluto',2);add('neptune',2);add('andromeda',1)}
+  if(q3==='unnamed_force'){add('black_hole',2);add('saturn',1);add('milky_way',1)}
+  if(q3==='most_stable'){add('jupiter',2);add('saturn',2);add('sun',1)}
+  if(q3==='most_exciting'){add('sirius',2);add('mars',2);add('vega',2)}
+  if(q3==='go_places'){add('pluto',2);add('neptune',2);add('andromeda',1);add('titan',1)}
 
-  if(q4==='closeness'){add('neptune',2);add('pluto',2)}
-  if(q4==='speed'){add('saturn',2);add('andromeda',1)}
-  if(q4==='safety'){add('mars',2);add('black_hole',1)}
-  if(q4==='privacy'){add('sirius',2);add('moon',1)}
+  if(q4==='closeness'){add('neptune',2);add('pluto',2);add('europa',1)}
+  if(q4==='speed'){add('saturn',2);add('andromeda',1);add('titan',1)}
+  if(q4==='safety'){add('mars',2);add('black_hole',1);add('vega',1)}
+  if(q4==='privacy'){add('sirius',2);add('moon',1);add('milky_way',1)}
 
-  if(slider<25){add('mars',2);add('black_hole',2)}
-  else if(slider<45){add('neptune',1);add('pluto',1)}
-  else if(slider<65){add('saturn',1);add('jupiter',1)}
-  else{add('saturn',2);add('venus',2)}
+  if(slider<25){add('mars',2);add('black_hole',2);add('vega',1)}
+  else if(slider<45){add('neptune',1);add('pluto',1);add('europa',1)}
+  else if(slider<65){add('saturn',1);add('jupiter',1);add('milky_way',1)}
+  else{add('saturn',2);add('venus',2);add('sun',1)}
 
-  if(q6==='pattern'){add('saturn',2);add('andromeda',1)}
-  if(q6==='feeling'){add('moon',2);add('venus',2);add('sirius',1)}
-  if(q6==='question'){add('black_hole',2);add('pluto',2)}
-  if(q6==='mystery'){add('neptune',2);add('pluto',1);add('andromeda',1)}
+  if(q6==='pattern'){add('saturn',2);add('andromeda',1);add('milky_way',1)}
+  if(q6==='feeling'){add('moon',2);add('venus',2);add('sirius',1);add('sun',1)}
+  if(q6==='question'){add('black_hole',2);add('pluto',2);add('europa',1)}
+  if(q6==='mystery'){add('neptune',2);add('pluto',1);add('andromeda',1);add('titan',2)}
 
-  if(q7==='same_wound'){add('pluto',2);add('saturn',1)}
-  if(q7==='warmer'){add('moon',2);add('neptune',1)}
-  if(q7==='contains_violence'){add('black_hole',2);add('mars',1)}
-  if(q7==='older'){add('andromeda',2);add('orion_nebula',1)}
+  if(q7==='same_wound'){add('pluto',2);add('saturn',1);add('titan',1)}
+  if(q7==='warmer'){add('moon',2);add('neptune',1);add('europa',2)}
+  if(q7==='contains_violence'){add('black_hole',2);add('mars',1);add('vega',1)}
+  if(q7==='older'){add('andromeda',2);add('orion_nebula',1);add('milky_way',1)}
 
-  if(q8==='dense_slow'){add('saturn',2);add('andromeda',1)}
-  if(q8==='constant'){add('mercury',2);add('orion_nebula',1)}
-  if(q8==='explosive'){add('black_hole',2);add('sirius',2);add('mars',1)}
-  if(q8==='circular'){add('saturn',2);add('moon',1)}
+  if(q8==='dense_slow'){add('saturn',2);add('andromeda',1);add('milky_way',1)}
+  if(q8==='constant'){add('mercury',2);add('orion_nebula',1);add('sun',2)}
+  if(q8==='explosive'){add('black_hole',2);add('sirius',2);add('mars',1);add('vega',2)}
+  if(q8==='circular'){add('saturn',2);add('moon',1);add('milky_way',1)}
 
-  if(q9==='feel_scale'){add('andromeda',2);add('black_hole',1)}
-  if(q9==='less_afraid'){add('pluto',2);add('neptune',1)}
-  if(q9==='longer'){add('saturn',2);add('andromeda',1)}
-  if(q9==='connected'){add('orion_nebula',2);add('sirius',1);add('moon',1)}
+  if(q9==='feel_scale'){add('andromeda',2);add('black_hole',1);add('milky_way',2)}
+  if(q9==='less_afraid'){add('pluto',2);add('neptune',1);add('europa',2)}
+  if(q9==='longer'){add('saturn',2);add('andromeda',1);add('titan',1)}
+  if(q9==='connected'){add('orion_nebula',2);add('sirius',1);add('moon',1);add('sun',2)}
 
   return topScore(s)
 }
