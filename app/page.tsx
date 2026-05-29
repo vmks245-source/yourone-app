@@ -124,30 +124,15 @@ export default function Home() {
     planet:    'https://15682690152.gumroad.com/l/errpt',
   }
 
-  useEffect(() => {
-    const onPurchase = () => {
-      const cat = sessionStorage.getItem('pendingQuizCat') as CategoryKey | null
-      if (cat) {
-        const catDef = CATEGORIES.find(c => c.key === cat)
-        if (catDef) { setCategory(catDef); setStage('quiz') }
-        sessionStorage.removeItem('pendingQuizCat')
-      } else {
-        setStage('quiz')
-      }
-    }
-    document.addEventListener('gumroad:purchase', onPurchase)
-    return () => document.removeEventListener('gumroad:purchase', onPurchase)
-  }, [])
+  const gumroadRefs = useRef<Partial<Record<CategoryKey, HTMLAnchorElement>>>({})
 
   const startPayment = () => {
-    sessionStorage.setItem('pendingQuizCat', category.key)
-    const url = GUMROAD_URLS[category.key]
-    const a = document.createElement('a')
-    a.href = url
-    a.setAttribute('data-gumroad-single-product', 'true')
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
+    const ref = gumroadRefs.current[category.key]
+    if (ref) {
+      ref.click()
+    } else {
+      window.open(GUMROAD_URLS[category.key], '_blank', 'noopener')
+    }
   }
 
   const onQuizComplete = (answers: Record<number, string | number>) => {
@@ -184,6 +169,11 @@ export default function Home() {
   // ─── HOME ─────────────────────────────────────────────────────────────────
   if (stage === 'home') return (
     <>
+    {/* Hidden Gumroad overlay anchors — must be in DOM before user clicks so Gumroad's script hooks into them */}
+    {(Object.entries(GUMROAD_URLS) as [CategoryKey, string][]).map(([key, url]) => (
+      <a key={key} ref={el => { if (el) gumroadRefs.current[key] = el }}
+        href={url} style={{ display: 'none', position: 'fixed', left: -9999 }} aria-hidden="true" />
+    ))}
     <div style={{ minHeight: '100vh', background: '#04040c', position: 'relative', overflow: 'hidden' }} onMouseMove={onMouseMove}>
       <AmbientReel />
       <ParticleCanvas density={20} />
@@ -322,6 +312,11 @@ export default function Home() {
   if (stage === 'preview') {
     const q1 = QUIZ_DATA[category.key][0]
     return (
+      <>
+      {(Object.entries(GUMROAD_URLS) as [CategoryKey, string][]).map(([key, url]) => (
+        <a key={key} ref={el => { if (el) gumroadRefs.current[key] = el }}
+          href={url} style={{ display: 'none', position: 'fixed', left: -9999 }} aria-hidden="true" />
+      ))}
       <div style={{ minHeight: '100vh', background: '#04040c', position: 'relative', overflow: 'hidden' }} onMouseMove={onMouseMove}>
         <AmbientReel />
         <ParticleCanvas density={18} />
@@ -378,6 +373,7 @@ export default function Home() {
           </button>
         </div>
       </div>
+      </>
     )
   }
 
