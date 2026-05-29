@@ -571,6 +571,22 @@ export function mapCelebrityAnswers(a: A): string {
     obama:0, billie_eilish:0, freddie_mercury:0, steve_jobs:0, leonardo_dicaprio:0, kanye_west:0,
     taylor_swift:0, lady_gaga:0, morgan_freeman:0, einstein:0,
     marilyn_monroe:0, nikola_tesla:0, tupac:0, nelson_mandela:0,
+    elvis_presley:0, michael_jackson:0, madonna:0, bob_dylan:0, bob_marley:0,
+    kurt_cobain:0, jim_morrison:0, prince:0, whitney_houston:0, amy_winehouse:0,
+    frank_sinatra:0, johnny_cash:0, elton_john:0, bruce_springsteen:0, stevie_wonder:0,
+    eminem:0, jay_z:0, kendrick_lamar:0, drake:0, adele:0,
+    harry_styles:0, ariana_grande:0, the_weeknd:0, lizzo:0, post_malone:0,
+    meryl_streep:0, tom_hanks:0, denzel_washington:0, angelina_jolie:0, will_smith:0,
+    dwayne_johnson:0, zendaya:0, emma_watson:0, natalie_portman:0, cate_blanchett:0,
+    viola_davis:0, johnny_depp:0, harrison_ford:0, tom_cruise:0, julia_roberts:0,
+    ryan_gosling:0, scarlett_johansson:0, chris_evans:0, jennifer_lopez:0, anne_hathaway:0,
+    lebron_james:0, serena_williams:0, cristiano_ronaldo:0, lionel_messi:0, muhammad_ali:0,
+    tiger_woods:0, michael_jordan:0, simone_biles:0, roger_federer:0, usain_bolt:0,
+    kobe_bryant:0, venus_williams:0, lewis_hamilton:0, naomi_osaka:0, stephen_curry:0,
+    martin_luther_king:0, mahatma_gandhi:0, malala_yousafzai:0, frida_kahlo:0, andy_warhol:0,
+    marie_curie:0, carl_sagan:0, jane_goodall:0, winston_churchill:0, cleopatra:0,
+    jeff_bezos:0, bill_gates:0, warren_buffett:0, richard_branson:0, mark_zuckerberg:0,
+    sheryl_sandberg:0, jk_rowling:0, alan_turing:0, jack_ma:0, ray_dalio:0,
   }
   const add = (k:string,n:number) => { s[k]+=n }
 
@@ -615,6 +631,47 @@ export function mapCelebrityAnswers(a: A): string {
   if(q8==='completely_honest'){add('billie_eilish',2);add('freddie_mercury',1);add('tupac',2);add('lady_gaga',1)}
   if(q8==='outlive_you'){add('david_bowie',2);add('elon_musk',1);add('kanye_west',1);add('nikola_tesla',2)}
   if(q8==='helps_others'){add('oprah',2);add('keanu_reeves',2);add('obama',1);add('leonardo_dicaprio',1);add('nelson_mandela',2)}
+
+  // ── Extended celebrity scoring ─────────────────────────────────────────────
+  if(q1==='create_true'){add('kurt_cobain',2);add('bob_dylan',2);add('prince',2);add('bob_marley',1);add('eminem',1);add('kendrick_lamar',1);add('jim_morrison',1);add('amy_winehouse',1)}
+  if(q1==='become_known'){add('michael_jackson',2);add('elvis_presley',2);add('madonna',2);add('whitney_houston',1);add('adele',1);add('ariana_grande',1);add('jennifer_lopez',1);add('lizzo',1)}
+  if(q1==='change_infrastructure'){add('bill_gates',2);add('alan_turing',2);add('mark_zuckerberg',1);add('jeff_bezos',1);add('marie_curie',1);add('carl_sagan',1)}
+  if(q1==='make_feel'){add('martin_luther_king',2);add('mahatma_gandhi',2);add('malala_yousafzai',1);add('serena_williams',1);add('tom_hanks',1);add('viola_davis',1)}
+
+  if(q2==='rebuild_louder'){add('dwayne_johnson',2);add('will_smith',1);add('lebron_james',2);add('cristiano_ronaldo',1);add('richard_branson',1)}
+  if(q2==='disappear_process'){add('amy_winehouse',2);add('jim_morrison',2);add('johnny_depp',1);add('meryl_streep',1);add('ryan_gosling',1)}
+  if(q2==='turn_to_art'){add('frida_kahlo',2);add('andy_warhol',2);add('elton_john',1);add('prince',1);add('cleopatra',1)}
+  if(q2==='absorb_forgive'){add('mahatma_gandhi',2);add('martin_luther_king',2);add('malala_yousafzai',2);add('jane_goodall',1);add('tom_hanks',1)}
+
+  if(q3==='visionary'){add('marie_curie',2);add('carl_sagan',2);add('alan_turing',2);add('bill_gates',1);add('jeff_bezos',1)}
+  if(q3==='magnetic'){add('michael_jackson',2);add('madonna',2);add('jennifer_lopez',1);add('ariana_grande',1);add('lizzo',1);add('cleopatra',1);add('elton_john',1)}
+  if(q3==='unstoppable'){add('cristiano_ronaldo',2);add('michael_jordan',2);add('serena_williams',2);add('lebron_james',1);add('simone_biles',1);add('usain_bolt',1)}
+  if(q3==='transformative'){add('martin_luther_king',2);add('mahatma_gandhi',2);add('malala_yousafzai',2);add('winston_churchill',1);add('nelson_mandela',1)}
+
+  if(q4==='constructed'){add('michael_jackson',2);add('jennifer_lopez',1);add('madonna',1);add('jay_z',1);add('beyonce',1)}
+  if(q4==='accidentally'){add('frank_sinatra',1);add('johnny_cash',1);add('harrison_ford',1);add('bruce_springsteen',1)}
+  if(q4==='exactly_you'){add('kurt_cobain',2);add('eminem',2);add('bob_dylan',1);add('jack_ma',1)}
+  if(q4==='character'){add('johnny_depp',2);add('tom_hanks',2);add('meryl_streep',2);add('cate_blanchett',1);add('harrison_ford',1)}
+
+  if(q6==='want_it'){add('jeff_bezos',2);add('mark_zuckerberg',2);add('cristiano_ronaldo',1);add('lebron_james',1);add('jay_z',1);add('dwayne_johnson',1)}
+  if(q6==='carry_carefully'){add('warren_buffett',2);add('ray_dalio',1);add('tom_hanks',1);add('denzel_washington',1);add('roger_federer',1)}
+  if(q6==='reject_quietly'){add('warren_buffett',1);add('jk_rowling',1);add('natalie_portman',1);add('cate_blanchett',1);add('bob_dylan',1)}
+  if(q6==='in_service'){add('serena_williams',2);add('malala_yousafzai',2);add('martin_luther_king',2);add('jane_goodall',2);add('viola_davis',1);add('sheryl_sandberg',1)}
+
+  if(q7==='changed_possible'){add('marie_curie',2);add('alan_turing',2);add('carl_sagan',2);add('bill_gates',1);add('malala_yousafzai',1);add('winston_churchill',1)}
+  if(q7==='completely_real'){add('amy_winehouse',2);add('kurt_cobain',2);add('eminem',2);add('kendrick_lamar',2);add('bob_marley',1)}
+  if(q7==='built_empire'){add('michael_jackson',2);add('jennifer_lopez',1);add('adele',1);add('ariana_grande',1);add('jeff_bezos',1);add('jack_ma',1)}
+  if(q7==='less_alone'){add('jk_rowling',2);add('adele',2);add('stevie_wonder',1);add('frank_sinatra',1);add('anne_hathaway',1);add('zendaya',1)}
+
+  if(q8==='executes_perfectly'){add('michael_jordan',2);add('serena_williams',2);add('cristiano_ronaldo',2);add('simone_biles',2);add('tiger_woods',1);add('roger_federer',1)}
+  if(q8==='completely_honest'){add('kurt_cobain',2);add('amy_winehouse',2);add('kendrick_lamar',2);add('bob_dylan',1);add('eminem',1)}
+  if(q8==='outlive_you'){add('martin_luther_king',2);add('winston_churchill',2);add('carl_sagan',1);add('mahatma_gandhi',1);add('cleopatra',1)}
+  if(q8==='helps_others'){add('malala_yousafzai',2);add('jane_goodall',2);add('serena_williams',1);add('viola_davis',1);add('jk_rowling',1)}
+
+  if(slider<25){add('jeff_bezos',1);add('mark_zuckerberg',1);add('cristiano_ronaldo',1);add('michael_jordan',1)}
+  else if(slider<45){add('warren_buffett',1);add('roger_federer',1);add('meryl_streep',1);add('bob_dylan',1)}
+  else if(slider<65){add('tom_hanks',1);add('adele',1);add('zendaya',1);add('natalie_portman',1);add('harry_styles',1)}
+  else{add('lizzo',2);add('ariana_grande',1);add('the_weeknd',1);add('drake',1);add('post_malone',1)}
 
   return topScore(s)
 }
