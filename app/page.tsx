@@ -6,6 +6,7 @@ import type { CategoryKey, ArchetypeResult } from './lib/archetypes'
 import { ARCHETYPE_REGISTRY } from './lib/archetypes'
 import { QUIZ_DATA, SCORE_FUNCTIONS } from './lib/quizData'
 import { triggerDownload } from './components/ShareCard'
+import { ARCHETYPE_LISTS, encodeCode, decodeCode } from './lib/codeUtils'
 
 const AmbientReel    = dynamic(() => import('./components/AmbientReel'),    { ssr: false })
 const ParticleCanvas = dynamic(() => import('./components/ParticleCanvas'), { ssr: false })
@@ -29,40 +30,7 @@ const CATEGORIES: CatDef[] = [
   { key: 'planet',    label: 'Your Planet',      emoji: '🪐', teaser: 'Where in the cosmos do you belong?',          price: '$2.90', color: '#38c4f8', gradient: 'rgba(56,196,248,0.14)' },
 ]
 
-const ARCHETYPE_LISTS: Record<CategoryKey, string[]> = {
-  world:     ['meadow','neon_alley','ocean','tokyo_rooftop','desert_canyon','storm_forest','arctic','autumn_forest','factory','cloud_sea'],
-  animal:    ['wolf','eagle','fox','bear','dolphin','lion','owl','deer','tiger','octopus','panther','elephant','raven','cheetah','horse','whale','snake','hummingbird','gorilla','falcon'],
-  celebrity: ['elon_musk','rihanna','keanu_reeves','oprah','david_bowie','beyonce','obama','billie_eilish','freddie_mercury','steve_jobs','leonardo_dicaprio','kanye_west','taylor_swift','lady_gaga','morgan_freeman','einstein','marilyn_monroe','nikola_tesla','tupac','nelson_mandela','elvis_presley','michael_jackson','madonna','bob_dylan','bob_marley','kurt_cobain','jim_morrison','prince','whitney_houston','amy_winehouse','frank_sinatra','johnny_cash','elton_john','bruce_springsteen','stevie_wonder','eminem','jay_z','kendrick_lamar','drake','adele','harry_styles','ariana_grande','the_weeknd','lizzo','post_malone','meryl_streep','tom_hanks','denzel_washington','angelina_jolie','will_smith','dwayne_johnson','zendaya','emma_watson','natalie_portman','cate_blanchett','viola_davis','johnny_depp','harrison_ford','tom_cruise','julia_roberts','ryan_gosling','scarlett_johansson','chris_evans','jennifer_lopez','anne_hathaway','lebron_james','serena_williams','cristiano_ronaldo','lionel_messi','muhammad_ali','tiger_woods','michael_jordan','simone_biles','roger_federer','usain_bolt','kobe_bryant','venus_williams','lewis_hamilton','naomi_osaka','stephen_curry','martin_luther_king','mahatma_gandhi','malala_yousafzai','frida_kahlo','andy_warhol','marie_curie','carl_sagan','jane_goodall','winston_churchill','cleopatra','jeff_bezos','bill_gates','warren_buffett','richard_branson','mark_zuckerberg','sheryl_sandberg','jk_rowling','alan_turing','jack_ma','ray_dalio'],
-  planet:    ['mars','venus','saturn','jupiter','neptune','mercury','pluto','orion_nebula','black_hole','sirius','moon','andromeda','europa','sun','milky_way','vega','titan'],
-}
-
 const TICKER_NAMES = ['Sunlit Meadow','Wolf','Tokyo Rooftop','Eagle','Neon Alley','Mars','Rihanna','Arctic Tundra','Black Hole','Fox','Billie Eilish','Cloud Sea','Jupiter','Panther','David Bowie','Desert Canyon','Sirius','Bear','Andromeda','Freddie Mercury','Storm Forest','Octopus','Saturn','Beyoncé','Autumn Forest','Neptune','Deer','Keanu Reeves','Factory','Pluto','Lion','Orion Nebula','Dolphin','Obama','Raven','Cheetah','Horse','Humpback Whale','Serpent','Hummingbird','Gorilla','Falcon','Taylor Swift','Lady Gaga','Morgan Freeman','Einstein','Marilyn Monroe','Tesla','Tupac','Mandela','Europa','The Sun','Milky Way','Vega','Titan']
-
-const CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-
-function encodeCode(cat: CategoryKey, resultId: string, answers: Record<number, string | number>): string {
-  const list = ARCHETYPE_LISTS[cat]
-  const idx = Math.max(0, list.indexOf(resultId))
-  const catIdx = Object.keys(ARCHETYPE_REGISTRY).indexOf(cat)
-  const ts = Date.now()
-  const n0 = Object.values(answers).reduce((a: number, v) => a + (typeof v === 'string' ? v.charCodeAt(0) : Number(v)), 0)
-  const nonce = [CHARS[n0 % 36], CHARS[(idx + 1) % 36], CHARS[(ts & 0x3f) % 36], CHARS[((ts >> 8) & 0x3f) % 36], CHARS[catIdx % 36]].join('')
-  const chk = nonce.split('').reduce((a, ch) => a + CHARS.indexOf(ch), 0) % 36
-  const int2 = (idx * 5 + chk * 3 + 17) % 36
-  return CHARS[idx % 36] + nonce + CHARS[chk] + CHARS[int2]
-}
-
-function decodeCode(c: string, cat: CategoryKey): string | null {
-  if (!c || c.length !== 8) return null
-  const upper = c.toUpperCase()
-  if (!upper.split('').every(ch => CHARS.includes(ch))) return null
-  const idx = CHARS.indexOf(upper[0])
-  const list = ARCHETYPE_LISTS[cat]
-  if (idx < 0 || idx >= list.length) return null
-  const chk = upper.slice(1, 6).split('').reduce((a, ch) => a + CHARS.indexOf(ch), 0) % 36
-  if (CHARS[chk] !== upper[6]) return null
-  return list[idx] ?? null
-}
 
 function useCounter(base: number) {
   const [n, setN] = useState(base)
@@ -90,6 +58,14 @@ export default function Home() {
   const [btnMag, setBtnMag] = useState({ x: 0, y: 0 })
   const btnRef = useRef<HTMLButtonElement>(null)
   const counter = useCounter(2847)
+
+  // Profile claim state
+  const [claimName, setClaimName] = useState('')
+  const [claimRole, setClaimRole] = useState('')
+  const [claimBuilding, setClaimBuilding] = useState('')
+  const [claimLink, setClaimLink] = useState('')
+  const [profileUrl, setProfileUrl] = useState('')
+  const [profileCopied, setProfileCopied] = useState(false)
 
   useEffect(() => {
     const p = new URLSearchParams(window.location.search)
@@ -133,6 +109,20 @@ export default function Home() {
     } else {
       window.open(GUMROAD_URLS[category.key], '_blank', 'noopener')
     }
+  }
+
+  const generateProfile = () => {
+    if (!result || !code) return
+    const params = new URLSearchParams({ cat: category.key })
+    if (claimName.trim())     params.set('n', claimName.trim())
+    if (claimRole.trim())     params.set('r', claimRole.trim())
+    if (claimBuilding.trim()) params.set('b', claimBuilding.trim())
+    if (claimLink.trim())     params.set('l', claimLink.trim())
+    const url = `https://yourone.world/p/${code}?${params.toString()}`
+    setProfileUrl(url)
+    navigator.clipboard.writeText(url).catch(() => {})
+    setProfileCopied(true)
+    setTimeout(() => setProfileCopied(false), 3000)
   }
 
   const onQuizComplete = (answers: Record<number, string | number>) => {
@@ -297,6 +287,8 @@ export default function Home() {
 
     {/* Floating footer */}
     <div style={{ position: 'fixed', bottom: '1.2rem', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '0.9rem', alignItems: 'center', fontSize: '0.68rem', whiteSpace: 'nowrap', zIndex: 20, background: 'rgba(4,4,14,0.7)', backdropFilter: 'blur(12px)', border: '0.5px solid rgba(255,255,255,0.07)', borderRadius: '50px', padding: '0.45rem 1.1rem' }}>
+      <Link href="/collective" style={{ color: 'rgba(160,122,248,0.75)', textDecoration: 'none', fontWeight: 500 }}>Collective</Link>
+      <span style={{ color: 'rgba(255,255,255,0.18)' }}>·</span>
       <Link href="/pricing" style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'none' }}>Pricing</Link>
       <span style={{ color: 'rgba(255,255,255,0.18)' }}>·</span>
       <Link href="/terms" style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'none' }}>Terms</Link>
@@ -527,6 +519,44 @@ export default function Home() {
                   </button>
                 ))}
               </div>
+            </div>
+
+            {/* Claim your profile */}
+            <div style={{ background: 'rgba(0,0,0,0.35)', backdropFilter: 'blur(14px)', border: `0.5px solid ${result.color}22`, borderRadius: '16px', padding: '1.2rem 1.3rem', marginBottom: '0.75rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.9rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                <div>
+                  <div style={{ fontSize: '9px', letterSpacing: '0.18em', color: `${result.color}70`, textTransform: 'uppercase', fontWeight: 600, marginBottom: '0.2rem' }}>Claim your profile</div>
+                  <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.45)' }}>Get a shareable link that shows your archetype + who you are</div>
+                </div>
+                <Link href="/collective" style={{ textDecoration: 'none', fontSize: '0.7rem', color: `${result.color}99`, border: `0.5px solid ${result.color}30`, borderRadius: '50px', padding: '0.25rem 0.7rem', whiteSpace: 'nowrap' }}>
+                  The Collective →
+                </Link>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '7px', marginBottom: '7px' }}>
+                {([
+                  { val: claimName,     set: setClaimName,     ph: 'Your name',       label: 'Name' },
+                  { val: claimRole,     set: setClaimRole,     ph: 'What you do',     label: 'Role' },
+                ] as { val: string; set: (v: string) => void; ph: string; label: string }[]).map(f => (
+                  <input key={f.label} value={f.val} onChange={e => f.set(e.target.value)} placeholder={f.ph}
+                    style={{ background: 'rgba(255,255,255,0.04)', border: '0.5px solid rgba(255,255,255,0.1)', borderRadius: '9px', padding: '0.52rem 0.75rem', color: 'rgba(255,255,255,0.85)', fontSize: '0.78rem', outline: 'none', width: '100%' }} />
+                ))}
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '7px', marginBottom: '9px' }}>
+                <input value={claimBuilding} onChange={e => setClaimBuilding(e.target.value)} placeholder="What are you building? (one line)"
+                  style={{ background: 'rgba(255,255,255,0.04)', border: '0.5px solid rgba(255,255,255,0.1)', borderRadius: '9px', padding: '0.52rem 0.75rem', color: 'rgba(255,255,255,0.85)', fontSize: '0.78rem', outline: 'none', width: '100%' }} />
+                <input value={claimLink} onChange={e => setClaimLink(e.target.value)} placeholder="Twitter / LinkedIn / website (optional)"
+                  style={{ background: 'rgba(255,255,255,0.04)', border: '0.5px solid rgba(255,255,255,0.1)', borderRadius: '9px', padding: '0.52rem 0.75rem', color: 'rgba(255,255,255,0.85)', fontSize: '0.78rem', outline: 'none', width: '100%' }} />
+              </div>
+              <button onClick={generateProfile}
+                style={{ width: '100%', background: `${result.color}18`, border: `0.5px solid ${result.color}44`, borderRadius: '9px', padding: '0.6rem', color: result.color, cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600, transition: 'all 0.2s' }}>
+                {profileCopied ? '✓ Profile link copied!' : 'Generate & copy my profile link →'}
+              </button>
+              {profileUrl && (
+                <div style={{ marginTop: '8px', background: 'rgba(0,0,0,0.25)', borderRadius: '8px', padding: '0.5rem 0.7rem', display: 'flex', alignItems: 'center', gap: '0.5rem', overflow: 'hidden' }}>
+                  <span style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.35)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontFamily: 'monospace' }}>{profileUrl}</span>
+                  <a href={profileUrl} target="_blank" rel="noreferrer" style={{ fontSize: '0.65rem', color: `${result.color}99`, textDecoration: 'none', flexShrink: 0 }}>Open →</a>
+                </div>
+              )}
             </div>
 
             {/* Back to home */}
