@@ -86,21 +86,21 @@ export default function ProjectEstimator() {
   }
 
   return (
-    <section id="estimator" className="py-24 relative overflow-hidden bg-slate-50/80 border-y border-slate-200">
+    <section id="estimator" className="py-24 relative overflow-hidden bg-[#faf5ea]/90 border-y border-amber-200/80">
       {/* Background glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-indigo-500/5 blur-[140px] pointer-events-none rounded-full" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-amber-500/10 blur-[140px] pointer-events-none rounded-full" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-mono font-semibold uppercase tracking-wider">
-            <Calculator className="w-4 h-4 text-indigo-600" /> Interactive Project Scope Estimator
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-100/80 border border-amber-300/70 text-amber-900 text-xs font-mono font-semibold uppercase tracking-wider">
+            <Calculator className="w-4 h-4 text-amber-700" /> Interactive Project Scope Estimator
           </div>
-          <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight">
+          <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold text-stone-900 tracking-tight">
             Calculate Your Project Scope & <span className="text-gradient">Instant Investment Quote</span>
           </h2>
-          <p className="text-slate-600 text-base sm:text-lg">
+          <p className="text-stone-600 text-base sm:text-lg">
             Transparent pricing based on exact engineering deliverables. Select your scope below to generate an estimate in seconds.
           </p>
         </div>
@@ -111,14 +111,14 @@ export default function ProjectEstimator() {
             onClick={() => { setActiveType('app'); setSelectedOptions(['ios_android', 'backend_api']); }}
             className={`p-4 rounded-2xl text-left transition-all flex flex-col gap-3 border ${
               activeType === 'app' 
-                ? 'bg-white border-indigo-500 shadow-md shadow-indigo-500/10 text-slate-900' 
-                : 'bg-white/60 border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300'
+                ? 'bg-white border-amber-500 shadow-md shadow-amber-600/10 text-stone-900' 
+                : 'bg-white/70 border-amber-200/70 text-stone-600 hover:text-stone-900 hover:border-amber-300'
             }`}
           >
-            <Smartphone className={`w-6 h-6 ${activeType === 'app' ? 'text-indigo-600' : 'text-slate-400'}`} />
+            <Smartphone className={`w-6 h-6 ${activeType === 'app' ? 'text-amber-700' : 'text-stone-400'}`} />
             <div>
               <div className="font-semibold text-sm">App Building</div>
-              <div className="text-xs text-slate-500">iOS, Android, React Native</div>
+              <div className="text-xs text-stone-500">iOS, Android, React Native</div>
             </div>
           </button>
 
@@ -126,14 +126,14 @@ export default function ProjectEstimator() {
             onClick={() => { setActiveType('website'); setSelectedOptions(['nextjs_3d', 'seo_speed']); }}
             className={`p-4 rounded-2xl text-left transition-all flex flex-col gap-3 border ${
               activeType === 'website' 
-                ? 'bg-white border-indigo-500 shadow-md shadow-indigo-500/10 text-slate-900' 
-                : 'bg-white/60 border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300'
+                ? 'bg-white border-amber-500 shadow-md shadow-amber-600/10 text-stone-900' 
+                : 'bg-white/70 border-amber-200/70 text-stone-600 hover:text-stone-900 hover:border-amber-300'
             }`}
           >
-            <Globe className={`w-6 h-6 ${activeType === 'website' ? 'text-indigo-600' : 'text-slate-400'}`} />
+            <Globe className={`w-6 h-6 ${activeType === 'website' ? 'text-amber-700' : 'text-stone-400'}`} />
             <div>
               <div className="font-semibold text-sm">Website Building</div>
-              <div className="text-xs text-slate-500">Next.js 15, 3D & Webflow</div>
+              <div className="text-xs text-stone-500">Next.js 15, 3D & Webflow</div>
             </div>
           </button>
 
@@ -141,14 +141,14 @@ export default function ProjectEstimator() {
             onClick={() => { setActiveType('marketing'); setSelectedOptions(['neuromarketing_audit', 'performance_ads']); }}
             className={`p-4 rounded-2xl text-left transition-all flex flex-col gap-3 border ${
               activeType === 'marketing' 
-                ? 'bg-white border-indigo-500 shadow-md shadow-indigo-500/10 text-slate-900' 
-                : 'bg-white/60 border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300'
+                ? 'bg-white border-amber-500 shadow-md shadow-amber-600/10 text-stone-900' 
+                : 'bg-white/70 border-amber-200/70 text-stone-600 hover:text-stone-900 hover:border-amber-300'
             }`}
           >
-            <TrendingUp className={`w-6 h-6 ${activeType === 'marketing' ? 'text-indigo-600' : 'text-slate-400'}`} />
+            <TrendingUp className={`w-6 h-6 ${activeType === 'marketing' ? 'text-amber-700' : 'text-stone-400'}`} />
             <div>
               <div className="font-semibold text-sm">Digital Marketing</div>
-              <div className="text-xs text-slate-500">SEO, Ads & Neuromarketing</div>
+              <div className="text-xs text-stone-500">SEO, Ads & Neuromarketing</div>
             </div>
           </button>
 
@@ -156,14 +156,14 @@ export default function ProjectEstimator() {
             onClick={() => { setActiveType('fullstack'); setSelectedOptions(['full_app_web', 'growth_engine']); }}
             className={`p-4 rounded-2xl text-left transition-all flex flex-col gap-3 border ${
               activeType === 'fullstack' 
-                ? 'bg-white border-amber-500 shadow-md shadow-amber-500/10 text-slate-900' 
-                : 'bg-white/60 border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300'
+                ? 'bg-white border-amber-600 shadow-md shadow-amber-600/10 text-stone-900' 
+                : 'bg-white/70 border-amber-200/70 text-stone-600 hover:text-stone-900 hover:border-amber-300'
             }`}
           >
-            <Zap className={`w-6 h-6 ${activeType === 'fullstack' ? 'text-amber-500' : 'text-slate-400'}`} />
+            <Zap className={`w-6 h-6 ${activeType === 'fullstack' ? 'text-orange-600' : 'text-stone-400'}`} />
             <div>
               <div className="font-semibold text-sm">Full Transformation</div>
-              <div className="text-xs text-slate-500">Complete Product Suite</div>
+              <div className="text-xs text-stone-500">Complete Product Suite</div>
             </div>
           </button>
         </div>
@@ -173,14 +173,14 @@ export default function ProjectEstimator() {
           
           {/* Options Checklist */}
           <div className="lg:col-span-7 space-y-4">
-            <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-lg backdrop-blur-xl">
-              <h3 className="text-lg font-bold text-slate-900 mb-2 flex items-center justify-between">
+            <div className="p-6 rounded-3xl bg-white border border-amber-200/80 shadow-lg backdrop-blur-xl">
+              <h3 className="text-lg font-bold text-stone-900 mb-2 flex items-center justify-between">
                 <span>Select Deliverables for {activeScope.title}</span>
-                <span className="text-xs font-mono text-indigo-700 bg-indigo-50 border border-indigo-200 px-2.5 py-1 rounded-full font-semibold">
+                <span className="text-xs font-mono text-amber-900 bg-amber-100/80 border border-amber-300/70 px-2.5 py-1 rounded-full font-semibold">
                   Base Architecture: ${activeScope.basePrice.toLocaleString()}
                 </span>
               </h3>
-              <p className="text-xs text-slate-500 mb-6">
+              <p className="text-xs text-stone-500 mb-6">
                 Customize your exact feature stack below. Every option includes full IP ownership, clean documentation & post-launch warranty.
               </p>
 
@@ -193,23 +193,23 @@ export default function ProjectEstimator() {
                       onClick={() => toggleOption(option.id)}
                       className={`p-4 rounded-2xl border cursor-pointer transition-all flex items-start justify-between gap-4 ${
                         isChecked 
-                          ? 'bg-indigo-50/60 border-indigo-400 text-slate-900 shadow-sm' 
-                          : 'bg-slate-50/50 border-slate-200 text-slate-700 hover:border-slate-300'
+                          ? 'bg-amber-50/80 border-amber-400 text-stone-900 shadow-sm' 
+                          : 'bg-[#faf5ea]/50 border-amber-200/60 text-stone-700 hover:border-amber-300'
                       }`}
                     >
                       <div className="flex items-start gap-3">
                         <div className={`w-5 h-5 rounded-md border flex items-center justify-center mt-0.5 transition-colors ${
-                          isChecked ? 'bg-indigo-600 border-indigo-600 text-white' : 'border-slate-300 bg-white'
+                          isChecked ? 'bg-amber-600 border-amber-600 text-white' : 'border-amber-300 bg-white'
                         }`}>
                           {isChecked && <CheckCircle2 className="w-4 h-4 text-white" />}
                         </div>
                         <div>
-                          <div className="font-semibold text-sm text-slate-900">{option.label}</div>
-                          <div className="text-xs text-slate-500 mt-0.5">{option.desc}</div>
+                          <div className="font-semibold text-sm text-stone-900">{option.label}</div>
+                          <div className="text-xs text-stone-500 mt-0.5">{option.desc}</div>
                         </div>
                       </div>
                       <div className="text-right shrink-0">
-                        <span className="font-mono text-sm font-bold text-indigo-700">+${option.price.toLocaleString()}</span>
+                        <span className="font-mono text-sm font-bold text-amber-800">+${option.price.toLocaleString()}</span>
                       </div>
                     </div>
                   )
@@ -217,8 +217,8 @@ export default function ProjectEstimator() {
               </div>
 
               {/* Delivery Velocity Selector */}
-              <div className="mt-8 pt-6 border-t border-slate-100">
-                <label className="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-3 block">
+              <div className="mt-8 pt-6 border-t border-amber-100">
+                <label className="text-xs uppercase tracking-wider text-stone-500 font-semibold mb-3 block">
                   Delivery Velocity & Sprint Pacing
                 </label>
                 <div className="grid grid-cols-2 gap-3">
@@ -227,8 +227,8 @@ export default function ProjectEstimator() {
                     onClick={() => setTimelineSpeed('standard')}
                     className={`p-3 rounded-xl border text-xs font-semibold text-left transition-all ${
                       timelineSpeed === 'standard'
-                        ? 'bg-indigo-50 border-indigo-400 text-indigo-900'
-                        : 'bg-slate-50 border-slate-200 text-slate-600'
+                        ? 'bg-amber-100/70 border-amber-400 text-amber-900'
+                        : 'bg-[#faf5ea] border-amber-200 text-stone-600'
                     }`}
                   >
                     Standard Sprint Pacing (6-8 Weeks)
@@ -238,8 +238,8 @@ export default function ProjectEstimator() {
                     onClick={() => setTimelineSpeed('express')}
                     className={`p-3 rounded-xl border text-xs font-semibold text-left transition-all ${
                       timelineSpeed === 'express'
-                        ? 'bg-indigo-50 border-indigo-400 text-indigo-900'
-                        : 'bg-slate-50 border-slate-200 text-slate-600'
+                        ? 'bg-amber-100/70 border-amber-400 text-amber-900'
+                        : 'bg-[#faf5ea] border-amber-200 text-stone-600'
                     }`}
                   >
                     Express Fast-Track (+25% Speed, 3-5 Weeks)
@@ -251,18 +251,18 @@ export default function ProjectEstimator() {
 
           {/* Real-time Summary Card & Lead Form */}
           <div className="lg:col-span-5">
-            <div className="p-8 rounded-3xl bg-white border border-slate-200 shadow-xl sticky top-24">
+            <div className="p-8 rounded-3xl bg-white border border-amber-200/80 shadow-xl sticky top-24">
               
-              <div className="flex items-center justify-between border-b border-slate-100 pb-6 mb-6">
+              <div className="flex items-center justify-between border-b border-amber-100 pb-6 mb-6">
                 <div>
-                  <span className="text-xs text-slate-500 uppercase tracking-widest block font-semibold">Estimated Investment</span>
-                  <div className="font-heading text-4xl font-extrabold text-slate-900 font-mono mt-1 text-gradient">
-                    ${finalEstimate.toLocaleString()} <span className="text-xs font-sans font-normal text-slate-500">USD</span>
+                  <span className="text-xs text-stone-500 uppercase tracking-widest block font-semibold">Estimated Investment</span>
+                  <div className="font-heading text-4xl font-extrabold text-stone-900 font-mono mt-1 text-gradient">
+                    ${finalEstimate.toLocaleString()} <span className="text-xs font-sans font-normal text-stone-500">USD</span>
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs text-slate-500 uppercase tracking-widest block font-semibold">Delivery Pacing</span>
-                  <span className="text-sm font-bold text-emerald-600 font-mono mt-1 block">
+                  <span className="text-xs text-stone-500 uppercase tracking-widest block font-semibold">Delivery Pacing</span>
+                  <span className="text-sm font-bold text-emerald-700 font-mono mt-1 block">
                     {estimatedWeeks}
                   </span>
                 </div>
@@ -270,32 +270,32 @@ export default function ProjectEstimator() {
 
               {/* What's included checklist */}
               <div className="space-y-3 mb-8">
-                <div className="text-xs font-semibold uppercase text-slate-500 tracking-wider">Includes Studio Guarantee:</div>
-                <div className="flex items-center gap-2 text-xs text-slate-700 font-medium">
-                  <ShieldCheck className="w-4 h-4 text-indigo-600 shrink-0" />
+                <div className="text-xs font-semibold uppercase text-stone-500 tracking-wider">Includes Studio Guarantee:</div>
+                <div className="flex items-center gap-2 text-xs text-stone-700 font-medium">
+                  <ShieldCheck className="w-4 h-4 text-amber-700 shrink-0" />
                   <span>Dedicated Senior Tech Lead + UI/UX Strategist</span>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-slate-700 font-medium">
-                  <ShieldCheck className="w-4 h-4 text-indigo-600 shrink-0" />
+                <div className="flex items-center gap-2 text-xs text-stone-700 font-medium">
+                  <ShieldCheck className="w-4 h-4 text-amber-700 shrink-0" />
                   <span>100% Source Code & IP Transfer</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-slate-700 font-medium">
-                  <ShieldCheck className="w-4 h-4 text-indigo-600 shrink-0" />
+                  <ShieldCheck className="w-4 h-4 text-amber-700 shrink-0" />
                   <span>60-Day Post-Launch SLA & Bug Warranty</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-slate-700 font-medium">
-                  <ShieldCheck className="w-4 h-4 text-indigo-600 shrink-0" />
+                  <ShieldCheck className="w-4 h-4 text-amber-700 shrink-0" />
                   <span>Weekly Demo Sprints & Figma Live Link</span>
                 </div>
               </div>
 
               {/* Instant Inquiry Form */}
               {submitted ? (
-                <div className="p-6 rounded-2xl bg-emerald-50 border border-emerald-200 text-center space-y-3">
-                  <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto" />
-                  <h4 className="font-heading text-lg font-bold text-slate-900">Proposal Reserved!</h4>
-                  <p className="text-xs text-slate-700">
-                    Thank you <strong className="text-slate-900">{clientName}</strong>! Your estimated quote of <strong>${finalEstimate.toLocaleString()}</strong> has been locked in. Our lead strategist will reach out to <strong>{clientEmail}</strong> within 2 hours.
+                <div className="p-6 rounded-2xl bg-emerald-100/70 border border-emerald-300 text-center space-y-3">
+                  <CheckCircle2 className="w-10 h-10 text-emerald-700 mx-auto" />
+                  <h4 className="font-heading text-lg font-bold text-stone-900">Proposal Reserved!</h4>
+                  <p className="text-xs text-stone-700">
+                    Thank you <strong className="text-stone-900">{clientName}</strong>! Your estimated quote of <strong>${finalEstimate.toLocaleString()}</strong> has been locked in. Our lead strategist will reach out to <strong>{clientEmail}</strong> within 2 hours.
                   </p>
                 </div>
               ) : (
@@ -307,7 +307,7 @@ export default function ProjectEstimator() {
                       placeholder="Your Name / Company Name"
                       value={clientName}
                       onChange={e => setClientName(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:border-indigo-500 focus:bg-white transition-colors"
+                      className="w-full px-4 py-3 rounded-xl bg-[#faf5ea]/70 border border-amber-200 text-stone-900 placeholder-stone-400 text-sm focus:outline-none focus:border-amber-500 focus:bg-white transition-colors"
                     />
                   </div>
                   <div>
@@ -317,16 +317,16 @@ export default function ProjectEstimator() {
                       placeholder="work.email@company.com"
                       value={clientEmail}
                       onChange={e => setClientEmail(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:border-indigo-500 focus:bg-white transition-colors"
+                      className="w-full px-4 py-3 rounded-xl bg-[#faf5ea]/70 border border-amber-200 text-stone-900 placeholder-stone-400 text-sm focus:outline-none focus:border-amber-500 focus:bg-white transition-colors"
                     />
                   </div>
                   <button
                     type="submit"
-                    className="w-full py-4 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 font-semibold text-white text-sm shadow-md shadow-indigo-600/30 hover:opacity-95 transition-opacity flex items-center justify-center gap-2 group"
+                    className="w-full py-4 rounded-xl bg-gradient-to-r from-amber-600 via-orange-600 to-indigo-600 font-semibold text-white text-sm shadow-md shadow-amber-600/30 hover:opacity-95 transition-opacity flex items-center justify-center gap-2 group"
                   >
                     Lock In Estimate & Reserve Sprint <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </button>
-                  <p className="text-[11px] text-center text-slate-500">
+                  <p className="text-[11px] text-center text-stone-500">
                     No credit card required. NDA signed upon first call.
                   </p>
                 </form>
