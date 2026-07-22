@@ -86,21 +86,21 @@ export default function ProjectEstimator() {
   }
 
   return (
-    <section id="estimator" className="py-24 relative overflow-hidden bg-slate-950/80 border-y border-white/10">
+    <section id="estimator" className="py-24 relative overflow-hidden bg-slate-50/80 border-y border-slate-200">
       {/* Background glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-indigo-600/10 blur-[140px] pointer-events-none rounded-full" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-indigo-500/5 blur-[140px] pointer-events-none rounded-full" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-mono font-semibold uppercase tracking-wider">
-            <Calculator className="w-4 h-4" /> Interactive Project Scope Estimator
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-mono font-semibold uppercase tracking-wider">
+            <Calculator className="w-4 h-4 text-indigo-600" /> Interactive Project Scope Estimator
           </div>
-          <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
+          <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight">
             Calculate Your Project Scope & <span className="text-gradient">Instant Investment Quote</span>
           </h2>
-          <p className="text-slate-400 text-base sm:text-lg">
+          <p className="text-slate-600 text-base sm:text-lg">
             Transparent pricing based on exact engineering deliverables. Select your scope below to generate an estimate in seconds.
           </p>
         </div>
@@ -111,11 +111,11 @@ export default function ProjectEstimator() {
             onClick={() => { setActiveType('app'); setSelectedOptions(['ios_android', 'backend_api']); }}
             className={`p-4 rounded-2xl text-left transition-all flex flex-col gap-3 border ${
               activeType === 'app' 
-                ? 'bg-gradient-to-br from-indigo-900/40 to-slate-900 border-indigo-500/60 shadow-lg shadow-indigo-500/20 text-white' 
-                : 'bg-slate-900/60 border-white/5 text-slate-400 hover:text-white hover:border-white/20'
+                ? 'bg-white border-indigo-500 shadow-md shadow-indigo-500/10 text-slate-900' 
+                : 'bg-white/60 border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300'
             }`}
           >
-            <Smartphone className={`w-6 h-6 ${activeType === 'app' ? 'text-indigo-400' : 'text-slate-500'}`} />
+            <Smartphone className={`w-6 h-6 ${activeType === 'app' ? 'text-indigo-600' : 'text-slate-400'}`} />
             <div>
               <div className="font-semibold text-sm">App Building</div>
               <div className="text-xs text-slate-500">iOS, Android, React Native</div>
@@ -126,11 +126,11 @@ export default function ProjectEstimator() {
             onClick={() => { setActiveType('website'); setSelectedOptions(['nextjs_3d', 'seo_speed']); }}
             className={`p-4 rounded-2xl text-left transition-all flex flex-col gap-3 border ${
               activeType === 'website' 
-                ? 'bg-gradient-to-br from-indigo-900/40 to-slate-900 border-indigo-500/60 shadow-lg shadow-indigo-500/20 text-white' 
-                : 'bg-slate-900/60 border-white/5 text-slate-400 hover:text-white hover:border-white/20'
+                ? 'bg-white border-indigo-500 shadow-md shadow-indigo-500/10 text-slate-900' 
+                : 'bg-white/60 border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300'
             }`}
           >
-            <Globe className={`w-6 h-6 ${activeType === 'website' ? 'text-indigo-400' : 'text-slate-500'}`} />
+            <Globe className={`w-6 h-6 ${activeType === 'website' ? 'text-indigo-600' : 'text-slate-400'}`} />
             <div>
               <div className="font-semibold text-sm">Website Building</div>
               <div className="text-xs text-slate-500">Next.js 15, 3D & Webflow</div>
@@ -141,11 +141,11 @@ export default function ProjectEstimator() {
             onClick={() => { setActiveType('marketing'); setSelectedOptions(['neuromarketing_audit', 'performance_ads']); }}
             className={`p-4 rounded-2xl text-left transition-all flex flex-col gap-3 border ${
               activeType === 'marketing' 
-                ? 'bg-gradient-to-br from-indigo-900/40 to-slate-900 border-indigo-500/60 shadow-lg shadow-indigo-500/20 text-white' 
-                : 'bg-slate-900/60 border-white/5 text-slate-400 hover:text-white hover:border-white/20'
+                ? 'bg-white border-indigo-500 shadow-md shadow-indigo-500/10 text-slate-900' 
+                : 'bg-white/60 border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300'
             }`}
           >
-            <TrendingUp className={`w-6 h-6 ${activeType === 'marketing' ? 'text-indigo-400' : 'text-slate-500'}`} />
+            <TrendingUp className={`w-6 h-6 ${activeType === 'marketing' ? 'text-indigo-600' : 'text-slate-400'}`} />
             <div>
               <div className="font-semibold text-sm">Digital Marketing</div>
               <div className="text-xs text-slate-500">SEO, Ads & Neuromarketing</div>
@@ -156,11 +156,11 @@ export default function ProjectEstimator() {
             onClick={() => { setActiveType('fullstack'); setSelectedOptions(['full_app_web', 'growth_engine']); }}
             className={`p-4 rounded-2xl text-left transition-all flex flex-col gap-3 border ${
               activeType === 'fullstack' 
-                ? 'bg-gradient-to-br from-indigo-900/40 to-slate-900 border-indigo-500/60 shadow-lg shadow-indigo-500/20 text-white' 
-                : 'bg-slate-900/60 border-white/5 text-slate-400 hover:text-white hover:border-white/20'
+                ? 'bg-white border-amber-500 shadow-md shadow-amber-500/10 text-slate-900' 
+                : 'bg-white/60 border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300'
             }`}
           >
-            <Zap className={`w-6 h-6 ${activeType === 'fullstack' ? 'text-amber-400' : 'text-slate-500'}`} />
+            <Zap className={`w-6 h-6 ${activeType === 'fullstack' ? 'text-amber-500' : 'text-slate-400'}`} />
             <div>
               <div className="font-semibold text-sm">Full Transformation</div>
               <div className="text-xs text-slate-500">Complete Product Suite</div>
@@ -173,14 +173,14 @@ export default function ProjectEstimator() {
           
           {/* Options Checklist */}
           <div className="lg:col-span-7 space-y-4">
-            <div className="p-6 rounded-3xl bg-slate-900/80 border border-white/10 backdrop-blur-xl">
-              <h3 className="text-lg font-bold text-white mb-2 flex items-center justify-between">
+            <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-lg backdrop-blur-xl">
+              <h3 className="text-lg font-bold text-slate-900 mb-2 flex items-center justify-between">
                 <span>Select Deliverables for {activeScope.title}</span>
-                <span className="text-xs font-mono text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2.5 py-1 rounded-full">
+                <span className="text-xs font-mono text-indigo-700 bg-indigo-50 border border-indigo-200 px-2.5 py-1 rounded-full font-semibold">
                   Base Architecture: ${activeScope.basePrice.toLocaleString()}
                 </span>
               </h3>
-              <p className="text-xs text-slate-400 mb-6">
+              <p className="text-xs text-slate-500 mb-6">
                 Customize your exact feature stack below. Every option includes full IP ownership, clean documentation & post-launch warranty.
               </p>
 
@@ -193,23 +193,23 @@ export default function ProjectEstimator() {
                       onClick={() => toggleOption(option.id)}
                       className={`p-4 rounded-2xl border cursor-pointer transition-all flex items-start justify-between gap-4 ${
                         isChecked 
-                          ? 'bg-indigo-950/40 border-indigo-500/50 text-white shadow-md' 
-                          : 'bg-slate-900/40 border-white/5 text-slate-300 hover:border-white/15'
+                          ? 'bg-indigo-50/60 border-indigo-400 text-slate-900 shadow-sm' 
+                          : 'bg-slate-50/50 border-slate-200 text-slate-700 hover:border-slate-300'
                       }`}
                     >
                       <div className="flex items-start gap-3">
                         <div className={`w-5 h-5 rounded-md border flex items-center justify-center mt-0.5 transition-colors ${
-                          isChecked ? 'bg-indigo-600 border-indigo-500 text-white' : 'border-slate-700 bg-slate-950'
+                          isChecked ? 'bg-indigo-600 border-indigo-600 text-white' : 'border-slate-300 bg-white'
                         }`}>
                           {isChecked && <CheckCircle2 className="w-4 h-4 text-white" />}
                         </div>
                         <div>
-                          <div className="font-semibold text-sm text-white">{option.label}</div>
-                          <div className="text-xs text-slate-400 mt-0.5">{option.desc}</div>
+                          <div className="font-semibold text-sm text-slate-900">{option.label}</div>
+                          <div className="text-xs text-slate-500 mt-0.5">{option.desc}</div>
                         </div>
                       </div>
                       <div className="text-right shrink-0">
-                        <span className="font-mono text-sm font-bold text-indigo-300">+${option.price.toLocaleString()}</span>
+                        <span className="font-mono text-sm font-bold text-indigo-700">+${option.price.toLocaleString()}</span>
                       </div>
                     </div>
                   )
@@ -217,8 +217,8 @@ export default function ProjectEstimator() {
               </div>
 
               {/* Delivery Velocity Selector */}
-              <div className="mt-8 pt-6 border-t border-white/10">
-                <label className="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-3 block">
+              <div className="mt-8 pt-6 border-t border-slate-100">
+                <label className="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-3 block">
                   Delivery Velocity & Sprint Pacing
                 </label>
                 <div className="grid grid-cols-2 gap-3">
@@ -227,8 +227,8 @@ export default function ProjectEstimator() {
                     onClick={() => setTimelineSpeed('standard')}
                     className={`p-3 rounded-xl border text-xs font-semibold text-left transition-all ${
                       timelineSpeed === 'standard'
-                        ? 'bg-indigo-600/20 border-indigo-500 text-white'
-                        : 'bg-slate-900 border-white/5 text-slate-400'
+                        ? 'bg-indigo-50 border-indigo-400 text-indigo-900'
+                        : 'bg-slate-50 border-slate-200 text-slate-600'
                     }`}
                   >
                     Standard Sprint Pacing (6-8 Weeks)
@@ -238,8 +238,8 @@ export default function ProjectEstimator() {
                     onClick={() => setTimelineSpeed('express')}
                     className={`p-3 rounded-xl border text-xs font-semibold text-left transition-all ${
                       timelineSpeed === 'express'
-                        ? 'bg-indigo-600/20 border-indigo-500 text-white'
-                        : 'bg-slate-900 border-white/5 text-slate-400'
+                        ? 'bg-indigo-50 border-indigo-400 text-indigo-900'
+                        : 'bg-slate-50 border-slate-200 text-slate-600'
                     }`}
                   >
                     Express Fast-Track (+25% Speed, 3-5 Weeks)
@@ -251,18 +251,18 @@ export default function ProjectEstimator() {
 
           {/* Real-time Summary Card & Lead Form */}
           <div className="lg:col-span-5">
-            <div className="p-8 rounded-3xl bg-gradient-to-b from-indigo-950/60 via-slate-900 to-slate-950 border border-indigo-500/30 backdrop-blur-2xl shadow-2xl shadow-indigo-950/50 sticky top-24">
+            <div className="p-8 rounded-3xl bg-white border border-slate-200 shadow-xl sticky top-24">
               
-              <div className="flex items-center justify-between border-b border-white/10 pb-6 mb-6">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-6 mb-6">
                 <div>
-                  <span className="text-xs text-slate-400 uppercase tracking-widest block font-medium">Estimated Investment</span>
-                  <div className="font-heading text-4xl font-extrabold text-white font-mono mt-1 text-gradient">
-                    ${finalEstimate.toLocaleString()} <span className="text-xs font-sans font-normal text-slate-400">USD</span>
+                  <span className="text-xs text-slate-500 uppercase tracking-widest block font-semibold">Estimated Investment</span>
+                  <div className="font-heading text-4xl font-extrabold text-slate-900 font-mono mt-1 text-gradient">
+                    ${finalEstimate.toLocaleString()} <span className="text-xs font-sans font-normal text-slate-500">USD</span>
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs text-slate-400 uppercase tracking-widest block font-medium">Delivery Pacing</span>
-                  <span className="text-sm font-semibold text-emerald-400 font-mono mt-1 block">
+                  <span className="text-xs text-slate-500 uppercase tracking-widest block font-semibold">Delivery Pacing</span>
+                  <span className="text-sm font-bold text-emerald-600 font-mono mt-1 block">
                     {estimatedWeeks}
                   </span>
                 </div>
@@ -270,32 +270,32 @@ export default function ProjectEstimator() {
 
               {/* What's included checklist */}
               <div className="space-y-3 mb-8">
-                <div className="text-xs font-semibold uppercase text-slate-400 tracking-wider">Includes Studio Guarantee:</div>
-                <div className="flex items-center gap-2 text-xs text-slate-300">
-                  <ShieldCheck className="w-4 h-4 text-indigo-400 shrink-0" />
+                <div className="text-xs font-semibold uppercase text-slate-500 tracking-wider">Includes Studio Guarantee:</div>
+                <div className="flex items-center gap-2 text-xs text-slate-700 font-medium">
+                  <ShieldCheck className="w-4 h-4 text-indigo-600 shrink-0" />
                   <span>Dedicated Senior Tech Lead + UI/UX Strategist</span>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-slate-300">
-                  <ShieldCheck className="w-4 h-4 text-indigo-400 shrink-0" />
+                <div className="flex items-center gap-2 text-xs text-slate-700 font-medium">
+                  <ShieldCheck className="w-4 h-4 text-indigo-600 shrink-0" />
                   <span>100% Source Code & IP Transfer</span>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-slate-300">
-                  <ShieldCheck className="w-4 h-4 text-indigo-400 shrink-0" />
+                <div className="flex items-center gap-2 text-xs text-slate-700 font-medium">
+                  <ShieldCheck className="w-4 h-4 text-indigo-600 shrink-0" />
                   <span>60-Day Post-Launch SLA & Bug Warranty</span>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-slate-300">
-                  <ShieldCheck className="w-4 h-4 text-indigo-400 shrink-0" />
+                <div className="flex items-center gap-2 text-xs text-slate-700 font-medium">
+                  <ShieldCheck className="w-4 h-4 text-indigo-600 shrink-0" />
                   <span>Weekly Demo Sprints & Figma Live Link</span>
                 </div>
               </div>
 
               {/* Instant Inquiry Form */}
               {submitted ? (
-                <div className="p-6 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-center space-y-3">
-                  <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto" />
-                  <h4 className="font-heading text-lg font-bold text-white">Proposal Reserved!</h4>
-                  <p className="text-xs text-slate-300">
-                    Thank you <strong className="text-white">{clientName}</strong>! Your estimated quote of <strong>${finalEstimate.toLocaleString()}</strong> has been locked in. Our lead strategist will reach out to <strong>{clientEmail}</strong> within 2 hours.
+                <div className="p-6 rounded-2xl bg-emerald-50 border border-emerald-200 text-center space-y-3">
+                  <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto" />
+                  <h4 className="font-heading text-lg font-bold text-slate-900">Proposal Reserved!</h4>
+                  <p className="text-xs text-slate-700">
+                    Thank you <strong className="text-slate-900">{clientName}</strong>! Your estimated quote of <strong>${finalEstimate.toLocaleString()}</strong> has been locked in. Our lead strategist will reach out to <strong>{clientEmail}</strong> within 2 hours.
                   </p>
                 </div>
               ) : (
@@ -307,7 +307,7 @@ export default function ProjectEstimator() {
                       placeholder="Your Name / Company Name"
                       value={clientName}
                       onChange={e => setClientName(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl bg-slate-900/90 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-500 transition-colors"
+                      className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:border-indigo-500 focus:bg-white transition-colors"
                     />
                   </div>
                   <div>
@@ -317,12 +317,12 @@ export default function ProjectEstimator() {
                       placeholder="work.email@company.com"
                       value={clientEmail}
                       onChange={e => setClientEmail(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl bg-slate-900/90 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-500 transition-colors"
+                      className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:border-indigo-500 focus:bg-white transition-colors"
                     />
                   </div>
                   <button
                     type="submit"
-                    className="w-full py-4 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 font-semibold text-white text-sm shadow-xl shadow-indigo-500/30 hover:opacity-95 transition-opacity flex items-center justify-center gap-2 group"
+                    className="w-full py-4 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 font-semibold text-white text-sm shadow-md shadow-indigo-600/30 hover:opacity-95 transition-opacity flex items-center justify-center gap-2 group"
                   >
                     Lock In Estimate & Reserve Sprint <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </button>

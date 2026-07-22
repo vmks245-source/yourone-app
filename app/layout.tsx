@@ -35,7 +35,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="light">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -43,13 +43,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
-        <meta name="theme-color" content="#030712" />
-        <meta name="color-scheme" content="dark" />
+        <meta name="theme-color" content="#ffffff" />
+        <meta name="color-scheme" content="light" />
       </head>
-      <body className="bg-[#030712] text-slate-100 font-sans antialiased selection:bg-indigo-500/30 selection:text-indigo-200">
+      <body className="bg-white text-slate-800 font-sans antialiased selection:bg-indigo-500/20 selection:text-indigo-900">
         {children}
       </body>
     </html>
   )
 }
+
 
