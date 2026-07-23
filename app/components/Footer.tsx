@@ -63,22 +63,15 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Global Locations Col */}
+          {/* Location Col */}
           <div className="space-y-4">
-            <h4 className="text-white font-heading font-semibold text-sm uppercase tracking-wider">Studio Locations</h4>
+            <h4 className="text-white font-heading font-semibold text-sm uppercase tracking-wider">Studio Location</h4>
             <div className="space-y-3 text-xs text-slate-400">
               <div className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
                 <div>
                   <strong className="text-slate-200 block text-xs">Hyderabad, Telangana, India</strong>
                   Cyber Towers, HITECH City, Madhapur, Hyderabad 500081
-                </div>
-              </div>
-              <div className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
-                <div>
-                  <strong className="text-slate-200 block text-xs">United States</strong>
-                  1619 Delaware Ave, Wilmington, DE 19806
                 </div>
               </div>
             </div>
@@ -94,11 +87,7 @@ export default function Footer() {
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-indigo-400 shrink-0" />
-                <a href="tel:+18023473690" className="hover:text-indigo-400 transition-colors">+1 (802) 347-3690 (US)</a>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-indigo-400 shrink-0" />
-                <a href="tel:+919920282736" className="hover:text-indigo-400 transition-colors">+91 99202 82736 (IN)</a>
+                <a href="tel:+919920282736" className="hover:text-indigo-400 transition-colors">+91 99202 82736</a>
               </div>
             </div>
 

@@ -450,7 +450,7 @@ export default function Home() {
                   </div>
                   <div>
                     <div className="text-xs text-stone-500 uppercase font-mono font-medium">Call Studio</div>
-                    <span className="font-semibold text-stone-900">+1 (802) 347-3690 / +91 99202 82736</span>
+                    <span className="font-semibold text-stone-900">+91 99202 82736</span>
                   </div>
                 </div>
               </div>
