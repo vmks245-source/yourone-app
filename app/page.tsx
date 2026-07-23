@@ -120,20 +120,20 @@ export default function Home() {
             {/* Live Stats Bar */}
             <div className="pt-12 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
               <div className="p-5 rounded-2xl bg-white border border-amber-200/70 shadow-md backdrop-blur-md">
-                <div className="font-heading text-3xl font-extrabold text-stone-900 font-mono">250+</div>
-                <div className="text-xs text-stone-500 mt-1 uppercase tracking-wider font-medium">Apps & Web Systems Shipped</div>
+                <div className="font-heading text-3xl font-extrabold text-stone-900 font-mono">20+</div>
+                <div className="text-xs text-stone-500 mt-1 uppercase tracking-wider font-medium font-sans font-semibold">Apps & Web Systems Shipped</div>
               </div>
               <div className="p-5 rounded-2xl bg-white border border-amber-200/70 shadow-md backdrop-blur-md">
-                <div className="font-heading text-3xl font-extrabold text-emerald-700 font-mono">$45M+</div>
-                <div className="text-xs text-stone-500 mt-1 uppercase tracking-wider font-medium">Client Revenue Generated</div>
+                <div className="font-heading text-3xl font-extrabold text-emerald-700 font-mono">$5M+</div>
+                <div className="text-xs text-stone-500 mt-1 uppercase tracking-wider font-medium font-sans font-semibold">Client Growth Generated</div>
               </div>
               <div className="p-5 rounded-2xl bg-white border border-amber-200/70 shadow-md backdrop-blur-md">
                 <div className="font-heading text-3xl font-extrabold text-amber-800 font-mono">99.4%</div>
-                <div className="text-xs text-stone-500 mt-1 uppercase tracking-wider font-medium">Client Satisfaction Rate</div>
+                <div className="text-xs text-stone-500 mt-1 uppercase tracking-wider font-medium font-sans font-semibold">Client Satisfaction Rate</div>
               </div>
               <div className="p-5 rounded-2xl bg-white border border-amber-200/70 shadow-md backdrop-blur-md">
-                <div className="font-heading text-3xl font-extrabold text-orange-700 font-mono">18+</div>
-                <div className="text-xs text-stone-500 mt-1 uppercase tracking-wider font-medium">UX & Product Awards</div>
+                <div className="font-heading text-3xl font-extrabold text-orange-700 font-mono">10+</div>
+                <div className="text-xs text-stone-500 mt-1 uppercase tracking-wider font-medium font-sans font-semibold">Product & Design Awards</div>
               </div>
             </div>
 
@@ -518,16 +518,16 @@ export default function Home() {
                         </select>
                       </div>
                       <div>
-                        <label className="text-xs text-stone-500 mb-1 block font-medium">Estimated Budget</label>
+                        <label className="text-xs text-stone-500 mb-1 block font-medium">Target Launch Timeline</label>
                         <select
                           value={formData.budget}
                           onChange={e => setFormData({ ...formData, budget: e.target.value })}
                           className="w-full px-4 py-3 rounded-xl bg-[#faf5ea]/70 border border-amber-200 text-stone-900 text-sm focus:outline-none focus:border-amber-500 focus:bg-white transition-colors"
                         >
-                          <option>$3,000 - $8,000</option>
-                          <option>$8,000 - $15,000</option>
-                          <option>$15,000 - $30,000</option>
-                          <option>$30,000+</option>
+                          <option>Express Fast-Track (2-4 Weeks)</option>
+                          <option>Standard Sprint (4-8 Weeks)</option>
+                          <option>Full Product Rollout (2-3 Months)</option>
+                          <option>Flexible / Ongoing Partnership</option>
                         </select>
                       </div>
                     </div>

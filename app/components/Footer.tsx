@@ -65,27 +65,20 @@ export default function Footer() {
 
           {/* Global Locations Col */}
           <div className="space-y-4">
-            <h4 className="text-white font-heading font-semibold text-sm uppercase tracking-wider">Global Studios</h4>
+            <h4 className="text-white font-heading font-semibold text-sm uppercase tracking-wider">Studio Locations</h4>
             <div className="space-y-3 text-xs text-slate-400">
               <div className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
                 <div>
+                  <strong className="text-slate-200 block text-xs">Hyderabad, Telangana, India</strong>
+                  Cyber Towers, HITECH City, Madhapur, Hyderabad 500081
+                </div>
+              </div>
+              <div className="flex items-start gap-2">
+                <MapPin className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
+                <div>
                   <strong className="text-slate-200 block text-xs">United States</strong>
-                  16 Madison Ave, Lake Hiawatha, NJ 07034
-                </div>
-              </div>
-              <div className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
-                <div>
-                  <strong className="text-slate-200 block text-xs">Mumbai, India</strong>
-                  IT Park, Borivali East, Mumbai 400091
-                </div>
-              </div>
-              <div className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
-                <div>
-                  <strong className="text-slate-200 block text-xs">Hyderabad, India</strong>
-                  HITECH City Tech Enclave, Hyderabad 500081
+                  1619 Delaware Ave, Wilmington, DE 19806
                 </div>
               </div>
             </div>

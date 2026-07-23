@@ -1,56 +1,51 @@
 'use client'
 
 import { useState } from 'react'
-import { Calculator, CheckCircle2, ArrowRight, Sparkles, Smartphone, Globe, TrendingUp, Cpu, Zap, ShieldCheck } from 'lucide-react'
+import { Calculator, CheckCircle2, ArrowRight, Smartphone, Globe, TrendingUp, Zap, ShieldCheck } from 'lucide-react'
 
 type ScopeType = 'app' | 'website' | 'marketing' | 'fullstack'
 
 interface ServiceOption {
   id: string
   label: string
-  price: number
   desc: string
 }
 
-const SERVICE_SCOPES: Record<ScopeType, { title: string; basePrice: number; options: ServiceOption[] }> = {
+const SERVICE_SCOPES: Record<ScopeType, { title: string; options: ServiceOption[] }> = {
   app: {
     title: 'Mobile & Web App Development',
-    basePrice: 4800,
     options: [
-      { id: 'ios_android', label: 'Cross-Platform App (iOS + Android)', price: 3500, desc: 'Single React Native / Flutter codebase with native performance' },
-      { id: 'ai_agents', label: 'AI Agent & LLM Integration', price: 2200, desc: 'Conversational UI, fine-tuned RAG pipelines, autonomous workflows' },
-      { id: 'backend_api', label: 'Scalable Cloud Backend & APIs', price: 1800, desc: 'Supabase / Node.js, microservices, auth, webhooks & realtime DB' },
-      { id: 'offline_sync', label: 'Offline Sync & Realtime Analytics', price: 1200, desc: 'Local persistence, WebSocket feeds, telemetry tracking' }
+      { id: 'ios_android', label: 'Cross-Platform App (iOS + Android)', desc: 'Single React Native / Flutter codebase with native performance' },
+      { id: 'ai_agents', label: 'AI Agent & LLM Integration', desc: 'Conversational UI, fine-tuned RAG pipelines, autonomous workflows' },
+      { id: 'backend_api', label: 'Scalable Cloud Backend & APIs', desc: 'Supabase / Node.js, microservices, auth, webhooks & realtime DB' },
+      { id: 'offline_sync', label: 'Offline Sync & Realtime Analytics', desc: 'Local persistence, WebSocket feeds, telemetry tracking' }
     ]
   },
   website: {
     title: 'Bespoke Website Building & Web Systems',
-    basePrice: 2800,
     options: [
-      { id: 'nextjs_3d', label: 'Next.js 15 WebGL / 3D Experiences', price: 2400, desc: '60fps micro-animations, GSAP scrollytelling, custom shaders' },
-      { id: 'cms_webflow', label: 'Custom CMS & Content Engine', price: 1400, desc: 'Sanity / Strapi / Webflow CMS integration for easy editor updates' },
-      { id: 'cro_funnels', label: 'High-Conversion Funnel Engineering', price: 1600, desc: 'Neuromarketing visual hierarchy, A/B tested checkout flows' },
-      { id: 'seo_speed', label: '100/100 Core Web Vitals & Technical SEO', price: 950, desc: 'Instant page loads, structured Schema.org markup, SEO indexing' }
+      { id: 'nextjs_3d', label: 'Next.js 15 WebGL / 3D Experiences', desc: '60fps micro-animations, GSAP scrollytelling, custom shaders' },
+      { id: 'cms_webflow', label: 'Custom CMS & Content Engine', desc: 'Sanity / Strapi / Webflow CMS integration for easy editor updates' },
+      { id: 'cro_funnels', label: 'High-Conversion Funnel Engineering', desc: 'Neuromarketing visual hierarchy, A/B tested checkout flows' },
+      { id: 'seo_speed', label: '100/100 Core Web Vitals & Technical SEO', desc: 'Instant page loads, structured Schema.org markup, SEO indexing' }
     ]
   },
   marketing: {
     title: 'Digital Marketing & Neuromarketing Growth',
-    basePrice: 2200,
     options: [
-      { id: 'neuromarketing_audit', label: 'Neuromarketing UI/UX Audit', price: 1500, desc: 'Eye-tracking & cognitive load analysis to uncover conversion leaks' },
-      { id: 'performance_ads', label: 'Performance Ad Campaign Management', price: 2000, desc: 'Meta, Google, TikTok ad creatives & multi-funnel retargeting' },
-      { id: 'brand_identity', label: 'Complete Brand Identity & Guidelines', price: 1800, desc: 'Visual design system, typography, motion graphics & brand deck' },
-      { id: 'seo_content', label: 'Organic Search & Content Engine', price: 1200, desc: 'Rank #1 keyword acquisition strategy & automated content pipelines' }
+      { id: 'neuromarketing_audit', label: 'Neuromarketing UI/UX Audit', desc: 'Eye-tracking & cognitive load analysis to uncover conversion leaks' },
+      { id: 'performance_ads', label: 'Performance Ad Campaign Management', desc: 'Meta, Google, TikTok ad creatives & multi-funnel retargeting' },
+      { id: 'brand_identity', label: 'Complete Brand Identity & Guidelines', desc: 'Visual design system, typography, motion graphics & brand deck' },
+      { id: 'seo_content', label: 'Organic Search & Content Engine', desc: 'Rank #1 keyword acquisition strategy & automated content pipelines' }
     ]
   },
   fullstack: {
     title: 'All-In-One Enterprise Transformation',
-    basePrice: 8500,
     options: [
-      { id: 'full_app_web', label: 'Complete Web + Mobile Suite', price: 4500, desc: 'Shared design system across Mobile App, Web App, and Marketing Site' },
-      { id: 'growth_engine', label: '6-Month Dedicated Growth Sprints', price: 3800, desc: 'Continuous CRO, feature iterations, performance marketing management' },
-      { id: 'ai_copilot', label: 'Custom Enterprise AI Copilot', price: 3200, desc: 'Proprietary AI assistant deployed on your private data infrastructure' },
-      { id: 'devops_scale', label: 'Zero-Downtime Multi-Region Hosting', price: 1500, desc: 'Vercel Enterprise, AWS auto-scaling, SOC2 security compliance' }
+      { id: 'full_app_web', label: 'Complete Web + Mobile Suite', desc: 'Shared design system across Mobile App, Web App, and Marketing Site' },
+      { id: 'growth_engine', label: 'Dedicated Growth Sprints', desc: 'Continuous CRO, feature iterations, performance marketing management' },
+      { id: 'ai_copilot', label: 'Custom Enterprise AI Copilot', desc: 'Proprietary AI assistant deployed on your private data infrastructure' },
+      { id: 'devops_scale', label: 'Zero-Downtime Multi-Region Hosting', desc: 'Vercel Enterprise, AWS auto-scaling, SOC2 security compliance' }
     ]
   }
 }
@@ -71,13 +66,7 @@ export default function ProjectEstimator() {
     )
   }
 
-  // Calculate estimated investment
-  const addOnsTotal = activeScope.options
-    .filter(opt => selectedOptions.includes(opt.id))
-    .reduce((sum, opt) => sum + opt.price, 0)
-
-  const rawTotal = activeScope.basePrice + addOnsTotal
-  const finalEstimate = timelineSpeed === 'express' ? Math.round(rawTotal * 1.25) : rawTotal
+  const selectedCount = activeScope.options.filter(opt => selectedOptions.includes(opt.id)).length
   const estimatedWeeks = timelineSpeed === 'express' ? '3 - 5 Weeks' : '6 - 8 Weeks'
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -98,10 +87,10 @@ export default function ProjectEstimator() {
             <Calculator className="w-4 h-4 text-amber-700" /> Interactive Project Scope Estimator
           </div>
           <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold text-stone-900 tracking-tight">
-            Calculate Your Project Scope & <span className="text-gradient">Instant Investment Quote</span>
+            Calculate Your Project Scope & <span className="text-gradient">Timeline Sprint Plan</span>
           </h2>
           <p className="text-stone-600 text-base sm:text-lg">
-            Transparent pricing based on exact engineering deliverables. Select your scope below to generate an estimate in seconds.
+            Customize your project deliverables based on exact engineering modules. Select your scope below to generate a tailored sprint roadmap.
           </p>
         </div>
 
@@ -177,7 +166,7 @@ export default function ProjectEstimator() {
               <h3 className="text-lg font-bold text-stone-900 mb-2 flex items-center justify-between">
                 <span>Select Deliverables for {activeScope.title}</span>
                 <span className="text-xs font-mono text-amber-900 bg-amber-100/80 border border-amber-300/70 px-2.5 py-1 rounded-full font-semibold">
-                  Base Architecture: ${activeScope.basePrice.toLocaleString()}
+                  {selectedCount} Modules Selected
                 </span>
               </h3>
               <p className="text-xs text-stone-500 mb-6">
@@ -209,7 +198,7 @@ export default function ProjectEstimator() {
                         </div>
                       </div>
                       <div className="text-right shrink-0">
-                        <span className="font-mono text-sm font-bold text-amber-800">+${option.price.toLocaleString()}</span>
+                        <span className="text-xs font-mono font-semibold text-amber-800 bg-amber-100/60 px-2 py-0.5 rounded-full">Included</span>
                       </div>
                     </div>
                   )
@@ -242,7 +231,7 @@ export default function ProjectEstimator() {
                         : 'bg-[#faf5ea] border-amber-200 text-stone-600'
                     }`}
                   >
-                    Express Fast-Track (+25% Speed, 3-5 Weeks)
+                    Express Fast-Track (3-5 Weeks)
                   </button>
                 </div>
               </div>
@@ -255,9 +244,9 @@ export default function ProjectEstimator() {
               
               <div className="flex items-center justify-between border-b border-amber-100 pb-6 mb-6">
                 <div>
-                  <span className="text-xs text-stone-500 uppercase tracking-widest block font-semibold">Estimated Investment</span>
-                  <div className="font-heading text-4xl font-extrabold text-stone-900 font-mono mt-1 text-gradient">
-                    ${finalEstimate.toLocaleString()} <span className="text-xs font-sans font-normal text-stone-500">USD</span>
+                  <span className="text-xs text-stone-500 uppercase tracking-widest block font-semibold">Scope Deliverables</span>
+                  <div className="font-heading text-2xl font-extrabold text-stone-900 font-mono mt-1 text-gradient">
+                    {selectedCount} Key Modules
                   </div>
                 </div>
                 <div className="text-right">
@@ -279,11 +268,11 @@ export default function ProjectEstimator() {
                   <ShieldCheck className="w-4 h-4 text-amber-700 shrink-0" />
                   <span>100% Source Code & IP Transfer</span>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-slate-700 font-medium">
+                <div className="flex items-center gap-2 text-xs text-stone-700 font-medium">
                   <ShieldCheck className="w-4 h-4 text-amber-700 shrink-0" />
                   <span>60-Day Post-Launch SLA & Bug Warranty</span>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-slate-700 font-medium">
+                <div className="flex items-center gap-2 text-xs text-stone-700 font-medium">
                   <ShieldCheck className="w-4 h-4 text-amber-700 shrink-0" />
                   <span>Weekly Demo Sprints & Figma Live Link</span>
                 </div>
@@ -295,7 +284,7 @@ export default function ProjectEstimator() {
                   <CheckCircle2 className="w-10 h-10 text-emerald-700 mx-auto" />
                   <h4 className="font-heading text-lg font-bold text-stone-900">Proposal Reserved!</h4>
                   <p className="text-xs text-stone-700">
-                    Thank you <strong className="text-stone-900">{clientName}</strong>! Your estimated quote of <strong>${finalEstimate.toLocaleString()}</strong> has been locked in. Our lead strategist will reach out to <strong>{clientEmail}</strong> within 2 hours.
+                    Thank you <strong className="text-stone-900">{clientName}</strong>! Your customized scope for <strong>{selectedCount} modules</strong> ({estimatedWeeks}) has been reserved. Our lead strategist will reach out to <strong>{clientEmail}</strong> within 2 hours.
                   </p>
                 </div>
               ) : (
@@ -324,10 +313,10 @@ export default function ProjectEstimator() {
                     type="submit"
                     className="w-full py-4 rounded-xl bg-gradient-to-r from-amber-600 via-orange-600 to-indigo-600 font-semibold text-white text-sm shadow-md shadow-amber-600/30 hover:opacity-95 transition-opacity flex items-center justify-center gap-2 group"
                   >
-                    Lock In Estimate & Reserve Sprint <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    Request Detailed Proposal & Reserve Sprint <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </button>
                   <p className="text-[11px] text-center text-stone-500">
-                    No credit card required. NDA signed upon first call.
+                    NDA signed upon first call. Direct technical feedback guaranteed.
                   </p>
                 </form>
               )}
