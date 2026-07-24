@@ -118,22 +118,14 @@ export default function Home() {
             </div>
 
             {/* Live Stats Bar */}
-            <div className="pt-12 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-              <div className="p-5 rounded-2xl bg-white border border-amber-200/70 shadow-md backdrop-blur-md">
-                <div className="font-heading text-3xl font-extrabold text-stone-900 font-mono">20+</div>
-                <div className="text-xs text-stone-500 mt-1 uppercase tracking-wider font-medium font-sans font-semibold">Apps & Web Systems Shipped</div>
+            <div className="pt-12 grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl mx-auto">
+              <div className="p-6 rounded-2xl bg-white border border-amber-200/70 shadow-md backdrop-blur-md text-center">
+                <div className="font-heading text-3xl sm:text-4xl font-extrabold text-stone-900 font-mono">20+</div>
+                <div className="text-xs text-stone-500 mt-1 uppercase tracking-wider font-semibold font-sans">Apps & Web Systems Shipped</div>
               </div>
-              <div className="p-5 rounded-2xl bg-white border border-amber-200/70 shadow-md backdrop-blur-md">
-                <div className="font-heading text-3xl font-extrabold text-emerald-700 font-mono">$5M+</div>
-                <div className="text-xs text-stone-500 mt-1 uppercase tracking-wider font-medium font-sans font-semibold">Client Growth Generated</div>
-              </div>
-              <div className="p-5 rounded-2xl bg-white border border-amber-200/70 shadow-md backdrop-blur-md">
-                <div className="font-heading text-3xl font-extrabold text-amber-800 font-mono">99.4%</div>
-                <div className="text-xs text-stone-500 mt-1 uppercase tracking-wider font-medium font-sans font-semibold">Client Satisfaction Rate</div>
-              </div>
-              <div className="p-5 rounded-2xl bg-white border border-amber-200/70 shadow-md backdrop-blur-md">
-                <div className="font-heading text-3xl font-extrabold text-orange-700 font-mono">10+</div>
-                <div className="text-xs text-stone-500 mt-1 uppercase tracking-wider font-medium font-sans font-semibold">Product & Design Awards</div>
+              <div className="p-6 rounded-2xl bg-white border border-amber-200/70 shadow-md backdrop-blur-md text-center">
+                <div className="font-heading text-3xl sm:text-4xl font-extrabold text-emerald-700 font-sans">Highest</div>
+                <div className="text-xs text-stone-500 mt-1 uppercase tracking-wider font-semibold font-sans">Client Satisfaction</div>
               </div>
             </div>
 

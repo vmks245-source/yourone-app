@@ -30,10 +30,7 @@ export default function Footer() {
 
             <div className="flex items-center gap-4 pt-2">
               <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700 text-xs text-slate-200">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" /> 99.4% Client Retention
-              </div>
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700 text-xs text-slate-200">
-                <Award className="w-4 h-4 text-amber-400" /> 18+ Design Awards
+                <ShieldCheck className="w-4 h-4 text-emerald-400" /> Highest Client Satisfaction
               </div>
             </div>
 
