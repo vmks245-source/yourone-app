@@ -450,7 +450,11 @@ export default function Home() {
                   </div>
                   <div>
                     <div className="text-xs text-stone-500 uppercase font-mono font-medium">Call Studio</div>
-                    <span className="font-semibold text-stone-900">+91 99202 82736</span>
+                    <div className="font-semibold text-stone-900 flex flex-col sm:flex-row sm:items-center sm:gap-3 text-sm">
+                      <a href="tel:+917416683770" className="hover:text-amber-700 transition-colors">+91 74166 83770</a>
+                      <span className="hidden sm:inline text-stone-400">•</span>
+                      <a href="tel:+919505632090" className="hover:text-amber-700 transition-colors">+91 95056 32090</a>
+                    </div>
                   </div>
                 </div>
               </div>
