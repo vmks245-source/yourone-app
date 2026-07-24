@@ -7,6 +7,7 @@ import Footer from './components/Footer'
 import ProjectEstimator from './components/ProjectEstimator'
 import NeuromarketingSection from './components/NeuromarketingSection'
 import CaseStudyCard, { CaseStudy } from './components/CaseStudyCard'
+import StudioAICopilot from './components/StudioAICopilot'
 import { 
   Sparkles, ArrowRight, Smartphone, Globe, TrendingUp, Layers, 
   CheckCircle2, ShieldCheck, Award, Star, Zap, Cpu, Users, 
@@ -557,6 +558,9 @@ export default function Home() {
 
       {/* Footer */}
       <Footer />
+
+      {/* Floating Studio AI Copilot */}
+      <StudioAICopilot />
 
     </div>
   )
